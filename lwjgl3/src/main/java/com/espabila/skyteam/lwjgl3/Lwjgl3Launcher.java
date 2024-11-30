@@ -1,10 +1,10 @@
-package com.espavila.skyteam.lwjgl3;
+package com.espabila.skyteam.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.github.czyzby.autumn.fcs.scanner.DesktopClassScanner;
 import com.github.czyzby.autumn.mvc.application.AutumnApplication;
-import com.espavila.skyteam.SkyTeam;
+import com.espabila.skyteam.SkyTeam;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
