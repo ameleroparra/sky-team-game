@@ -3,24 +3,13 @@ package com.espabila.skyteam.model;
 
 import java.util.List;
 
-public class Player {
-    private String name;
-    private Boolean isTurn;
+public abstract class Player {
+    private AltitudeTrack pilotTurn;
     private List<Dice> diceList;
 
-    public Boolean getTurn() {
-        return isTurn;
+    public Player(){
+
     }
 
-    public void setTurn(Boolean turn) {
-        isTurn = turn;
-    }
 
-    public List<Dice> getDiceList() {
-        return diceList;
-    }
-
-    public void setDiceList(List<Dice> diceList) {
-        this.diceList = diceList;
-    }
 }

@@ -1,4 +1,4 @@
 package com.espabila.skyteam.model;
 
-public class CoPilot {
+public class CoPilot extends Player{
 }
