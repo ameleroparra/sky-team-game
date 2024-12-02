@@ -8,14 +8,6 @@ public class Player {
     private Boolean isTurn;
     private List<Dice> diceList;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Boolean getTurn() {
         return isTurn;
     }
