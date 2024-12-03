@@ -13,6 +13,7 @@ public class Dice {
         this.placed = false;
     }
 
+    //choose a random value from 1 to 6 for the dice
     public void roll(){
         value = rand.nextInt(6) + 1;
    }
