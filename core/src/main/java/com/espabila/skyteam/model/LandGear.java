@@ -8,4 +8,6 @@ public class LandGear {
         this.switches = new boolean[3];
     }
 
+
+
 }
