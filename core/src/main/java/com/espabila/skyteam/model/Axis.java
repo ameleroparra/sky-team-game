@@ -56,6 +56,5 @@ public class Axis {
          return currentIndexPosition;
      }
 
-
-
+     // check this. uses
 }

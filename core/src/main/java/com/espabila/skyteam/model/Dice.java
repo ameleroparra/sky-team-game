@@ -26,4 +26,5 @@ public class Dice {
         return placed;
    }
 
+   // why randomNum?
 }
