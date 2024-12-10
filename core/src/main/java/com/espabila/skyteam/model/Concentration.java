@@ -15,4 +15,22 @@ public class Concentration {
             //return warning message "no more coffee space"
         }
     }
+
+    public int useTokenPositive(Dice dice) {
+        int diceValue = dice.getValue();
+        if (tokenAmount != 0) {
+            diceValue = diceValue + 1;
+            tokenAmount--;
+        }
+        return diceValue;
+    }
+
+    public int useTokenNegative(Dice dice) {
+        int diceValue = dice.getValue();
+        if (tokenAmount != 0) {
+            diceValue = diceValue - 1;
+            tokenAmount--;
+        }
+        return diceValue;
+    }
 }
