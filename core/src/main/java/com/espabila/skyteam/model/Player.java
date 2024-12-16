@@ -1,19 +1,41 @@
 package com.espabila.skyteam.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Player {
-    private AltitudeTrack pilotTurn;
-    private List<Dice> diceList;
+    private List<Integer> diceList;
 
     public Player(){
+        diceList =  new ArrayList<>();
     }
 
-    public void rollDice(){
+    public void rollDices(){
         for(int i = 0; i < 4; i++){
-            this.diceList.add(new Dice());
+            Dice dice = new Dice();
+            diceList.add(dice.roll());
         }
+    }
+
+    public List<Integer> getDiceList() {
+        return diceList;
+    }
+
+    public void setDiceList(List<Integer> diceList) {
+        this.diceList = diceList;
+    }
+
+    public void removeDice(int value){
+        diceList.remove((Integer) value);
+    }
+
+    public void placeDiceOnEngines(int diceValue, Engines engines) {
+        engines.placeDice(this, diceValue);
+    }
+
+    public void placeDiceOnAxis(int diceValue, Axis axis){
+        axis.placeDice(this, diceValue);
     }
 
 }

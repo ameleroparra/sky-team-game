@@ -6,6 +6,8 @@ public class Engines {
     private double finalPilotMarker;
     private double finalCopilotMarker;
     private int approachTrackMove;
+    private int pilotSlot;
+    private int copilotSlot;
 
 
     public Engines(){
@@ -14,6 +16,31 @@ public class Engines {
         this.finalPilotMarker = 6.5;
         this.finalCopilotMarker = 12.5;
         this.approachTrackMove = 0;
+        this.pilotSlot = 0;
+        this.copilotSlot = 0;
+    }
+
+    public void placeDice(Player player, int diceValue){
+        if(player instanceof Pilot && pilotSlot == 0){
+            pilotSlot = diceValue;
+            player.removeDice(diceValue);
+        }
+        else if(player instanceof CoPilot && copilotSlot == 0){
+            copilotSlot = diceValue;
+            player.removeDice(diceValue);
+        }
+        else {
+            System.out.println("Dice was already placed");
+        }
+    }
+
+    public Boolean areDicesPlaced(int diceValue){
+        if(pilotSlot > 0 && copilotSlot > 0){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public int getApproachTrackMove() {

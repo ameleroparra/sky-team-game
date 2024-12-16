@@ -10,7 +10,7 @@ public class Flaps {
         this.activated = new boolean[4]; //flaps deactivated
     }
 
-    public boolean activateFlap(int flapIndex, Dice dice){
+    public boolean activateFlap(CoPilot coPilot, int flapIndex, int value){
 
         // check if previous flap is activated in case player want to activate something that is not the first flap
         if (flapIndex > 0 && !activated[flapIndex - 1]){
@@ -18,12 +18,11 @@ public class Flaps {
             return false;
         }
 
-        int diceValue = dice.getValue();
-
         //check if the value used by the player match the necessary ones to activate the flap
         for (int check : requiredValue[flapIndex]){
-            if (check == diceValue){
+            if (check == value){
                 activated[flapIndex] = true;
+                coPilot.removeDice(value);
                 return true;
             }
             //here we can tell the player that the dice does not match the necessary value

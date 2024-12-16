@@ -3,10 +3,37 @@ package com.espabila.skyteam.model;
 public class Brakes {
     private int[] requiredValue;
     private boolean[] activated;
+    private int pilotSlot;
+    private int copilotSlot;
 
     public Brakes() {
         this.requiredValue = new int[]{2,4,6};
         this.activated = new boolean[3];
+        this.pilotSlot = 0;
+        this.copilotSlot = 0;
+    }
+
+    public void placeDice(Player player, int diceValue){
+        if(player instanceof Pilot && pilotSlot == 0){
+            pilotSlot = diceValue;
+            player.removeDice(diceValue);
+        }
+        else if(player instanceof CoPilot && copilotSlot == 0){
+            copilotSlot = diceValue;
+            player.removeDice(diceValue);
+        }
+        else {
+            System.out.println("Dice was already placed");
+        }
+    }
+
+    public Boolean areDicesPlaced(int diceValue){
+        if(pilotSlot > 0 && copilotSlot > 0){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean activateBrakes(int brakeIndex, Dice dice){

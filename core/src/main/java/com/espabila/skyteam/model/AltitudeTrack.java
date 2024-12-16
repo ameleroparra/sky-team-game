@@ -1,7 +1,5 @@
 package com.espabila.skyteam.model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class AltitudeTrack {
     private int currentRound;
     private Boolean pilotTurn;
@@ -20,10 +18,28 @@ public class AltitudeTrack {
         }
     }
 
-    public void islastRound(){
+    public void checkLastRound(){
         if(currentRound == 6){
             lastRound = true;
             pilotTurn = !pilotTurn;
         }
+    }
+
+    public void rerollAvailable(Reroll reroll){
+        if(currentRound == 0 || currentRound==4){
+            reroll.setRerollAvailable(true);
+        }
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public Boolean isPilotTurn() {
+        return pilotTurn;
+    }
+
+    public Boolean isLastRound() {
+        return lastRound;
     }
 }
