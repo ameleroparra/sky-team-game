@@ -11,10 +11,23 @@ public class Radio {
         this.copilotSecondSlot = 0;
     }
 
-    public void placeDice(int diceValue, ApproachTrack approachTrack){
-        if(pilotSlot > 0){
+    public void placeDice(Player player, int diceValue){
+        if(player instanceof Pilot && pilotSlot == 0){
             pilotSlot = diceValue;
-            removePlaneToken(pilotSlot, approachTrack);
+            player.removeDice(diceValue);
+        }
+        else if(player instanceof CoPilot){
+            if(copilotFirstSlot == 0){
+                copilotFirstSlot = diceValue;
+                player.removeDice(diceValue);
+            }
+            else if(copilotSecondSlot == 0){
+                copilotSecondSlot = diceValue;
+                player.removeDice(diceValue);
+            }
+        }
+        else {
+            System.out.println("Dice was already placed");
         }
     }
 

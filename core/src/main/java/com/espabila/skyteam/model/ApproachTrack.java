@@ -51,30 +51,28 @@ public class ApproachTrack {
         this.gameOver = gameOver;
     }
 
-    public void moveForward(Engines engines){
+    public void moveForward(Engines engines) {
         int moveOneForward = currentPosition + 1;
         int moveTwoForward = currentPosition + 2;
-        if(engines.getApproachTrackMove() != 0){
-            if(engines.getApproachTrackMove() == 1 && moveOneForward != 6){
-                if(planeTokens[moveOneForward] == 0){
-                    currentPosition += 1;
-                }
-                else{
+
+        if (engines.getApproachTrackMove() != 0) {
+            if (engines.getApproachTrackMove() == 1 && moveOneForward <= lastTrackNum) {
+                if (planeTokens[moveOneForward] == 0) {
+                    currentPosition = moveOneForward;
+                } else {
                     gameOver = true;
                 }
-            }
-            else if(engines.getApproachTrackMove() == 2 && moveTwoForward != 6){
-                if(planeTokens[moveOneForward] == 0 && planeTokens[moveTwoForward] == 0) {
-                    currentPosition += 2;
-                }
-                else{
+            } else if (engines.getApproachTrackMove() == 2 && moveTwoForward <= lastTrackNum) {
+                if (planeTokens[moveOneForward] == 0 && planeTokens[moveTwoForward] == 0) {
+                    currentPosition = moveTwoForward;
+                } else {
                     gameOver = true;
                 }
-            }
-            else {
+            } else {
                 gameOver = true;
             }
         }
+        isLastTrack();
     }
 
     public void isLastTrack(){

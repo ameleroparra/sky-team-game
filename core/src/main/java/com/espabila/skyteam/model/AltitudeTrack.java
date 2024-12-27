@@ -21,7 +21,7 @@ public class AltitudeTrack {
     public void checkLastRound(){
         if(currentRound == 6){
             lastRound = true;
-            pilotTurn = !pilotTurn;
+            pilotTurn = true;
         }
     }
 

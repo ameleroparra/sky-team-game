@@ -11,23 +11,17 @@ public class Flaps {
     }
 
     public boolean activateFlap(CoPilot coPilot, int flapIndex, int value){
-
-        // check if previous flap is activated in case player want to activate something that is not the first flap
         if (flapIndex > 0 && !activated[flapIndex - 1]){
-            //here write something to remember the player that flaps go in order
             return false;
         }
 
-        //check if the value used by the player match the necessary ones to activate the flap
         for (int check : requiredValue[flapIndex]){
             if (check == value){
                 activated[flapIndex] = true;
                 coPilot.removeDice(value);
                 return true;
             }
-            //here we can tell the player that the dice does not match the necessary value
         }
-
         return false;
     }
 
@@ -37,7 +31,6 @@ public class Flaps {
                 return false;
             }
         }
-
         return true;
     }
 

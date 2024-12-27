@@ -20,6 +20,14 @@ public class Engines {
         this.copilotSlot = 0;
     }
 
+    public double getPilotMarker() {
+        return pilotMarker;
+    }
+
+    public double getCopilotMarker() {
+        return copilotMarker;
+    }
+
     public void placeDice(Player player, int diceValue){
         if(player instanceof Pilot && pilotSlot == 0){
             pilotSlot = diceValue;

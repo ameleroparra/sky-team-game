@@ -1,4 +1,4 @@
 package com.espabila.skyteam.model;
 
-public class GameModel {
+public class AxisTest {
 }

@@ -30,12 +30,6 @@ public abstract class Player {
         diceList.remove((Integer) value);
     }
 
-    public void placeDiceOnEngines(int diceValue, Engines engines) {
-        engines.placeDice(this, diceValue);
-    }
 
-    public void placeDiceOnAxis(int diceValue, Axis axis){
-        axis.placeDice(this, diceValue);
-    }
 
 }
