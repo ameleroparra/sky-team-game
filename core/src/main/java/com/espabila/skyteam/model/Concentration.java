@@ -25,8 +25,7 @@ public class Concentration {
 
     }
 
-    public int useTokenPositive(Dice dice) {
-        int diceValue = dice.getValue();
+    public int useTokenPositive(int diceValue) {
         if (tokenAmount != 0) {
             diceValue = diceValue + 1;
             tokenAmount--;
@@ -34,8 +33,7 @@ public class Concentration {
         return diceValue;
     }
 
-    public int useTokenNegative(Dice dice) {
-        int diceValue = dice.getValue();
+    public int useTokenNegative(int diceValue) {
         if (tokenAmount != 0) {
             diceValue = diceValue - 1;
             tokenAmount--;
