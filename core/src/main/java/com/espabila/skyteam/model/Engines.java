@@ -28,6 +28,22 @@ public class Engines {
         return copilotMarker;
     }
 
+    public int getPilotSlot() {
+        return pilotSlot;
+    }
+
+    public int getCopilotSlot() {
+        return copilotSlot;
+    }
+
+    public void setPilotSlot(int pilotSlot) {
+        this.pilotSlot = pilotSlot;
+    }
+
+    public void setCopilotSlot(int copilotSlot) {
+        this.copilotSlot = copilotSlot;
+    }
+
     public void placeDice(Player player, int diceValue){
         if(player instanceof Pilot && pilotSlot == 0){
             pilotSlot = diceValue;
@@ -53,6 +69,10 @@ public class Engines {
 
     public int getApproachTrackMove() {
         return approachTrackMove;
+    }
+
+    public void setApproachTrackMove(int approachTrackMove) {
+        this.approachTrackMove = approachTrackMove;
     }
 
     public void advancePilotMarker(){

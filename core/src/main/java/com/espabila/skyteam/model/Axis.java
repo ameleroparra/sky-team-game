@@ -37,6 +37,10 @@ public class Axis {
         return gameOver;
     }
 
+    public void setCurrentIndexPosition(int currentIndexPosition) {
+        this.currentIndexPosition = currentIndexPosition;
+    }
+
     public void placeDice(Player player, int diceValue){
          if(player instanceof Pilot && pilotSlot == 0){
              pilotSlot = diceValue;

@@ -11,6 +11,30 @@ public class Radio {
         this.copilotSecondSlot = 0;
     }
 
+    public int getPilotSlot() {
+        return pilotSlot;
+    }
+
+    public void setPilotSlot(int pilotSlot) {
+        this.pilotSlot = pilotSlot;
+    }
+
+    public int getCopilotFirstSlot() {
+        return copilotFirstSlot;
+    }
+
+    public void setCopilotFirstSlot(int copilotFirstSlot) {
+        this.copilotFirstSlot = copilotFirstSlot;
+    }
+
+    public int getCopilotSecondSlot() {
+        return copilotSecondSlot;
+    }
+
+    public void setCopilotSecondSlot(int copilotSecondSlot) {
+        this.copilotSecondSlot = copilotSecondSlot;
+    }
+
     public void placeDice(Player player, int diceValue){
         if(player instanceof Pilot && pilotSlot == 0){
             pilotSlot = diceValue;
@@ -38,8 +62,8 @@ public class Radio {
         int planePosition = currentTrackPosition + findPlane;
         int lastTrack = approachTrack.getLastTrackNum();
         if(planePosition <= lastTrack){
-            if(planeTokens[findPlane] > 0){
-            planeTokens[findPlane] -= 1;
+            if(planeTokens[planePosition] > 0){
+            planeTokens[planePosition] -= 1;
             }
         }
         else {

@@ -13,13 +13,22 @@ public class LandGear {
         //check if the value used by the player match the necessary ones to activate the flap
         for (int check : switches[gearIndex]){
             if (check == value){
-                activated[gearIndex] = true;
-                pilot.removeDice(value);
-                return true;
+                if(!activated[gearIndex]){
+                    activated[gearIndex] = true;
+                    pilot.removeDice(value);
+                    return true;
+                }
+                else{
+                    System.out.println("This Land Gear is already activated.");
+                }
             }
         }
 
         return false;
+    }
+
+    public boolean isActivated(int gearIndex){
+        return activated[gearIndex];
     }
 
     public boolean allActivated(){

@@ -17,12 +17,21 @@ public class Flaps {
 
         for (int check : requiredValue[flapIndex]){
             if (check == value){
-                activated[flapIndex] = true;
-                coPilot.removeDice(value);
-                return true;
+                if(!activated[flapIndex]){
+                    activated[flapIndex] = true;
+                    coPilot.removeDice(value);
+                    return true;
+                }
+                else{
+                    System.out.println("This Flap is already activated.");
+                }
             }
         }
         return false;
+    }
+
+    public boolean isActivated(int flapIndex){
+        return activated[flapIndex];
     }
 
     public boolean allActivated(){

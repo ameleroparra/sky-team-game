@@ -39,10 +39,6 @@ public class ApproachTrack {
         this.currentPosition = currentPosition;
     }
 
-    public void setLastTrack(Boolean lastTrack) {
-        this.lastTrack = lastTrack;
-    }
-
     public void setPlaneTokens(int[] planeTokens) {
         this.planeTokens = planeTokens;
     }
@@ -79,5 +75,9 @@ public class ApproachTrack {
         if(currentPosition == 6){
             lastTrack = true;
         }
+    }
+
+    public Boolean isGameOver(){
+        return gameOver;
     }
 }

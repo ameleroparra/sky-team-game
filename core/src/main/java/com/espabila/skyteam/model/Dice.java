@@ -14,10 +14,4 @@ public class Dice {
     public int roll(){
         return value = randomNum.nextInt(6) + 1;
    }
-
-   public int getValue() {
-        return value;
-   }
-
-   // why randomNum?
 }
