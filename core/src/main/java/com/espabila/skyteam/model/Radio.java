@@ -56,21 +56,21 @@ public class Radio {
     }
 
     public void removePlaneToken(int diceValue, ApproachTrack approachTrack){
-        int findPlane = diceValue - 1;
         int[] planeTokens= approachTrack.getPlaneTokens();
         int currentTrackPosition = approachTrack.getCurrentPosition();
-        int planePosition = currentTrackPosition + findPlane;
-        int lastTrack = approachTrack.getLastTrackNum();
-        if(planePosition <= lastTrack){
+        int planePosition = currentTrackPosition + diceValue - 1;
+        int lastTrackNum = approachTrack.getLastTrackNum();
+
+        if(planePosition <= lastTrackNum){
             if(planeTokens[planePosition] > 0){
             planeTokens[planePosition] -= 1;
             }
         }
         else {
-            if(planeTokens[lastTrack] > 0){
-                planeTokens[lastTrack] -=1;
+            if(planeTokens[lastTrackNum-1] > 0){
+                planeTokens[lastTrackNum-1] -=1;
             }
         }
         approachTrack.setPlaneTokens(planeTokens);
-    }
+     }
 }

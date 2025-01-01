@@ -5,6 +5,10 @@ public class AltitudeTrack {
     private Boolean pilotTurn;
     private Boolean lastRound;
 
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+    }
+
     public AltitudeTrack(){
         this.pilotTurn = true;
         this.currentRound = 0;

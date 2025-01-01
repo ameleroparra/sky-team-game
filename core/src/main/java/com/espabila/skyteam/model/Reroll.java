@@ -12,7 +12,7 @@ public class Reroll {
         this.rerolledDices = new ArrayList<>();
     }
 
-    public Boolean getRerollAvailable() {
+    public Boolean isRerollAvailable() {
         return rerollAvailable;
     }
 

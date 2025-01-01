@@ -47,6 +47,7 @@ public class ApproachTrack {
         this.gameOver = gameOver;
     }
 
+
     public void moveForward(Engines engines) {
         int moveOneForward = currentPosition + 1;
         int moveTwoForward = currentPosition + 2;
