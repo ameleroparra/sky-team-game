@@ -2,6 +2,7 @@ package com.espabila.skyteam.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.espabila.skyteam.view.GamePlayScene;
 import com.github.czyzby.autumn.fcs.scanner.DesktopClassScanner;
 import com.github.czyzby.autumn.mvc.application.AutumnApplication;
 import com.espabila.skyteam.SkyTeam;
@@ -14,8 +15,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new AutumnApplication(new DesktopClassScanner(), SkyTeam.class),
-            getDefaultConfiguration());
+        return new Lwjgl3Application(new GamePlayScene(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
@@ -26,3 +26,4 @@ public class Lwjgl3Launcher {
         return configuration;
     }
 }
+

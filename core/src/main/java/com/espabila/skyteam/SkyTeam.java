@@ -10,7 +10,7 @@ import com.github.czyzby.lml.parser.action.ActionContainer;
 @View(id = "first", value = "ui/templates/first.lml", first = true)
 public class SkyTeam implements ActionContainer {
     /** Default application size. */
-    public static final int WIDTH = 640, HEIGHT = 480;
+    public static final int WIDTH = 1920, HEIGHT = 1080;
     /** Path to the skin files. */
     @Skin private final String skinFile = "ui/uiskin";
 
