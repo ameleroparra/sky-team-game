@@ -24,7 +24,9 @@ public class GamePlayScene implements ApplicationListener {
     private GameController gameController;
     private Texture backgroundTexture;
     private Music backgroundMusic;
-    private Sound achievementSound;
+    private Sound selectedSound;
+    private Sound placedSound;
+    private Sound movementSound;
 
     private SpriteBatch batch;
     private FitViewport viewport;
@@ -48,14 +50,16 @@ public class GamePlayScene implements ApplicationListener {
         gameController.startNewGame();
         isPilotTurn = !isPilotTurn;
 
-        backgroundTexture = new Texture("fondo.png");
+        backgroundTexture = new Texture("background.png");
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("planeAmbience.wav"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-        achievementSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
+        selectedSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
+        placedSound = Gdx.audio.newSound(Gdx.files.internal("ding.wav"));
+        movementSound = Gdx.audio.newSound(Gdx.files.internal("movement.mp3"));
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(1920, 1080);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -209,6 +213,7 @@ public class GamePlayScene implements ApplicationListener {
                 readyButton.setVisible(false);
                 readyButton.toFront();
 
+                movementSound.play(1.0f);
                 isPilotTurn =!isPilotTurn;
                 updateDiceImages();
             }
@@ -224,6 +229,7 @@ public class GamePlayScene implements ApplicationListener {
                 blurryScreen.setVisible(true);
                 readyButton.setVisible(true);
                 readyButton.toFront();
+                movementSound.play(1.0f);
             }
         });
         table.add(endTurnButton).bottom().width(200).height(50).padTop(950);
@@ -252,7 +258,7 @@ public class GamePlayScene implements ApplicationListener {
     private void diceSelected(int diceIndex) {
         if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
-            achievementSound.play(1.0f);
+            selectedSound.play(1.0f);
 
         }
     }
@@ -268,6 +274,7 @@ public class GamePlayScene implements ApplicationListener {
                 gameController.getCoPilot().removeDice(selectedDiceValue);
             }
 
+            placedSound.play(1.0f);
             updateDiceImages();
             selectedDiceValue = 0;
         }
@@ -281,7 +288,8 @@ public class GamePlayScene implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
 
     }
 
@@ -303,11 +311,29 @@ public class GamePlayScene implements ApplicationListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Calculate the scaling factors
+        float scaleX = viewport.getWorldWidth() / backgroundTexture.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundTexture.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        // Calculate the dimensions to maintain aspect ratio
+        float width = backgroundTexture.getWidth() * scale;
+        float height = backgroundTexture.getHeight() * scale;
+
+        // Calculate position to center the background
+        float x = (viewport.getWorldWidth() - width) / 2;
+        float y = (viewport.getWorldHeight() - height) / 2;
+
+        // Draw the background
+        batch.draw(backgroundTexture, x, y, width, height);
+
         batch.end();
 
+        stage.getViewport().apply();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -318,7 +344,7 @@ public class GamePlayScene implements ApplicationListener {
         batch.dispose();
         backgroundTexture.dispose();
         backgroundMusic.dispose();
-        achievementSound.dispose();
+        selectedSound.dispose();
         stage.dispose();
 
         for (Texture texture : diceTextures) {
