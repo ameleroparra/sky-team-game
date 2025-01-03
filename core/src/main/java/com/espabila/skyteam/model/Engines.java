@@ -13,7 +13,7 @@ public class Engines {
     public Engines(){
         this.pilotMarker = 4.5;
         this.copilotMarker = 8.5;
-        this.finalPilotMarker = 6.5;
+        this.finalPilotMarker = 7.5;
         this.finalCopilotMarker = 12.5;
         this.approachTrackMove = 0;
         this.pilotSlot = 0;

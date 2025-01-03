@@ -9,13 +9,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.espabila.skyteam.controller.GameController;
-import com.espabila.skyteam.model.CoPilot;
-import com.espabila.skyteam.model.Pilot;
-import com.espabila.skyteam.model.Player;
 
 import java.util.List;
 
@@ -40,42 +40,6 @@ public class GamePlayScene implements ApplicationListener {
     private Texture[] diceTextures;
     private Image[] diceImages;
     private static final int diceAmount = 4;
-
-    // Radio slots
-    private Image pilotRadioSlot;
-    private Image firstCoPilotRadioSlot;
-    private Image secondCoPilotRadioSlot;
-
-    // Brakes slots
-    private Image firstBrakesSlot;
-    private Image secondBrakesSlot;
-    private Image thirdBrakesSlot;
-
-    // Coffee slots
-    private Image firstCoffeeSlot;
-    private Image secondCoffeeSlot;
-    private Image thirdCoffeeSlot;
-
-    // Engine slots
-    private Image pilotEngineSlot;
-    private Image copilotEngineSlot;
-
-    // Axis slots
-    private Image pilotAxisSlot;
-    private Image copilotAxisSlot;
-
-    // Landing gear slots
-    private Image firstLandGearSlot;
-    private Image secondLandGearSlot;
-    private Image thirdLandGearSlot;
-
-    // Flaps slot
-    private Image firstFlapsSlot;
-    private Image secondFlapsSlot;
-    private Image thirdFlapsSlot;
-    private Image fourthFlapsSlot;
-
-    private Texture emptySlotTexture;
 
     private boolean isPilotTurn = false;
 
@@ -128,9 +92,10 @@ public class GamePlayScene implements ApplicationListener {
 
         updateDiceImages();
 
-        emptySlotTexture = new Texture("noNumber.jpg");
+
         // pilot radio slot creation
-        pilotRadioSlot = new Image(emptySlotTexture);
+        Texture pilotRadioTexture = new Texture("noNumber.jpg");
+        Image pilotRadioSlot = new Image(pilotRadioTexture);
         pilotRadioSlot.setPosition(295,960);
         pilotRadioSlot.setSize(100,100);
 
@@ -145,73 +110,89 @@ public class GamePlayScene implements ApplicationListener {
 
 
         // copilot radio slot creation
-        firstCoPilotRadioSlot = new Image(emptySlotTexture);
+        Texture firstCoPilotRadioTexture = new Texture("noNumber.jpg");
+        Image firstCoPilotRadioSlot = new Image(firstCoPilotRadioTexture);
         firstCoPilotRadioSlot.setPosition(1490,960);
         firstCoPilotRadioSlot.setSize(100,100);
         stage.addActor(firstCoPilotRadioSlot);
 
-        secondCoPilotRadioSlot = new Image(emptySlotTexture);
+        Texture secondCoPilotRadioTexture = new Texture("noNumber.jpg");
+        Image secondCoPilotRadioSlot = new Image(secondCoPilotRadioTexture);
         secondCoPilotRadioSlot.setPosition(1618,960);
         secondCoPilotRadioSlot.setSize(100,100);
         stage.addActor(secondCoPilotRadioSlot);
 
 
         // Brakes slot creation
-        firstBrakesSlot = new Image(emptySlotTexture);
+        Texture firstBrakesTexture = new Texture("noNumber.jpg");
+        Image firstBrakesSlot = new Image(firstBrakesTexture);
         firstBrakesSlot.setPosition(110,525);
         firstBrakesSlot.setSize(100,100);
         stage.addActor(firstBrakesSlot);
 
-        secondBrakesSlot = new Image(emptySlotTexture);
+        Texture secondBrakesTexture = new Texture("noNumber.jpg");
+        Image secondBrakesSlot = new Image(secondBrakesTexture);
         secondBrakesSlot.setPosition(260,525);
         secondBrakesSlot.setSize(100,100);
         stage.addActor(secondBrakesSlot);
 
-        thirdBrakesSlot = new Image(emptySlotTexture);
+        Texture thirdBrakesTexture = new Texture("noNumber.jpg");
+        Image thirdBrakesSlot = new Image(thirdBrakesTexture);
         thirdBrakesSlot.setPosition(408,525);
         thirdBrakesSlot.setSize(100,100);
         stage.addActor(thirdBrakesSlot);
 
 
         //coffee slots
-        firstCoffeeSlot = new Image(emptySlotTexture);
+        Texture firstCoffeeTexture = new Texture("noNumber.jpg");
+        Image firstCoffeeSlot = new Image(firstCoffeeTexture);
         firstCoffeeSlot.setPosition(1417,525);
         firstCoffeeSlot.setSize(100,100);
         stage.addActor(firstCoffeeSlot);
 
-        secondCoffeeSlot = new Image(emptySlotTexture);
+        Texture secondCoffeeTexture = new Texture("noNumber.jpg");
+        Image secondCoffeeSlot = new Image(secondCoffeeTexture);
         secondCoffeeSlot.setPosition(1565,525);
         secondCoffeeSlot.setSize(100,100);
         stage.addActor(secondCoffeeSlot);
 
-        thirdCoffeeSlot = new Image(emptySlotTexture);
+        Texture thirdCoffeeTexture = new Texture("noNumber.jpg");
+        Image thirdCoffeeSlot = new Image(thirdCoffeeTexture);
         thirdCoffeeSlot.setPosition(1715,525);
         thirdCoffeeSlot.setSize(100,100);
         stage.addActor(thirdCoffeeSlot);
 
 
         //Engine slot creation
-        pilotEngineSlot = new Image(emptySlotTexture);
+        Texture pilotEngineTexture = new Texture("noNumber.jpg");
+        Image pilotEngineSlot = new Image(pilotEngineTexture);
         pilotEngineSlot.setPosition(622,390);
         pilotEngineSlot.setSize(100,100);
         stage.addActor(pilotEngineSlot);
 
-        copilotEngineSlot = new Image(emptySlotTexture);
+        Texture copilotEngineTexture = new Texture("noNumber.jpg");
+        Image copilotEngineSlot = new Image(copilotEngineTexture);
         copilotEngineSlot.setPosition(1187,390);
         copilotEngineSlot.setSize(100,100);
         stage.addActor(copilotEngineSlot);
 
 
         // Axis slots creation
-        pilotAxisSlot = new Image(emptySlotTexture);
+        Texture pilotAxisTexture = new Texture("noNumber.jpg");
+        Image pilotAxisSlot = new Image(pilotAxisTexture);
         pilotAxisSlot.setPosition(768,225);
         pilotAxisSlot.setSize(100,100);
         stage.addActor(pilotAxisSlot);
 
-        copilotAxisSlot = new Image(emptySlotTexture);
+        Texture copilotAxisTexture = new Texture("noNumber.jpg");
+        Image copilotAxisSlot = new Image(copilotAxisTexture);
         copilotAxisSlot.setPosition(1065,228);
         copilotAxisSlot.setSize(100,100);
         stage.addActor(copilotAxisSlot);
+
+
+
+
 
         // table creation
         Table table = new Table();
@@ -233,7 +214,7 @@ public class GamePlayScene implements ApplicationListener {
                 readyButton.toFront();
 
                 movementSound.play(1.0f);
-                gameController.switchTurn();
+                isPilotTurn =!isPilotTurn;
                 updateDiceImages();
             }
         });
@@ -253,11 +234,13 @@ public class GamePlayScene implements ApplicationListener {
         });
         table.add(endTurnButton).bottom().width(200).height(50).padTop(950);
 
+
+
     }
 
 
     private void updateDiceImages() {
-        List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
+        List<Integer> currentPlayerDice = isPilotTurn ? gameController.getPilot().getDiceList() : gameController.getCoPilot().getDiceList();
         diceValues = new int[diceAmount];
 
         for (int i = 0; i < diceAmount; i++) {
@@ -276,88 +259,32 @@ public class GamePlayScene implements ApplicationListener {
         if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
+
         }
     }
+
 
     private void placeDice(Image slot) {
         if (selectedDiceValue != 0) {
-            try {
-                // Determine which component the dice is being placed on
-                if (slot == pilotAxisSlot || slot == copilotAxisSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        gameController.placeDiceOnAxis(selectedDiceValue);
-                    }
+            slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
 
-                } else if (slot == firstCoffeeSlot || slot == secondCoffeeSlot || slot == thirdCoffeeSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        int slotNumber = slot == firstCoffeeSlot ? 1 : (slot == secondCoffeeSlot ? 2 : 3);
-                        gameController.placeDiceOnConcentration(selectedDiceValue, slotNumber);
-                    }
-
-                } else if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
-                    gameController.placeDiceOnEngines(selectedDiceValue);
-
-                } else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        gameController.placeDiceOnRadio(selectedDiceValue);
-                    }
-                    else{
-                        showErrorMessage("This is Pilot's slots.");
-                    }
-
-                } else if (slot == firstLandGearSlot || slot == secondLandGearSlot || slot == thirdLandGearSlot) {
-                    int gearIndex = slot == firstLandGearSlot ? 0 : (slot == secondLandGearSlot ? 1 : 2);
-                    gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
-
-                } else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
-                    int brakeIndex = slot == firstBrakesSlot ? 0 : (slot == secondBrakesSlot ? 1 : 2);
-                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
-
-                } else if (slot == firstFlapsSlot || slot == secondFlapsSlot || slot == thirdFlapsSlot || slot == fourthFlapsSlot) {
-                    int flapIndex = slot == firstFlapsSlot ? 0 : (slot == secondFlapsSlot ? 1 : (slot == thirdFlapsSlot ? 2 : 3));
-                    gameController.placeDiceOnFlaps(selectedDiceValue, flapIndex);
-
-                } else {
-                    throw new IllegalArgumentException("Invalid slot selected");
-                }
-
-                slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
-                placedSound.play(1.0f);
-                updateDiceImages();
-                selectedDiceValue = 0;
-//                    checkEndTurn();
-
-                if (gameController.isGameOver()) {
-                    showGameOverDialog();
-                }
-            } catch (Exception e) {
-                showErrorMessage("Invalid placement: " + e.getMessage());
+            if (isPilotTurn) {
+                gameController.getPilot().removeDice(selectedDiceValue);
+            } else {
+                gameController.getCoPilot().removeDice(selectedDiceValue);
             }
+
+            placedSound.play(1.0f);
+            updateDiceImages();
+            selectedDiceValue = 0;
         }
     }
 
-    private boolean isCorrectPlayerSlot(Image slot) {
-        Player currentPlayer = gameController.getCurrentPlayer();
-        if (currentPlayer instanceof Pilot) {
-            return slot == pilotAxisSlot || slot == pilotRadioSlot || slot == pilotEngineSlot;
-        } else if (currentPlayer instanceof CoPilot) {
-            return slot == copilotAxisSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot || slot == copilotEngineSlot;
-        }
-        else {
-            System.out.println("Warning: Unknown player type: " + currentPlayer.getClass().getSimpleName());
-            return false;
-        }
-    }
 
-    public void showErrorMessage(String errorMessage) {
-        Dialog dialog = new Dialog("Error", skin);
-        dialog.text(errorMessage);
-        dialog.button("OK");
-        dialog.show(stage);
-    }
 
-    private void showGameOverDialog() {
-    }
+
+
+
 
     @Override
     public void resize(int width, int height) {
