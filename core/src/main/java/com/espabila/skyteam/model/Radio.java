@@ -57,6 +57,11 @@ public class Radio {
         }
     }
 
+    public void placeDicePilotSlotOne(Pilot pilot, int diceValue){
+        pilotSlot = diceValue;
+        pilot.removeDice(diceValue);
+    }
+
     public void removePlaneToken(int diceValue, ApproachTrack approachTrack){
         int[] planeTokens= approachTrack.getPlaneTokens();
         int currentTrackPosition = approachTrack.getCurrentPosition();
