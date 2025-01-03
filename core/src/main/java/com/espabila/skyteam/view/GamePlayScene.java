@@ -2,6 +2,7 @@ package com.espabila.skyteam.view;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
@@ -20,7 +22,7 @@ import com.espabila.skyteam.model.Player;
 import java.util.List;
 
 
-public class GamePlayScene implements ApplicationListener {
+public class GamePlayScene implements Screen {
     private GameController gameController;
     private Texture backgroundTexture;
     private Music backgroundMusic;
@@ -79,9 +81,26 @@ public class GamePlayScene implements ApplicationListener {
 
     private boolean isPilotTurn = false;
 
+    private final SkyTeamGame game;
+
+    public GamePlayScene(SkyTeamGame game, GameController gameController) {
+        this.game = game;
+        this.gameController = gameController;
+
+        // Initialize components
+
+        stage = new Stage(new FitViewport(SkyTeamGame.WIDTH, SkyTeamGame.HEIGHT));
+        Gdx.input.setInputProcessor(stage);
+
+        // Initialize skin
+        skin = new Skin(Gdx.files.internal("uiskin.json")); // Make sure this file exists in your assets folder
+
+        // Initialize your UI components here
+    }
+
 
     @Override
-    public void create() {
+    public void show() {
         gameController = new GameController();
         gameController.startNewGame();
         isPilotTurn = !isPilotTurn;
@@ -297,7 +316,11 @@ public class GamePlayScene implements ApplicationListener {
                 } else if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
                     gameController.placeDiceOnEngines(selectedDiceValue);
 
-                } else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
+                } else if (slot == pilotRadioSlot){
+                    gameController.placeDiceOnPilotSlot(selectedDiceValue);
+
+                }
+                else if (slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
                     if (isCorrectPlayerSlot(slot)) {
                         gameController.placeDiceOnRadio(selectedDiceValue);
                     }
@@ -350,6 +373,10 @@ public class GamePlayScene implements ApplicationListener {
     }
 
     public void showErrorMessage(String errorMessage) {
+        if (skin == null) {
+            System.err.println("Error: Skin is not initialized. Error message: " + errorMessage);
+            return;
+        }
         Dialog dialog = new Dialog("Error", skin);
         dialog.text(errorMessage);
         dialog.button("OK");
@@ -363,7 +390,6 @@ public class GamePlayScene implements ApplicationListener {
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
-
     }
 
 
@@ -380,7 +406,7 @@ public class GamePlayScene implements ApplicationListener {
 
 
     @Override
-    public void render() {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -409,6 +435,12 @@ public class GamePlayScene implements ApplicationListener {
         stage.getViewport().apply();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+    }
+
+    @Override
+    public void hide() {
+        // This method is called when this screen is no longer the current screen for a Game.
+        dispose();
     }
 
 

@@ -57,7 +57,7 @@ public class Radio {
         }
     }
 
-    public void placeDicePilotSlotOne(Pilot pilot, int diceValue){
+    public void placeDicePilotSlot(Pilot pilot, int diceValue){
         pilotSlot = diceValue;
         pilot.removeDice(diceValue);
     }

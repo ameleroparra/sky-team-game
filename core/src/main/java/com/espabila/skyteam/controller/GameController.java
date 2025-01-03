@@ -190,6 +190,15 @@ public class GameController {
     public void placeDiceOnRadio(int diceValue) {
         radio.placeDice(currentPlayer, diceValue);
     }
+
+    public void placeDiceOnPilotSlot(int diceValue) {
+        if (currentPlayer instanceof Pilot) {
+            radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
+        }
+        else{
+            gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
+        }
+    }
     public void placeDiceOnBrakes(int diceValue, int brakeSlot) {
         if (currentPlayer instanceof Pilot) {
             brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
