@@ -1,6 +1,5 @@
 package com.espabila.skyteam.view;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
@@ -23,7 +23,7 @@ import java.util.List;
 
 
 public class GamePlayScene implements Screen {
-    private GameController gameController;
+    private final GameController gameController;
     private Texture backgroundTexture;
     private Music backgroundMusic;
     private Sound selectedSound;
@@ -95,13 +95,13 @@ public class GamePlayScene implements Screen {
         // Initialize skin
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Make sure this file exists in your assets folder
 
+        gameController.setGamePlayScene(this);
         // Initialize your UI components here
     }
 
 
     @Override
     public void show() {
-        gameController = new GameController();
         gameController.startNewGame();
         isPilotTurn = !isPilotTurn;
 
@@ -256,6 +256,7 @@ public class GamePlayScene implements Screen {
                 updateDiceImages();
             }
         });
+
         readyButton.setSize(200, 50);
         readyButton.setVisible(false);
         stage.addActor(readyButton);
@@ -301,6 +302,14 @@ public class GamePlayScene implements Screen {
     private void placeDice(Image slot) {
         if (selectedDiceValue != 0) {
             try {
+                boolean placementSuccessful = false;
+
+                if (!(slot.getDrawable() instanceof TextureRegionDrawable) ||
+                    ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != emptySlotTexture) {
+                    showErrorMessage("This slot is already occupied.");
+                    return;
+                }
+
                 // Determine which component the dice is being placed on
                 if (slot == pilotAxisSlot || slot == copilotAxisSlot) {
                     if (isCorrectPlayerSlot(slot)) {
@@ -317,7 +326,8 @@ public class GamePlayScene implements Screen {
                     gameController.placeDiceOnEngines(selectedDiceValue);
 
                 } else if (slot == pilotRadioSlot){
-                    gameController.placeDiceOnPilotSlot(selectedDiceValue);
+                    gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
+                    placementSuccessful = true;
 
                 }
                 else if (slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
@@ -344,14 +354,15 @@ public class GamePlayScene implements Screen {
                     throw new IllegalArgumentException("Invalid slot selected");
                 }
 
-                slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
-                placedSound.play(1.0f);
-                updateDiceImages();
-                selectedDiceValue = 0;
-//                    checkEndTurn();
+                if (placementSuccessful) {
+                    slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
+                    placedSound.play(1.0f);
+                    updateDiceImages();
+                    selectedDiceValue = 0;
 
-                if (gameController.isGameOver()) {
-                    showGameOverDialog();
+                    if (gameController.isGameOver()) {
+                        showGameOverDialog();
+                    }
                 }
             } catch (Exception e) {
                 showErrorMessage("Invalid placement: " + e.getMessage());
@@ -373,10 +384,6 @@ public class GamePlayScene implements Screen {
     }
 
     public void showErrorMessage(String errorMessage) {
-        if (skin == null) {
-            System.err.println("Error: Skin is not initialized. Error message: " + errorMessage);
-            return;
-        }
         Dialog dialog = new Dialog("Error", skin);
         dialog.text(errorMessage);
         dialog.button("OK");

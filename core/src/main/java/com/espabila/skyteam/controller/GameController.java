@@ -133,6 +133,7 @@ public class GameController {
         landGear = new LandGear();
         flaps = new Flaps();
         approachTrack = new ApproachTrack();
+        gamePlayScene = null;
         gameOver = false;
     }
 
@@ -191,12 +192,12 @@ public class GameController {
         radio.placeDice(currentPlayer, diceValue);
     }
 
-    public void placeDiceOnPilotSlot(int diceValue) {
+    public void placeDiceOnPilotRadioSlot(int diceValue) {
         if (currentPlayer instanceof Pilot) {
             radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
         }
         else{
-            gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
+            showErrorMessage("Only the Pilot can place dice on the Radio.");
         }
     }
     public void placeDiceOnBrakes(int diceValue, int brakeSlot) {
@@ -245,6 +246,14 @@ public class GameController {
         }
         else {
             gameOver = true;
+        }
+    }
+
+    private void showErrorMessage(String message) {
+        if (gamePlayScene != null) {
+            gamePlayScene.showErrorMessage(message);
+        } else {
+            System.err.println("Error: " + message);
         }
     }
 
