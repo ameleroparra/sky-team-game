@@ -2,6 +2,7 @@ package com.espabila.skyteam;
 
 import com.badlogic.gdx.Game;
 import com.espabila.skyteam.controller.GameController;
+import com.espabila.skyteam.view.MenuScene;
 import com.espabila.skyteam.view.GamePlayScene;
 
 public class SkyTeamGame extends Game {
@@ -13,7 +14,7 @@ public class SkyTeamGame extends Game {
     @Override
     public void create() {
         gameController = new GameController();
-        setScreen(new GamePlayScene(this, gameController));
+        setScreen(new MenuScene(this, gameController));
     }
 
     @Override

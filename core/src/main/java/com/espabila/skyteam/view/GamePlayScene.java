@@ -256,6 +256,7 @@ public class GamePlayScene implements Screen {
                 updateDiceImages();
             }
         });
+
         readyButton.setSize(200, 50);
         readyButton.setVisible(false);
         stage.addActor(readyButton);
