@@ -37,10 +37,12 @@ public class Radio {
 
     public void placeDice(Player player, int diceValue){
         if(player instanceof Pilot && pilotSlot == 0){
+            System.out.println("Pilot placed Dice");
             pilotSlot = diceValue;
             player.removeDice(diceValue);
         }
         else if(player instanceof CoPilot){
+            System.out.println("Copilot placed a dice");
             if(copilotFirstSlot == 0){
                 copilotFirstSlot = diceValue;
                 player.removeDice(diceValue);
@@ -72,5 +74,11 @@ public class Radio {
             }
         }
         approachTrack.setPlaneTokens(planeTokens);
-     }
+    }
+
+    public void resetSlots(){
+        pilotSlot = 0;
+        copilotFirstSlot = 0;
+        copilotSecondSlot = 0;
+    }
 }

@@ -31,6 +31,7 @@ public class GamePlayScene implements ApplicationListener {
     private SpriteBatch batch;
     private FitViewport viewport;
     private Stage stage;
+    Skin skin;
 
     private int[] diceValues;
     private int selectedDiceValue = 0;
@@ -79,7 +80,7 @@ public class GamePlayScene implements ApplicationListener {
             diceImages[i].setSize(100, 100);
             diceImages[i].setPosition(719 + i * (100 + 28), 960);
 
-            diceImages[i].addListener(new ClickListener() { //make dices clickable
+            diceImages[i].addListener(new ClickListener() { //make images clickable
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     diceSelected(index);
@@ -88,43 +89,8 @@ public class GamePlayScene implements ApplicationListener {
             stage.addActor(diceImages[i]);
 
         }
+
         updateDiceImages();
-
-
-        //Engine slot creation
-        Texture pilotEngineTexture = new Texture("noNumber.jpg");
-        Image pilotEngineSlot = new Image(pilotEngineTexture);
-        pilotEngineSlot.setPosition(622,390);
-        pilotEngineSlot.setSize(100,100);
-        stage.addActor(pilotEngineSlot);
-
-        Texture copilotEngineTexture = new Texture("noNumber.jpg");
-        Image copilotEngineSlot = new Image(copilotEngineTexture);
-        copilotEngineSlot.setPosition(1187,390);
-        copilotEngineSlot.setSize(100,100);
-        stage.addActor(copilotEngineSlot);
-
-
-
-
-
-
-        // Axis slots creation
-        Texture pilotAxisTexture = new Texture("noNumber.jpg");
-        Image pilotAxisSlot = new Image(pilotAxisTexture);
-        pilotAxisSlot.setPosition(768,225);
-        pilotAxisSlot.setSize(100,100);
-        stage.addActor(pilotAxisSlot);
-
-        Texture copilotAxisTexture = new Texture("noNumber.jpg");
-        Image copilotAxisSlot = new Image(copilotAxisTexture);
-        copilotAxisSlot.setPosition(1065,228);
-        copilotAxisSlot.setSize(100,100);
-        stage.addActor(copilotAxisSlot);
-
-
-
-
 
 
         // pilot radio slot creation
@@ -132,6 +98,7 @@ public class GamePlayScene implements ApplicationListener {
         Image pilotRadioSlot = new Image(pilotRadioTexture);
         pilotRadioSlot.setPosition(295,960);
         pilotRadioSlot.setSize(100,100);
+
 
         pilotRadioSlot.addListener(new ClickListener() {
             @Override
@@ -194,6 +161,34 @@ public class GamePlayScene implements ApplicationListener {
         thirdCoffeeSlot.setPosition(1715,525);
         thirdCoffeeSlot.setSize(100,100);
         stage.addActor(thirdCoffeeSlot);
+
+
+        //Engine slot creation
+        Texture pilotEngineTexture = new Texture("noNumber.jpg");
+        Image pilotEngineSlot = new Image(pilotEngineTexture);
+        pilotEngineSlot.setPosition(622,390);
+        pilotEngineSlot.setSize(100,100);
+        stage.addActor(pilotEngineSlot);
+
+        Texture copilotEngineTexture = new Texture("noNumber.jpg");
+        Image copilotEngineSlot = new Image(copilotEngineTexture);
+        copilotEngineSlot.setPosition(1187,390);
+        copilotEngineSlot.setSize(100,100);
+        stage.addActor(copilotEngineSlot);
+
+
+        // Axis slots creation
+        Texture pilotAxisTexture = new Texture("noNumber.jpg");
+        Image pilotAxisSlot = new Image(pilotAxisTexture);
+        pilotAxisSlot.setPosition(768,225);
+        pilotAxisSlot.setSize(100,100);
+        stage.addActor(pilotAxisSlot);
+
+        Texture copilotAxisTexture = new Texture("noNumber.jpg");
+        Image copilotAxisSlot = new Image(copilotAxisTexture);
+        copilotAxisSlot.setPosition(1065,228);
+        copilotAxisSlot.setSize(100,100);
+        stage.addActor(copilotAxisSlot);
 
 
 

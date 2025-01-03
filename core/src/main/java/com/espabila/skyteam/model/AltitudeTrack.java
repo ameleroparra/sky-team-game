@@ -20,6 +20,7 @@ public class AltitudeTrack {
             currentRound += 1;
             pilotTurn = !pilotTurn;
         }
+        checkLastRound();
     }
 
     public void checkLastRound(){
@@ -45,5 +46,11 @@ public class AltitudeTrack {
 
     public Boolean isLastRound() {
         return lastRound;
+    }
+
+    public void resetAltitudeTrack(){
+        this.pilotTurn = true;
+        this.currentRound = 0;
+        this.lastRound = false;
     }
 }

@@ -40,6 +40,12 @@ public class LandGear {
         return true;
     }
 
+    public void resetLandGear(){
+        for (int i = 0; i < 3; i++){
+            activated[i] = false;
+        }
+    }
+
 
 
 }

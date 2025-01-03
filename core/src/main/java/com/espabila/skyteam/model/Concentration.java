@@ -116,4 +116,12 @@ public class Concentration {
             System.out.println("Cannot add and substract the value at the same time. Choose either adding 1 or substracting 1");
         }
     }
+
+    public void resetConcentration(){
+        coffeeOnSlotOne = false;
+        coffeeOnSlotTwo = false;
+        coffeeOnSlotThree = false;
+        plusOne = false;
+        minusOne = false;
+    }
 }

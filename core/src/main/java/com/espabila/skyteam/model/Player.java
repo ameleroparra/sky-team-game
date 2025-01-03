@@ -30,6 +30,10 @@ public abstract class Player {
         diceList.remove((Integer) value);
     }
 
+    public void resetDiceList(){
+        diceList.clear();
+    }
+
 
 
 }
