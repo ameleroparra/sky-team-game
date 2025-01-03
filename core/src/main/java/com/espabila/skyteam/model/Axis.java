@@ -96,4 +96,6 @@ public class Axis {
          pilotSlot = 0;
          copilotSlot = 0;
      }
+
+
 }

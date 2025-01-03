@@ -106,5 +106,13 @@ public class Engines {
         }
     }
 
+    public void resetEngines(){
+        this.pilotMarker = 4.5;
+        this.copilotMarker = 8.5;
+        this.pilotSlot = 0;
+        this.copilotSlot = 0;
+        this.approachTrackMove = 0;
+    }
+
 
 }

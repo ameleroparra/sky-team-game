@@ -43,5 +43,11 @@ public class Flaps {
         return true;
     }
 
+    public void resetFlaps(){
+        for(int i = 0; i < activated.length; i++){
+            activated[i] = false;
+        }
+    }
+
 
 }

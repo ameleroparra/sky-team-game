@@ -18,7 +18,12 @@ public class Brakes {
             pilot.removeDice(diceValue);
             return true;
         }
-
         return false;
+    }
+
+    public void resetBrakes(){
+        for (int i = 0; i < activated.length; i++){
+            activated[i] = false;
+        }
     }
 }

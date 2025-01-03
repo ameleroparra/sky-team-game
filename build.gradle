@@ -1,4 +1,6 @@
+
 buildscript {
+
   repositories {
     mavenCentral()
     maven { url 'https://s01.oss.sonatype.org' }
@@ -9,9 +11,8 @@ buildscript {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-
-
   }
+
 }
 
 allprojects {
@@ -29,7 +30,8 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
-  sourceCompatibility = 8
+  sourceCompatibility = 11
+  targetCompatibility = 11
 
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
@@ -57,6 +59,11 @@ configure(subprojects) {
 }
 
 subprojects {
+
+  dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+  }
+
   version = '$projectVersion'
   ext.appName = 'SkyTeam'
   repositories {
