@@ -3,6 +3,8 @@ package com.espabila.skyteam.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,7 +19,9 @@ public class MenuScene implements Screen {
     private Stage stage;
     private Skin skin;
     private final SkyTeamGame game;
+    private Texture background;
     private final GameController gameController;
+    private SpriteBatch batch;
 
     public MenuScene(SkyTeamGame game, GameController gameController) {
         this.game = game;
@@ -28,6 +32,8 @@ public class MenuScene implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
+        background = new Texture("menuLogo.png");
+        batch = new SpriteBatch();
 
         Table table = new Table();
         table.setFillParent(true);
@@ -65,6 +71,9 @@ public class MenuScene implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 

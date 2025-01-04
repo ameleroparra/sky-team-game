@@ -88,7 +88,6 @@ public class GamePlayScene implements Screen {
         this.gameController = gameController;
 
         // Initialize components
-
         stage = new Stage(new FitViewport(SkyTeamGame.WIDTH, SkyTeamGame.HEIGHT));
         Gdx.input.setInputProcessor(stage);
 
@@ -148,6 +147,8 @@ public class GamePlayScene implements Screen {
         updateDiceImages();
 
         emptySlotTexture = new Texture("noNumber.jpg");
+
+
         // pilot radio slot creation
         pilotRadioSlot = new Image(emptySlotTexture);
         pilotRadioSlot.setPosition(295,960);
