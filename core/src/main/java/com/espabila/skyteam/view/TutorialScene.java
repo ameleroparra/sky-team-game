@@ -27,7 +27,8 @@ public class TutorialScene implements Screen {
     private Table table;
 
 
-    private Texture tutorialTexture;
+    private Texture[] tutorialTexture;
+    private int currentIndex = 0;
     private Image tutorialImage;
 
     public TutorialScene(SkyTeamGame game) {
@@ -47,8 +48,11 @@ public class TutorialScene implements Screen {
         stage.addActor(table);
 
         // Tutorial Images
-        tutorialTexture = new Texture("background.png");
-        tutorialImage = new Image(tutorialTexture);
+        tutorialTexture = new Texture[2];
+        tutorialTexture[0] = new Texture("tutorialRadio.png");
+        tutorialTexture[1] = new Texture("tutorialMarkers.png");
+        tutorialImage = new Image(tutorialTexture[currentIndex]);
+
         table.add(tutorialImage).colspan(3).center().width(1600).height(900).padBottom(20);
         table.row();
 
@@ -60,6 +64,24 @@ public class TutorialScene implements Screen {
         table.add(backButton).left().width(100).height(50).pad(25);
         table.add(closeButton).center().width(100).height(50).pad(25);
         table.add(nextButton).right().width(100).height(50).pad(25);
+
+        nextButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndex < tutorialTexture.length - 1) {
+                    currentIndex = (currentIndex + 1);
+                    tutorialImage.setDrawable(new Image(tutorialTexture[currentIndex]).getDrawable());
+                }
+            }
+        });
+
+        backButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndex > 0) {
+                    currentIndex = (currentIndex - 1);
+                    tutorialImage.setDrawable(new Image(tutorialTexture[currentIndex]).getDrawable());
+                }
+            }
+        });
 
         closeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -94,7 +116,9 @@ public class TutorialScene implements Screen {
         skin.dispose();
         batch.dispose();
         background.dispose();
-        tutorialTexture.dispose();
+        for (Texture texture : tutorialTexture) {
+            texture.dispose();
+        }
 
     }
 }
