@@ -3,7 +3,6 @@ package com.espabila.skyteam.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.espabila.skyteam.SkyTeamGame;
-import com.espabila.skyteam.view.GamePlayScene;
 import com.github.czyzby.autumn.fcs.scanner.DesktopClassScanner;
 import com.github.czyzby.autumn.mvc.application.AutumnApplication;
 import com.espabila.skyteam.SkyTeam;

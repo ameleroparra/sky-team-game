@@ -21,7 +21,6 @@ public class TutorialScene implements Screen {
     private final SkyTeamGame game;
     private Skin skin;
     private Stage stage;
-
     private Texture background;
     private SpriteBatch batch;
     private Table table;
@@ -56,7 +55,7 @@ public class TutorialScene implements Screen {
         table.add(tutorialImage).colspan(3).center().width(1600).height(900).padBottom(20);
         table.row();
 
-// Buttons for table
+        // Buttons for table
         TextButton backButton = new TextButton("Back", skin);
         TextButton closeButton = new TextButton("Close", skin);
         TextButton nextButton = new TextButton("Next", skin);
