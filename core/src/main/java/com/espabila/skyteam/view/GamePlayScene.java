@@ -77,7 +77,23 @@ public class GamePlayScene implements Screen {
     private Image thirdFlapsSlot;
     private Image fourthFlapsSlot;
 
+    // Altitude Tracks slot
+    private Texture[] altitudeTextures;
+    private Image altitudeTrackSlot;
+
+    // Approach Tracks slots
+    private Texture[] approachTextures;
+    private Image[] approachTrackSlots;
+    private static final int approachTrackAmount = 7;
+
+    // Reroll slots
+    private Texture rerollTexture;
+    private Image rerollSlot;
+
+    // empty slots
     private Texture emptySlotTexture;
+    private Texture noRerollTexture;
+
 
     private boolean isPilotTurn = false;
 
@@ -126,8 +142,8 @@ public class GamePlayScene implements Screen {
         for (int i = 1; i <= 6; i++) {
             diceTextures[i] = new Texture("number" + i + ".jpg"); // generate number textures
         }
-        diceImages = new Image[diceAmount];
 
+        diceImages = new Image[diceAmount];
         for (int i = 0; i < diceAmount; i++) {
             final int index = i;
             diceImages[i] = new Image(diceTextures[0]);
@@ -209,6 +225,42 @@ public class GamePlayScene implements Screen {
         thirdCoffeeSlot.setSize(100,100);
         stage.addActor(thirdCoffeeSlot);
 
+        // Landing gear slot creation
+        firstLandGearSlot = new Image(emptySlotTexture);
+        firstLandGearSlot.setPosition(295,279);
+        firstLandGearSlot.setSize(100,100);
+        stage.addActor(firstLandGearSlot);
+
+        secondLandGearSlot = new Image(emptySlotTexture);
+        secondLandGearSlot.setPosition(153,180);
+        secondLandGearSlot.setSize(100,100);
+        stage.addActor(secondLandGearSlot);
+
+        thirdLandGearSlot = new Image(emptySlotTexture);
+        thirdLandGearSlot.setPosition(10,110);
+        thirdLandGearSlot.setSize(100,100);
+        stage.addActor(thirdLandGearSlot);
+
+        // Flaps slot creation
+        firstFlapsSlot = new Image(emptySlotTexture);
+        firstFlapsSlot.setPosition(1381,359);
+        firstFlapsSlot.setSize(100,100);
+        stage.addActor(firstFlapsSlot);
+
+        secondFlapsSlot = new Image(emptySlotTexture);
+        secondFlapsSlot.setPosition(1523,279);
+        secondFlapsSlot.setSize(100,100);
+        stage.addActor(secondFlapsSlot);
+
+        thirdFlapsSlot = new Image(emptySlotTexture);
+        thirdFlapsSlot.setPosition(1665,181);
+        thirdFlapsSlot.setSize(100,100);
+        stage.addActor(thirdFlapsSlot);
+
+        fourthFlapsSlot = new Image(emptySlotTexture);
+        fourthFlapsSlot.setPosition(1808,110);
+        fourthFlapsSlot.setSize(100,100);
+        stage.addActor(fourthFlapsSlot);
 
         //Engine slot creation
         pilotEngineSlot = new Image(emptySlotTexture);
@@ -232,6 +284,37 @@ public class GamePlayScene implements Screen {
         copilotAxisSlot.setPosition(1065,228);
         copilotAxisSlot.setSize(100,100);
         stage.addActor(copilotAxisSlot);
+
+        // Altitude track slots creation
+        altitudeTextures = new Texture[7];
+        for (int i = 0; i <= 6; i++) {
+            altitudeTextures[i] = new Texture("altitude" + i + ".jpg"); // generate altitude textures
+        }
+        altitudeTrackSlot = new Image(altitudeTextures[6]);
+        altitudeTrackSlot.setPosition(1100,875);
+        stage.addActor(altitudeTrackSlot);
+
+        // Reroll slot creation
+        rerollTexture = new Texture("rerollIcon.jpg");
+        noRerollTexture = new Texture("noRerollIcon.jpg");
+        rerollSlot = new Image(noRerollTexture);
+        rerollSlot.setPosition(1335, 875);
+        rerollSlot.setSize(50, 50);
+        stage.addActor(rerollSlot);
+
+        // Approach track slots creation
+        approachTextures = new Texture[5];
+        for (int i = 0; i <= 4; i++) {
+            approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
+        }
+
+        approachTrackSlots = new Image[approachTrackAmount];
+        for (int i = 0; i < approachTrackAmount; i++) {
+            approachTrackSlots[i] = new Image(approachTextures[0]);
+            approachTrackSlots[i].setPosition(860, 531 + i * 50);
+            stage.addActor(approachTrackSlots[i]);
+        }
+
 
         // table creation
         Table table = new Table();
