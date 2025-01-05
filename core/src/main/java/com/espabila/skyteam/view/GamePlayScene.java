@@ -290,23 +290,58 @@ public class GamePlayScene implements Screen {
         pilotEngineSlot.setPosition(622,390);
         pilotEngineSlot.setSize(100,100);
         stage.addActor(pilotEngineSlot);
+        pilotEngineSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(pilotEngineSlot);
+                } else {
+                    showErrorMessage("Only the pilot can interact with this slot.");
+                }
+            }
+        });
 
         copilotEngineSlot = new Image(emptySlotTexture);
         copilotEngineSlot.setPosition(1187,390);
         copilotEngineSlot.setSize(100,100);
         stage.addActor(copilotEngineSlot);
-
+        copilotEngineSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(copilotEngineSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
 
         // Axis slots creation
         pilotAxisSlot = new Image(emptySlotTexture);
         pilotAxisSlot.setPosition(768,225);
         pilotAxisSlot.setSize(100,100);
         stage.addActor(pilotAxisSlot);
+        pilotAxisSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(pilotAxisSlot);
+                } else {
+                    showErrorMessage("Only the pilot can interact with this slot.");
+                }
+            }
+        });
 
         copilotAxisSlot = new Image(emptySlotTexture);
         copilotAxisSlot.setPosition(1065,228);
         copilotAxisSlot.setSize(100,100);
         stage.addActor(copilotAxisSlot);
+        copilotAxisSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(copilotAxisSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
 
         // Altitude track slots creation
         altitudeTextures = new Texture[7];
@@ -326,18 +361,17 @@ public class GamePlayScene implements Screen {
         stage.addActor(rerollSlot);
 
         // Approach track slots creation
-        approachTextures = new Texture[5];
+        approachTextures = new Texture[5]; // create textures
         for (int i = 0; i <= 4; i++) {
             approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
         }
 
-        approachTrackSlots = new Image[approachTrackAmount];
+        approachTrackSlots = new Image[approachTrackAmount]; // create slots
         for (int i = 0; i < approachTrackAmount; i++) {
             approachTrackSlots[i] = new Image(approachTextures[0]);
             approachTrackSlots[i].setPosition(860, 531 + i * 50);
             stage.addActor(approachTrackSlots[i]);
         }
-
 
         // table creation
         Table table = new Table();
@@ -382,8 +416,7 @@ public class GamePlayScene implements Screen {
 
     }
 
-
-
+    // Place a tick icon when a brake is activated
     public void updateBrakeVisuals(int brakeSlot, boolean activated) {
         Image slotImage;
         switch (brakeSlot) {
@@ -402,16 +435,13 @@ public class GamePlayScene implements Screen {
 
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
+            placedSound.play(1.0f);
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
     }
 
-
-
-
-
-
+    // Update the dice array
     private void updateDiceImages() {
         List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
         diceValues = new int[diceAmount];
@@ -447,49 +477,80 @@ public class GamePlayScene implements Screen {
                 }
 
                 // Determine which component the dice is being placed on
-                if (slot == pilotAxisSlot || slot == copilotAxisSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        gameController.placeDiceOnAxis(selectedDiceValue);
-                    }
-
-                } else if (slot == firstCoffeeSlot || slot == secondCoffeeSlot || slot == thirdCoffeeSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        int slotNumber = slot == firstCoffeeSlot ? 1 : (slot == secondCoffeeSlot ? 2 : 3);
-                        gameController.placeDiceOnConcentration(selectedDiceValue, slotNumber);
-                    }
-
-                } else if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
+                // Engines
+                if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
                     gameController.placeDiceOnEngines(selectedDiceValue);
+                    placementSuccessful = true;
 
-                } else if (slot == pilotRadioSlot){
+                }
+
+                // Axis
+                else if (slot == pilotAxisSlot || slot == copilotAxisSlot) {
+                    gameController.placeDiceOnAxis(selectedDiceValue);
+                    placementSuccessful = true;
+                }
+
+                // Radios
+                else if (slot == pilotRadioSlot){
                     gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
                     placementSuccessful = true;
 
                 }
-                else if (slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
-                    if (isCorrectPlayerSlot(slot)) {
-                        gameController.placeDiceOnRadio(selectedDiceValue);
-                    }
-                    else{
-                        showErrorMessage("This is Pilot's slots.");
-                    }
 
-                } else if (slot == firstLandGearSlot || slot == secondLandGearSlot || slot == thirdLandGearSlot) {
-                    int gearIndex = slot == firstLandGearSlot ? 0 : (slot == secondLandGearSlot ? 1 : 2);
+                // Land Gear
+                else if (slot == firstLandGearSlot || slot == secondLandGearSlot || slot == thirdLandGearSlot) {
+                    int gearIndex;
+                    if (slot == firstLandGearSlot) {
+                        gearIndex = 0;
+                    } else if (slot == secondLandGearSlot) {
+                        gearIndex = 1;
+                    } else if (slot == thirdLandGearSlot) {
+                        gearIndex = 2;
+                    } else {
+                        return;
+                    }
                     gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
 
-                } else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
-                    int brakeIndex = slot == firstBrakesSlot ? 0 : (slot == secondBrakesSlot ? 1 : 2);
-                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
-
-                } else if (slot == firstFlapsSlot || slot == secondFlapsSlot || slot == thirdFlapsSlot || slot == fourthFlapsSlot) {
-                    int flapIndex = slot == firstFlapsSlot ? 0 : (slot == secondFlapsSlot ? 1 : (slot == thirdFlapsSlot ? 2 : 3));
-                    gameController.placeDiceOnFlaps(selectedDiceValue, flapIndex);
-
-                } else {
-                    throw new IllegalArgumentException("Invalid slot selected");
                 }
 
+                // Brakes
+                else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
+                    int brakeIndex;
+                    if (slot == firstBrakesSlot) {
+                        brakeIndex = 0;
+                    } else if (slot == secondBrakesSlot) {
+                        brakeIndex = 1;
+                    } else if (slot == thirdBrakesSlot) {
+                        brakeIndex = 2;
+                    } else {
+                        return;
+                    }
+
+                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
+
+                }
+
+                // Flaps
+                else if (slot == firstFlapsSlot || slot == secondFlapsSlot || slot == thirdFlapsSlot || slot == fourthFlapsSlot) {
+                    int flapIndex;
+                    if (slot == firstFlapsSlot) {
+                        flapIndex = 0;
+                    } else if (slot == secondFlapsSlot) {
+                        flapIndex = 1;
+                    } else if (slot == thirdFlapsSlot) {
+                        flapIndex = 2;
+                    } else if (slot == fourthFlapsSlot) {
+                        flapIndex = 3;
+                    } else {
+                        return;
+                    }
+                    gameController.placeDiceOnFlaps(selectedDiceValue, flapIndex);
+
+                }
+
+                else {
+                    throw new IllegalArgumentException("Invalid slot selected");
+                }
                 if (placementSuccessful) {
                     slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
                     placedSound.play(1.0f);
@@ -508,18 +569,6 @@ public class GamePlayScene implements Screen {
         }
     }
 
-    private boolean isCorrectPlayerSlot(Image slot) {
-        Player currentPlayer = gameController.getCurrentPlayer();
-        if (currentPlayer instanceof Pilot) {
-            return slot == pilotAxisSlot || slot == pilotRadioSlot || slot == pilotEngineSlot;
-        } else if (currentPlayer instanceof CoPilot) {
-            return slot == copilotAxisSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot || slot == copilotEngineSlot;
-        }
-        else {
-            System.out.println("Warning: Unknown player type: " + currentPlayer.getClass().getSimpleName());
-            return false;
-        }
-    }
 
     public void showErrorMessage(String errorMessage) {
         Dialog dialog = new Dialog("Error", skin);

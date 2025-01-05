@@ -12,10 +12,10 @@ public class GameController {
     private Engines engines;
     private Axis axis;
     private AltitudeTrack altitudeTrack;
+    private ApproachTrack approachTrack;
     private Concentration concentration;
     private LandGear landGear;
     private Flaps flaps;
-    private ApproachTrack approachTrack;
     private GamePlayScene gamePlayScene;
     private Boolean gameOver;
 
@@ -95,10 +95,6 @@ public class GameController {
         this.flaps = flaps;
     }
 
-    public ApproachTrack getApproachTrack() {
-        return approachTrack;
-    }
-
     public void setApproachTrack(ApproachTrack approachTrack) {
         this.approachTrack = approachTrack;
     }
@@ -160,6 +156,7 @@ public class GameController {
     public Player getPilot() { return pilot; }
     public Player getCoPilot() { return coPilot; }
     public Player getCurrentPlayer() { return currentPlayer; }
+
     public void switchTurn() {
         if (isRoundOver()) {
             if (altitudeTrack.isLastRound()) {
@@ -192,6 +189,7 @@ public class GameController {
         radio.placeDice(currentPlayer, diceValue);
     }
 
+    // Radios
     public void placeDiceOnPilotRadioSlot(int diceValue) {
         if (currentPlayer instanceof Pilot) {
             radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
@@ -202,18 +200,11 @@ public class GameController {
     }
 
 
-
-
-
-
-
-
-
+    // Brakes
     public void placeDiceOnBrakes(int diceValue, int brakeSlot) {
         if (currentPlayer instanceof Pilot) {
             boolean success = brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
             if (success) {
-                currentPlayer.removeDice(diceValue);
                 gamePlayScene.updateBrakeVisuals(brakeSlot, true);
             } else {
                 if (brakeSlot > 0 && !brakes.isBrakeActivated(brakeSlot - 1)) {
@@ -227,24 +218,60 @@ public class GameController {
         }
     }
 
-
-
-
-
-
-
-
-
-
+    // Engines
     public void placeDiceOnEngines(int diceValue) {
-        engines.placeDice(currentPlayer, diceValue);
+        if (currentPlayer instanceof Pilot) {
+            if (engines.getPilotSlot() == 0) {
+                engines.placeDice(currentPlayer, diceValue);
+            }
+            else {
+                gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
+            }
+        }else if (currentPlayer instanceof CoPilot) {
+            if (engines.getCopilotSlot() == 0) {
+                engines.placeDice(currentPlayer, diceValue);
+            }
+            else {
+                gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
+            }
+        }
+
+        if (engines.areDicesPlaced()) {
+            engines.countDiceSum();
+        }
+
     }
+
+    // Axis
     public void placeDiceOnAxis(int diceValue) {
-        axis.placeDice(currentPlayer, diceValue);
+        if (currentPlayer instanceof Pilot) {
+            if (axis.getPilotSlot() == 0) {
+                axis.placeDice(currentPlayer, diceValue);
+            }
+            else {
+                gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
+            }
+        }else if (currentPlayer instanceof CoPilot) {
+            if (axis.getCopilotSlot() == 0) {
+                axis.placeDice(currentPlayer, diceValue);
+            }
+            else {
+                gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
+            }
+        }
+
+        if (axis.areDicesPlaced()) {
+            axis.currentIndexCalculation();
+        }
+
     }
+
+    // Concentration
     public void placeDiceOnConcentration(int diceValue, int slotNumber) {
         concentration.placeDice(currentPlayer, diceValue, slotNumber);
     }
+
+    // Land Gear
     public void placeDiceOnLandGear(int diceValue, int gearIndex) {
         if (currentPlayer instanceof Pilot) {
             landGear.activateEngine((Pilot) currentPlayer, gearIndex, diceValue);
@@ -252,6 +279,8 @@ public class GameController {
             gamePlayScene.showErrorMessage("Only the Pilot can activate land gears.");
         }
     }
+
+    // Flaps
     public void placeDiceOnFlaps(int flapsIndex, int diceValue) {
         if (currentPlayer instanceof CoPilot) {
             flaps.activateFlap((CoPilot) currentPlayer, flapsIndex, diceValue);

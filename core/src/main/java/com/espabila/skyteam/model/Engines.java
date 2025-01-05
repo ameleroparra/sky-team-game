@@ -47,10 +47,12 @@ public class Engines {
     public void placeDice(Player player, int diceValue){
         if(player instanceof Pilot && pilotSlot == 0){
             pilotSlot = diceValue;
+            System.out.println("Pilot placed Dice " + diceValue);
             player.removeDice(diceValue);
         }
         else if(player instanceof CoPilot && copilotSlot == 0){
             copilotSlot = diceValue;
+            System.out.println("Copilot placed a dice " + diceValue);
             player.removeDice(diceValue);
         }
         else {
@@ -58,7 +60,7 @@ public class Engines {
         }
     }
 
-    public Boolean areDicesPlaced(int diceValue){
+    public Boolean areDicesPlaced(){
         if(pilotSlot > 0 && copilotSlot > 0){
             return true;
         }
@@ -93,8 +95,8 @@ public class Engines {
         }
     }
 
-    public void countDiceSum(int pilotDice, int copilotDice){
-        int diceSum = pilotDice + copilotDice;
+    public void countDiceSum(){
+        int diceSum = this.pilotSlot + this.copilotSlot;
         if(diceSum < pilotMarker){
             this.approachTrackMove = 0;
         }
@@ -104,6 +106,7 @@ public class Engines {
         else if(copilotMarker < diceSum){
             this.approachTrackMove = 2;
         }
+        System.out.println("Dice sum: " + diceSum);
     }
 
     public void resetEngines(){

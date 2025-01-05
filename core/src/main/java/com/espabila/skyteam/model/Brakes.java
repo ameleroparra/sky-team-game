@@ -17,7 +17,6 @@ public class Brakes {
         }
         else if (diceValue == requiredValue[brakeSlot]){
             activated[brakeSlot] = true;
-            System.out.println("Brake activated");
             pilot.removeDice(diceValue);
             return true;
         }

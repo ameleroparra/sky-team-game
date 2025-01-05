@@ -44,10 +44,12 @@ public class Axis {
     public void placeDice(Player player, int diceValue){
          if(player instanceof Pilot && pilotSlot == 0){
              pilotSlot = diceValue;
+             System.out.println("Pilot placed Dice " + diceValue + " in axis");
              player.removeDice(diceValue);
          }
          else if(player instanceof CoPilot && copilotSlot == 0){
              copilotSlot = diceValue;
+             System.out.println("Copilot placed a dice " + diceValue + " in axis");
              player.removeDice(diceValue);
          }
          else {
@@ -55,7 +57,7 @@ public class Axis {
          }
      }
 
-     public Boolean areDicesPlaced(int diceValue){
+     public Boolean areDicesPlaced(){
          if(pilotSlot > 0 && copilotSlot > 0){
              return true;
          }
@@ -66,28 +68,28 @@ public class Axis {
 
      // Calculates how much and in which direction should the axis move
      public void currentIndexCalculation() {
-         if (pilotSlot != 0 && copilotSlot != 0) {
-             absResult = Math.abs(pilotSlot - copilotSlot);
-             int leftMove = currentIndexPosition - absResult;
-             int rightMove = currentIndexPosition + absResult;
 
-             // moves axis to the pilot side, left
-             if (pilotSlot > copilotSlot) {
-                 if (leftMove < 0) {
-                     currentIndexPosition = leftMove;
-                     gameOver = true;
-                 } else {
-                     currentIndexPosition = leftMove;
-                 }
+         absResult = Math.abs(pilotSlot - copilotSlot);
+         int leftMove = currentIndexPosition - absResult;
+         int rightMove = currentIndexPosition + absResult;
+         System.out.println("Pilot and Copilot Dice: " + absResult);
+
+         // moves axis to the pilot side, left
+         if (pilotSlot > copilotSlot) {
+             if (leftMove < 0) {
+                 currentIndexPosition = leftMove;
+                 gameOver = true;
+             } else {
+                 currentIndexPosition = leftMove;
              }
-             //moves axis to the copilot side, right
-             else if (pilotSlot < copilotSlot) {
-                 if (rightMove > 4) {
-                     currentIndexPosition = rightMove;
-                     gameOver = true;
-                 } else {
-                     currentIndexPosition = rightMove;
-                 }
+         }
+         //moves axis to the copilot side, right
+         else if (pilotSlot < copilotSlot) {
+             if (rightMove > 4) {
+                 currentIndexPosition = rightMove;
+                 gameOver = true;
+             } else {
+                 currentIndexPosition = rightMove;
              }
          }
      }
