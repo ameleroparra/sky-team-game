@@ -200,13 +200,42 @@ public class GameController {
             showErrorMessage("Only the Pilot can place dice on the Radio.");
         }
     }
+
+
+
+
+
+
+
+
+
     public void placeDiceOnBrakes(int diceValue, int brakeSlot) {
         if (currentPlayer instanceof Pilot) {
-            brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
+            boolean success = brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
+            if (success) {
+                currentPlayer.removeDice(diceValue);
+                gamePlayScene.updateBrakeVisuals(brakeSlot, true);
+            } else {
+                if (brakeSlot > 0 && !brakes.isBrakeActivated(brakeSlot - 1)) {
+                    gamePlayScene.showErrorMessage("You must activate the previous brake first.");
+                } else {
+                    gamePlayScene.showErrorMessage("Invalid dice value for this brake.");
+                }
+            }
         } else {
             gamePlayScene.showErrorMessage("Only the Pilot can activate brakes.");
         }
     }
+
+
+
+
+
+
+
+
+
+
     public void placeDiceOnEngines(int diceValue) {
         engines.placeDice(currentPlayer, diceValue);
     }

@@ -90,9 +90,10 @@ public class GamePlayScene implements Screen {
     private Texture rerollTexture;
     private Image rerollSlot;
 
-    // empty slots
+    // General slots
     private Texture emptySlotTexture;
     private Texture noRerollTexture;
+    private Texture tickIcon;
 
 
     private boolean isPilotTurn = false;
@@ -127,6 +128,7 @@ public class GamePlayScene implements Screen {
         selectedSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
         placedSound = Gdx.audio.newSound(Gdx.files.internal("ding.wav"));
         movementSound = Gdx.audio.newSound(Gdx.files.internal("movement.mp3"));
+        tickIcon = new Texture("tickIcon.jpg");
 
         batch = new SpriteBatch();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -170,13 +172,13 @@ public class GamePlayScene implements Screen {
         pilotRadioSlot.setPosition(295,960);
         pilotRadioSlot.setSize(100,100);
 
-
         pilotRadioSlot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
                 placeDice(pilotRadioSlot);
             }
         });
+
         stage.addActor(pilotRadioSlot);
 
 
@@ -196,6 +198,13 @@ public class GamePlayScene implements Screen {
         firstBrakesSlot = new Image(emptySlotTexture);
         firstBrakesSlot.setPosition(110,525);
         firstBrakesSlot.setSize(100,100);
+
+        firstBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+                placeDice(firstBrakesSlot);
+            }
+        });
         stage.addActor(firstBrakesSlot);
 
         secondBrakesSlot = new Image(emptySlotTexture);
@@ -203,10 +212,24 @@ public class GamePlayScene implements Screen {
         secondBrakesSlot.setSize(100,100);
         stage.addActor(secondBrakesSlot);
 
+        secondBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+                placeDice(secondBrakesSlot);
+            }
+        });
+
         thirdBrakesSlot = new Image(emptySlotTexture);
         thirdBrakesSlot.setPosition(408,525);
         thirdBrakesSlot.setSize(100,100);
         stage.addActor(thirdBrakesSlot);
+
+        thirdBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+                placeDice(thirdBrakesSlot);
+            }
+        });
 
 
         //coffee slots
@@ -360,6 +383,35 @@ public class GamePlayScene implements Screen {
     }
 
 
+
+    public void updateBrakeVisuals(int brakeSlot, boolean activated) {
+        Image slotImage;
+        switch (brakeSlot) {
+            case 0:
+                slotImage = firstBrakesSlot;
+                break;
+            case 1:
+                slotImage = secondBrakesSlot;
+                break;
+            case 2:
+                slotImage = thirdBrakesSlot;
+                break;
+            default:
+                return; // Invalid brake slot
+        }
+
+        if (activated) {
+            slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
+        } else {
+            slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+        }
+    }
+
+
+
+
+
+
     private void updateDiceImages() {
         List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
         diceValues = new int[diceAmount];
@@ -451,6 +503,8 @@ public class GamePlayScene implements Screen {
             } catch (Exception e) {
                 showErrorMessage("Invalid placement: " + e.getMessage());
             }
+
+            updateDiceImages();
         }
     }
 

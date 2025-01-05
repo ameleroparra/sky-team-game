@@ -1,5 +1,6 @@
 package com.espabila.skyteam.model;
 
+
 public class Brakes {
     private int[] requiredValue;
     private boolean[] activated;
@@ -10,11 +11,13 @@ public class Brakes {
     }
 
     public boolean activateBrakes(Pilot pilot, int brakeSlot, int diceValue){
+
         if (brakeSlot > 0 && !activated[brakeSlot - 1]){
             return false;
         }
         else if (diceValue == requiredValue[brakeSlot]){
             activated[brakeSlot] = true;
+            System.out.println("Brake activated");
             pilot.removeDice(diceValue);
             return true;
         }
@@ -25,5 +28,10 @@ public class Brakes {
         for (int i = 0; i < activated.length; i++){
             activated[i] = false;
         }
+    }
+
+    // Getter for checking brake status
+    public boolean isBrakeActivated(int brakeSlot) {
+        return activated[brakeSlot];
     }
 }
