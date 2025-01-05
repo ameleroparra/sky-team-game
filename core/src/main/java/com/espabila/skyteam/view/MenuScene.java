@@ -1,4 +1,7 @@
 package com.espabila.skyteam.view;
+import com.espabila.skyteam.SkyTeamGame;
+import com.espabila.skyteam.controller.GameController;
+import com.espabila.skyteam.view.TutorialScene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.espabila.skyteam.SkyTeamGame;
-import com.espabila.skyteam.controller.GameController;
 
 public class MenuScene implements Screen {
     private Stage stage;
@@ -55,6 +56,13 @@ public class MenuScene implements Screen {
                 GameController gameController = new GameController();
                 game.setScreen(new GamePlayScene(game, gameController));
             }
+        });
+
+        tutorialButton.addListener(new ClickListener() {
+           public void clicked(InputEvent event, float x, float y) {
+               game.setScreen(new TutorialScene(game));
+           }
+
         });
 
         exitButton.addListener(new ClickListener() {
