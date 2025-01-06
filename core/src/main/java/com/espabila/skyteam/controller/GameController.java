@@ -270,26 +270,31 @@ public class GameController {
     }
 
     // Concentration
-    public void placeDiceOnConcentration(int diceValue, int slotNumber) {
-        concentration.placeDice(currentPlayer, diceValue, slotNumber);
+    public void placeDiceOnConcentration(int diceValue, int slotIndex) {
+        boolean isActivated = concentration.isActivated(slotIndex);
+        if (!isActivated) {
+            concentration.placeDice(currentPlayer, diceValue, slotIndex);
+            isActivated = concentration.isActivated(slotIndex);
+            gamePlayScene.updateCoffeeVisuals(slotIndex, isActivated);
+        } else {
+            showErrorMessage("Coffee is already activated for this slot.");
+        }
     }
 
     // Land Gear
-    public void placeDiceOnLandGear(int diceValue, int gearIndex) {
-        if (currentPlayer instanceof Pilot) {
-            landGear.activateEngine((Pilot) currentPlayer, gearIndex, diceValue);
-        } else {
-            gamePlayScene.showErrorMessage("Only the Pilot can activate land gears.");
-        }
+    public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {
+        landGear.activateLandGear((Pilot) currentPlayer, gearIndex, diceValue);
+
+        return landGear.isActivated(gearIndex);
+
     }
 
     // Flaps
-    public void placeDiceOnFlaps(int flapsIndex, int diceValue) {
-        if (currentPlayer instanceof CoPilot) {
-            flaps.activateFlap((CoPilot) currentPlayer, flapsIndex, diceValue);
-        } else {
-            gamePlayScene.showErrorMessage("Only the Co-Pilot can activate flaps.");
-        }
+    public boolean placeDiceOnFlaps(int diceValue, int flapsIndex) {
+        flaps.activateFlap((CoPilot) currentPlayer, flapsIndex, diceValue);
+
+        return flaps.isActivated(flapsIndex);
+
     }
 
     public boolean isRoundOver() {

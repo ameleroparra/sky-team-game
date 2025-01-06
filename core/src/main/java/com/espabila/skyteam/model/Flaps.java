@@ -1,13 +1,18 @@
 package com.espabila.skyteam.model;
 
 public class Flaps {
-
-    private int[][] requiredValue;
     private boolean[] activated;
+    private int[] firstRequired;
+    private int[] secondRequired;
+    private int[] thirdRequired;
+    private int[] fourthRequired;
 
     public Flaps() {
-        this.requiredValue = new int[][]{{1,2},{2,3},{4,5},{5,6}}; //Flaps and its needed values
         this.activated = new boolean[4]; //flaps deactivated
+        this.firstRequired = new int[]{1, 2};
+        this.secondRequired = new int[]{2, 3};
+        this.thirdRequired = new int[]{4, 5};
+        this.fourthRequired = new int[]{5, 6};
     }
 
     public boolean activateFlap(CoPilot coPilot, int flapIndex, int value){
@@ -15,17 +20,52 @@ public class Flaps {
             return false;
         }
 
-        for (int check : requiredValue[flapIndex]){
-            if (check == value){
-                if(!activated[flapIndex]){
+        else if (flapIndex == 0){
+            for (int element : firstRequired) {
+                if (element == value) {
                     activated[flapIndex] = true;
+                    System.out.println("Activated first flap");
                     coPilot.removeDice(value);
                     return true;
                 }
-                else{
-                    System.out.println("This Flap is already activated.");
+            }
+            return false;
+        }
+
+        else if (flapIndex == 1){
+            for (int element : secondRequired) {
+                if (element == value) {
+                    activated[flapIndex] = true;
+                    System.out.println("Activated second flap");
+                    coPilot.removeDice(value);
+                    return true;
                 }
             }
+            return false;
+        }
+
+        else if (flapIndex == 2){
+            for (int element : thirdRequired) {
+                if (element == value) {
+                    activated[flapIndex] = true;
+                    System.out.println("Activated third flap");
+                    coPilot.removeDice(value);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        else if (flapIndex == 3){
+            for (int element : fourthRequired) {
+                if (element == value) {
+                    activated[flapIndex] = true;
+                    System.out.println("Activated fourth flap");
+                    coPilot.removeDice(value);
+                    return true;
+                }
+            }
+            return false;
         }
         return false;
     }

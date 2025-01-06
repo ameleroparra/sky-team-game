@@ -1,27 +1,52 @@
 package com.espabila.skyteam.model;
 
 public class LandGear {
-    private int[][] switches;
     private boolean[] activated;
+    private int[] firstRequired;
+    private int[] secondRequired;
+    private int[] thirdRequired;
 
     public LandGear(){
-        this.switches = new int[][]{{1,2},{3,4},{5,6}};
         this.activated = new boolean[3];
+        this.firstRequired = new int[]{1, 2};
+        this.secondRequired = new int[]{3, 4};
+        this.thirdRequired = new int[]{5, 6};
     }
 
-    public boolean activateEngine(Pilot pilot, int gearIndex, int value){
+    public boolean activateLandGear(Pilot pilot, int gearIndex, int value){
         //check if the value used by the player match the necessary ones to activate the flap
-        for (int check : switches[gearIndex]){
-            if (check == value){
-                if(!activated[gearIndex]){
+        if (gearIndex == 0) {
+            for (int element : firstRequired) {
+                if (element == value) {
                     activated[gearIndex] = true;
                     pilot.removeDice(value);
                     return true;
                 }
-                else{
-                    System.out.println("This Land Gear is already activated.");
+            }
+            return false;
+
+        }
+
+        else if (gearIndex == 1) {
+            for (int element : secondRequired) {
+                if (element == value) {
+                    activated[gearIndex] = true;
+                    pilot.removeDice(value);
+                    return true;
                 }
             }
+            return false;
+        }
+
+        else if (gearIndex == 2) {
+            for (int element : thirdRequired) {
+                if (element == value) {
+                    activated[gearIndex] = true;
+                    pilot.removeDice(value);
+                    return true;
+                }
+            }
+            return false;
         }
 
         return false;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -57,6 +58,9 @@ public class GamePlayScene implements Screen {
     private Image firstCoffeeSlot;
     private Image secondCoffeeSlot;
     private Image thirdCoffeeSlot;
+    private Image diceSelectImage;
+    private Texture coffeeTexture;
+    private Texture diceSelectTexture;
 
     // Engine slots
     private Image pilotEngineSlot;
@@ -92,10 +96,18 @@ public class GamePlayScene implements Screen {
     private Texture rerollTexture;
     private Image rerollSlot;
 
+    // Markers slots
+    private Texture lowMarkerTexture;
+    private Texture highMarkerTexture;
+    private Image lowMarkerImage;
+    private Image highMarkerImage;
+
+
     // General slots
     private Texture emptySlotTexture;
     private Texture noRerollTexture;
     private Texture tickIcon;
+
 
 
     private boolean isPilotTurn = false;
@@ -133,6 +145,10 @@ public class GamePlayScene implements Screen {
 
         tickIcon = new Texture("tickIcon.jpg");
         axisPlaneTexture = new Texture("planeAxisIcon.png");
+        lowMarkerTexture = new Texture("lowMarkerIcon.png");
+        highMarkerTexture = new Texture("highMarkerIcon.png");
+        coffeeTexture = new Texture("coffeeIcon.jpg");
+        diceSelectTexture = new Texture("diceSelect.png");
 
         batch = new SpriteBatch();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -178,7 +194,7 @@ public class GamePlayScene implements Screen {
 
         pilotRadioSlot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 placeDice(pilotRadioSlot);
             }
         });
@@ -205,7 +221,7 @@ public class GamePlayScene implements Screen {
 
         firstBrakesSlot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 placeDice(firstBrakesSlot);
             }
         });
@@ -218,7 +234,7 @@ public class GamePlayScene implements Screen {
 
         secondBrakesSlot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 placeDice(secondBrakesSlot);
             }
         });
@@ -230,64 +246,165 @@ public class GamePlayScene implements Screen {
 
         thirdBrakesSlot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) { // make  slot clickable
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 placeDice(thirdBrakesSlot);
             }
         });
 
 
         //coffee slots
+        diceSelectImage = new Image(diceSelectTexture);
+        diceSelectImage.setPosition(0,0);
+        diceSelectImage.setVisible(false);
+        stage.addActor(diceSelectImage);
+
         firstCoffeeSlot = new Image(emptySlotTexture);
         firstCoffeeSlot.setPosition(1417,525);
         firstCoffeeSlot.setSize(100,100);
         stage.addActor(firstCoffeeSlot);
+        firstCoffeeSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                placeDiceCoffee(firstCoffeeSlot);
+            }
+        });
 
         secondCoffeeSlot = new Image(emptySlotTexture);
         secondCoffeeSlot.setPosition(1565,525);
         secondCoffeeSlot.setSize(100,100);
         stage.addActor(secondCoffeeSlot);
+        secondCoffeeSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                placeDiceCoffee(secondCoffeeSlot);
+            }
+        });
 
         thirdCoffeeSlot = new Image(emptySlotTexture);
         thirdCoffeeSlot.setPosition(1715,525);
         thirdCoffeeSlot.setSize(100,100);
         stage.addActor(thirdCoffeeSlot);
+        thirdCoffeeSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                placeDiceCoffee(thirdCoffeeSlot);
+            }
+        });
 
         // Landing gear slot creation
         firstLandGearSlot = new Image(emptySlotTexture);
         firstLandGearSlot.setPosition(295,279);
         firstLandGearSlot.setSize(100,100);
         stage.addActor(firstLandGearSlot);
+        firstLandGearSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(firstLandGearSlot);
+                }
+                else {
+                    showErrorMessage("Only the pilot can interact with this slot.");
+                }
+            }
+        });
 
         secondLandGearSlot = new Image(emptySlotTexture);
         secondLandGearSlot.setPosition(153,180);
         secondLandGearSlot.setSize(100,100);
         stage.addActor(secondLandGearSlot);
+        secondLandGearSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(secondLandGearSlot);
+                }
+                else {
+                    showErrorMessage("Only the pilot can interact with this slot.");
+                }
+            }
+        });
 
         thirdLandGearSlot = new Image(emptySlotTexture);
         thirdLandGearSlot.setPosition(10,110);
         thirdLandGearSlot.setSize(100,100);
         stage.addActor(thirdLandGearSlot);
+        thirdLandGearSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(thirdLandGearSlot);
+                }
+                else {
+                    showErrorMessage("Only the pilot can interact with this slot.");
+                }
+            }
+        });
+
+        lowMarkerImage = new Image(lowMarkerTexture);
+        lowMarkerImage.setPosition(890, 390);
+        stage.addActor(lowMarkerImage);
 
         // Flaps slot creation
         firstFlapsSlot = new Image(emptySlotTexture);
         firstFlapsSlot.setPosition(1381,359);
         firstFlapsSlot.setSize(100,100);
         stage.addActor(firstFlapsSlot);
+        firstFlapsSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(firstFlapsSlot);
+                }
+                else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
 
         secondFlapsSlot = new Image(emptySlotTexture);
         secondFlapsSlot.setPosition(1523,279);
         secondFlapsSlot.setSize(100,100);
         stage.addActor(secondFlapsSlot);
+        secondFlapsSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(secondFlapsSlot);
+                }
+                else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
 
         thirdFlapsSlot = new Image(emptySlotTexture);
         thirdFlapsSlot.setPosition(1665,181);
         thirdFlapsSlot.setSize(100,100);
         stage.addActor(thirdFlapsSlot);
+        thirdFlapsSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(thirdFlapsSlot);
+                }
+                else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
 
         fourthFlapsSlot = new Image(emptySlotTexture);
         fourthFlapsSlot.setPosition(1808,110);
         fourthFlapsSlot.setSize(100,100);
         stage.addActor(fourthFlapsSlot);
+        fourthFlapsSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(fourthFlapsSlot);
+                }
+                else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
+
+        highMarkerImage = new Image(highMarkerTexture);
+        highMarkerImage.setPosition(1005, 390);
+        stage.addActor(highMarkerImage);
 
         //Engine slot creation
         pilotEngineSlot = new Image(emptySlotTexture);
@@ -425,11 +542,23 @@ public class GamePlayScene implements Screen {
 
     }
 
-
     // update plane visuals
     public void updateAxisPlaneVisuals(int currentPosition) {
         int angle = currentPosition * -30;
-        axisPlaneImage.rotateBy(angle);
+        int duration = 1;
+        axisPlaneImage.addAction(Actions.rotateTo(angle, duration));
+    }
+
+    public void updateLowMarkerVisuals (int activatedGears) {
+        int duration = 1;
+        int movement = 30;
+        lowMarkerImage.addAction(Actions.moveBy(movement * (activatedGears), 0, duration));
+    }
+
+    public void updateHighMarkerVisuals (int activatedGears) {
+        int duration = 1;
+        int movement = 35;
+        highMarkerImage.addAction(Actions.moveBy(movement * (activatedGears), 0, duration));
     }
 
     // Place a tick icon when a brake is activated
@@ -452,10 +581,38 @@ public class GamePlayScene implements Screen {
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
             placedSound.play(1.0f);
+            selectedDiceValue = 0;
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
     }
+
+    // place a coffee icon when a coffee is activated
+    public void updateCoffeeVisuals(int coffeeSlot, boolean activated) {
+        Image slotImage;
+        switch (coffeeSlot) {
+            case 0:
+                slotImage = firstCoffeeSlot;
+                break;
+            case 1:
+                slotImage = secondCoffeeSlot;
+                break;
+            case 2:
+                slotImage = thirdCoffeeSlot;
+                break;
+            default:
+                return; // Invalid coffee slot
+        }
+
+        if (activated) {
+            slotImage.setDrawable(new TextureRegionDrawable(coffeeTexture));
+            placedSound.play(1.0f);
+        } else {
+            slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+        }
+    }
+
+    // Place a tick icon when a refuel is activated
 
     // Update the dice array
     private void updateDiceImages() {
@@ -478,6 +635,27 @@ public class GamePlayScene implements Screen {
         if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
+        }
+    }
+
+    private void placeDiceCoffee(Image slot) {
+        if (selectedDiceValue != 0) {
+
+            int slotIndex;
+            if (slot == firstCoffeeSlot) {
+                slotIndex = 0;
+            } else if (slot == secondCoffeeSlot) {
+                slotIndex = 1;
+            } else if (slot == thirdCoffeeSlot) {
+                slotIndex = 2;
+            } else {
+                return;
+            }
+
+            gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
+            updateDiceImages();
+            selectedDiceValue = 0;
+
         }
     }
 
@@ -525,7 +703,15 @@ public class GamePlayScene implements Screen {
                     } else {
                         return;
                     }
-                    gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
+
+                    placementSuccessful = gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
+                    if (placementSuccessful) {
+                       updateLowMarkerVisuals(1);
+                    }
+                    else {
+                        showErrorMessage("invalid dice value");
+                    }
+
 
                 }
 
@@ -560,7 +746,14 @@ public class GamePlayScene implements Screen {
                     } else {
                         return;
                     }
-                    gameController.placeDiceOnFlaps(selectedDiceValue, flapIndex);
+
+                    placementSuccessful = gameController.placeDiceOnFlaps(selectedDiceValue, flapIndex);
+                    if (placementSuccessful) {
+                        updateHighMarkerVisuals(1);
+                    }
+                    else {
+                        showErrorMessage("you can not do that");
+                    }
 
                 }
 

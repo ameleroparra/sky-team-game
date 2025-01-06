@@ -7,9 +7,7 @@ public class Concentration {
     private int firstSlot;
     private int secondSlot;
     private int thirdSlot;
-    private boolean coffeeOnSlotOne;
-    private boolean coffeeOnSlotTwo;
-    private boolean coffeeOnSlotThree;
+    private boolean[] activated;
     private boolean plusOne; //should be changed in controller to work here
     private boolean minusOne; //should be changed in controller to work here
 
@@ -17,35 +15,9 @@ public class Concentration {
         this.firstSlot = 0;
         this.secondSlot = 0;
         this.thirdSlot = 0;
-        this.coffeeOnSlotOne = false;
-        this.coffeeOnSlotTwo = false;
-        this.coffeeOnSlotThree = false;
+        this.activated = new boolean[3];
         this.plusOne = false;
         this.minusOne = false;
-    }
-
-    public boolean isCoffeeOnSlotOne() {
-        return coffeeOnSlotOne;
-    }
-
-    public void setCoffeeOnSlotOne(boolean coffeeOnSlotOne) {
-        this.coffeeOnSlotOne = coffeeOnSlotOne;
-    }
-
-    public boolean isCoffeeOnSlotTwo() {
-        return coffeeOnSlotTwo;
-    }
-
-    public void setCoffeeOnSlotTwo(boolean coffeeOnSlotTwo) {
-        this.coffeeOnSlotTwo = coffeeOnSlotTwo;
-    }
-
-    public boolean isCoffeeOnSlotThree() {
-        return coffeeOnSlotThree;
-    }
-
-    public void setCoffeeOnSlotThree(boolean coffeeOnSlotThree) {
-        this.coffeeOnSlotThree = coffeeOnSlotThree;
     }
 
     public void setPlusOne(boolean plusOne) {
@@ -56,17 +28,20 @@ public class Concentration {
         this.minusOne = minusOne;
     }
 
-    public void placeDice(Player player, int diceValue, int slotNumber){
-        if (slotNumber == 1 && !coffeeOnSlotOne){
-            coffeeOnSlotOne = true;
+    public void placeDice(Player player, int diceValue, int slotIndex){
+        if (slotIndex == 0 && !activated[0]){
+            activated[0] = true;
+            System.out.println("Coffee placed on Slot 1");
             player.removeDice(diceValue);
         }
-        else if (slotNumber == 2 && !coffeeOnSlotTwo){
-            coffeeOnSlotTwo = true;
+        else if (slotIndex == 1 && !activated[1]){
+            activated[1] = true;
+            System.out.println("Coffee placed on Slot 2");
             player.removeDice(diceValue);
         }
-        else if (slotNumber == 3 && !coffeeOnSlotThree){
-            coffeeOnSlotThree = true;
+        else if (slotIndex == 2 && !activated[2]){
+            activated[2] = true;
+            System.out.println("Coffee placed on Slot 3");
             player.removeDice(diceValue);
         }
         else {
@@ -74,53 +49,72 @@ public class Concentration {
         }
     }
 
-    public void useToken(Player player, int slotNum, int diceValue, int index){
-        if(!coffeeOnSlotOne && !coffeeOnSlotTwo && !coffeeOnSlotThree){
+    public boolean isActivated(int slotIndex){
+        return activated[slotIndex];
+    }
+
+    public boolean allActivated(){
+        for (int i = 0; i < 3; i++){
+            if (!activated[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void useToken(Player player, int slotIndex, int diceValue, int diceIndex){
+
+        int counter = 0;
+        for (int i = 0; i < 3; i++){
+            if (activated[i]){
+                counter++;
+            }
+        }
+        if (counter == 0){
             System.out.println("No coffee tokens available.");
         }
-        else if(plusOne && !minusOne){
-            if(diceValue == 6){
+
+        else if(plusOne &&!minusOne){
+            if (diceValue == 6){
                 System.out.println("Cannot add + 1 to dice value. Choose substracting 1 or change the dice");
             }
-            else if(slotNum == 1){
-                coffeeOnSlotOne = false;
-                player.getDiceList().set(index, diceValue + 1);
+            else if(slotIndex == 0){
+                activated[0] = false;
+                player.getDiceList().set(diceIndex, diceValue + 1);
             }
-            else if(slotNum == 2){
-                coffeeOnSlotTwo = false;
-                player.getDiceList().set(index, diceValue + 1);
+            else if(slotIndex == 1){
+                activated[1] = false;
+                player.getDiceList().set(diceIndex, diceValue + 1);
             }
-            else if(slotNum == 3){
-                coffeeOnSlotThree = false;
-                player.getDiceList().set(index, diceValue + 1);
+            else if(slotIndex == 2){
+                activated[2] = false;
+                player.getDiceList().set(diceIndex, diceValue + 1);
             }
         }
-        else if(minusOne && !plusOne){
+
+        else if(minusOne &&!plusOne){
             if(diceValue == 1){
                 System.out.println("Cannot substract 1 from the dice value. Choose adding 1 or change the dice");
             }
-            else if(slotNum == 1){
-                coffeeOnSlotOne = false;
-                player.getDiceList().set(index, diceValue - 1);
+            else if(slotIndex == 0){
+                activated[0] = false;
+                player.getDiceList().set(diceIndex, diceValue - 1);
             }
-            else if(slotNum == 2){
-                coffeeOnSlotTwo = false;
-                player.getDiceList().set(index, diceValue - 1);
+            else if(slotIndex == 1){
+                activated[1] = false;
+                player.getDiceList().set(diceIndex, diceValue - 1);
             }
-            else if(slotNum == 3){
-                coffeeOnSlotThree = false;
-                player.getDiceList().set(index, diceValue - 1);
+            else if(slotIndex == 2){
+                activated[2] = false;
+                player.getDiceList().set(diceIndex, diceValue - 1);
             }
-        }
-        else {
-            System.out.println("Cannot add and substract the value at the same time. Choose either adding 1 or substracting 1");
         }
     }
 
     public void resetConcentration(){
-        coffeeOnSlotOne = false;
-        coffeeOnSlotTwo = false;
-        coffeeOnSlotThree = false;
+        for (int i = 0; i < activated.length; i++) {
+            activated[i] = false;
+        }
         plusOne = false;
         minusOne = false;
     }
