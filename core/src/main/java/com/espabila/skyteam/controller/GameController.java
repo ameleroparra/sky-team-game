@@ -285,6 +285,10 @@ public class GameController {
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {
         landGear.activateLandGear((Pilot) currentPlayer, gearIndex, diceValue);
 
+
+        if (landGear.isActivated(gearIndex)) {
+            engines.advancePilotMarker();
+        }
         return landGear.isActivated(gearIndex);
 
     }
@@ -293,6 +297,9 @@ public class GameController {
     public boolean placeDiceOnFlaps(int diceValue, int flapsIndex) {
         flaps.activateFlap((CoPilot) currentPlayer, flapsIndex, diceValue);
 
+        if (flaps.isActivated(flapsIndex)) {
+            engines.advanceCopilotMarker();
+        }
         return flaps.isActivated(flapsIndex);
 
     }

@@ -9,6 +9,9 @@ public class Engines {
     private int pilotSlot;
     private int copilotSlot;
 
+    private Flaps flaps;
+    private LandGear landGear;
+
 
     public Engines(){
         this.pilotMarker = 4.5;
@@ -80,6 +83,7 @@ public class Engines {
     public void advancePilotMarker(){
         if(pilotMarker < finalPilotMarker){
             this.pilotMarker += 1;
+            System.out.println("Pilot marker moved forward: " + pilotMarker);
         }
         else{
             System.out.println("Pilot Engine is fully opened");
@@ -89,6 +93,7 @@ public class Engines {
     public void advanceCopilotMarker(){
         if(copilotMarker < finalCopilotMarker){
             this.copilotMarker += 1;
+            System.out.println("Co-Pilot marker moved forward: " + copilotMarker);
         }
         else{
             System.out.println("Co-Pilot Engine is fully opened");
@@ -99,12 +104,15 @@ public class Engines {
         int diceSum = this.pilotSlot + this.copilotSlot;
         if(diceSum < pilotMarker){
             this.approachTrackMove = 0;
+            System.out.println("Approach track moved 0");
         }
         else if(pilotMarker < diceSum && diceSum < copilotMarker){
             this.approachTrackMove = 1;
+            System.out.println("Approach track moved 1");
         }
         else if(copilotMarker < diceSum){
             this.approachTrackMove = 2;
+            System.out.println("Approach track moved 2");
         }
         System.out.println("Dice sum: " + diceSum);
     }
