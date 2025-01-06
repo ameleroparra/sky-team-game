@@ -21,6 +21,10 @@ public class Axis {
         return currentIndexPosition;
     }
 
+    public int getPosition() {
+        return position[currentIndexPosition];
+    }
+
     public int getAbsResult() {
         return absResult;
     }
@@ -44,12 +48,10 @@ public class Axis {
     public void placeDice(Player player, int diceValue){
          if(player instanceof Pilot && pilotSlot == 0){
              pilotSlot = diceValue;
-             System.out.println("Pilot placed Dice " + diceValue + " in axis");
              player.removeDice(diceValue);
          }
          else if(player instanceof CoPilot && copilotSlot == 0){
              copilotSlot = diceValue;
-             System.out.println("Copilot placed a dice " + diceValue + " in axis");
              player.removeDice(diceValue);
          }
          else {
@@ -72,7 +74,6 @@ public class Axis {
          absResult = Math.abs(pilotSlot - copilotSlot);
          int leftMove = currentIndexPosition - absResult;
          int rightMove = currentIndexPosition + absResult;
-         System.out.println("Pilot and Copilot Dice: " + absResult);
 
          // moves axis to the pilot side, left
          if (pilotSlot > copilotSlot) {

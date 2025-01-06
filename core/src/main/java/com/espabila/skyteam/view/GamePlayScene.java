@@ -63,6 +63,8 @@ public class GamePlayScene implements Screen {
     private Image copilotEngineSlot;
 
     // Axis slots
+    private Texture axisPlaneTexture;
+    private Image axisPlaneImage;
     private Image pilotAxisSlot;
     private Image copilotAxisSlot;
 
@@ -128,7 +130,9 @@ public class GamePlayScene implements Screen {
         selectedSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
         placedSound = Gdx.audio.newSound(Gdx.files.internal("ding.wav"));
         movementSound = Gdx.audio.newSound(Gdx.files.internal("movement.mp3"));
+
         tickIcon = new Texture("tickIcon.jpg");
+        axisPlaneTexture = new Texture("planeAxisIcon.png");
 
         batch = new SpriteBatch();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -343,6 +347,11 @@ public class GamePlayScene implements Screen {
             }
         });
 
+        axisPlaneImage = new Image(axisPlaneTexture);
+        axisPlaneImage.setPosition(928,268);
+        axisPlaneImage.setOrigin(axisPlaneTexture.getWidth() / 2, axisPlaneTexture.getHeight() / 2);
+        stage.addActor(axisPlaneImage);
+
         // Altitude track slots creation
         altitudeTextures = new Texture[7];
         for (int i = 0; i <= 6; i++) {
@@ -414,6 +423,13 @@ public class GamePlayScene implements Screen {
         });
         table.add(endTurnButton).bottom().width(200).height(50).padTop(950);
 
+    }
+
+
+    // update plane visuals
+    public void updateAxisPlaneVisuals(int currentPosition) {
+        int angle = currentPosition * -30;
+        axisPlaneImage.rotateBy(angle);
     }
 
     // Place a tick icon when a brake is activated

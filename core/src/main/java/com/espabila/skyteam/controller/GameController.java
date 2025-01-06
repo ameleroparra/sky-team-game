@@ -262,6 +262,9 @@ public class GameController {
 
         if (axis.areDicesPlaced()) {
             axis.currentIndexCalculation();
+            int currentPosition = axis.getPosition();
+            gamePlayScene.updateAxisPlaneVisuals(currentPosition);
+            axis.getGameOver();
         }
 
     }
