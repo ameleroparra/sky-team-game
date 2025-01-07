@@ -277,7 +277,7 @@ public class GameController {
             isActivated = concentration.isActivated(slotIndex);
             gamePlayScene.updateCoffeeVisuals(slotIndex, isActivated);
         } else {
-            showErrorMessage("Coffee is already activated for this slot.");
+            gamePlayScene.showDiceSelectImages(diceValue);
         }
     }
 

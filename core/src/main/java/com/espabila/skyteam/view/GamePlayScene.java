@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
@@ -29,7 +30,6 @@ public class GamePlayScene implements Screen {
     private Music backgroundMusic;
     private Sound selectedSound;
     private Sound placedSound;
-    private Sound movementSound;
 
     private SpriteBatch batch;
     private FitViewport viewport;
@@ -54,13 +54,16 @@ public class GamePlayScene implements Screen {
     private Image secondBrakesSlot;
     private Image thirdBrakesSlot;
 
-    // Coffee slots
+    // Coffee related things
     private Image firstCoffeeSlot;
     private Image secondCoffeeSlot;
     private Image thirdCoffeeSlot;
-    private Image diceSelectImage;
     private Texture coffeeTexture;
+
+    private Image diceSelectImage;
     private Texture diceSelectTexture;
+    private Image valueMinusOneImage;
+    private Image valuePlusOneImage;
 
     // Engine slots
     private Image pilotEngineSlot;
@@ -107,6 +110,11 @@ public class GamePlayScene implements Screen {
     private Texture emptySlotTexture;
     private Texture noRerollTexture;
     private Texture tickIcon;
+
+    // Change Turn button
+    private Image blurryScreen;
+    private TextButton readyButton;
+    private Sound movementSound;
 
 
 
@@ -253,11 +261,6 @@ public class GamePlayScene implements Screen {
 
 
         //coffee slots
-        diceSelectImage = new Image(diceSelectTexture);
-        diceSelectImage.setPosition(0,0);
-        diceSelectImage.setVisible(false);
-        stage.addActor(diceSelectImage);
-
         firstCoffeeSlot = new Image(emptySlotTexture);
         firstCoffeeSlot.setPosition(1417,525);
         firstCoffeeSlot.setSize(100,100);
@@ -506,11 +509,11 @@ public class GamePlayScene implements Screen {
 
 
         //Change turns System
-        Image blurryScreen = new Image(new Texture("blurry.png")); //creates blurry background
+        blurryScreen = new Image(new Texture("blurry.png")); //creates blurry background
         blurryScreen.setVisible(false);
         stage.addActor(blurryScreen);
 
-        TextButton readyButton = new TextButton("Ready", skin); //creates button to exit blurry background
+        readyButton = new TextButton("Ready", skin); //creates button to exit blurry background
         readyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -523,26 +526,51 @@ public class GamePlayScene implements Screen {
                 updateDiceImages();
             }
         });
-
         readyButton.setSize(200, 50);
         readyButton.setVisible(false);
         stage.addActor(readyButton);
 
-        TextButton endTurnButton = new TextButton("End Turn", skin); //creates button to enter blurry background
-        endTurnButton.addListener(new ClickListener() {
-            @Override
+        //Dice selection System
+        diceSelectImage = new Image(diceSelectTexture);
+        diceSelectImage.setVisible(false);
+        stage.addActor(diceSelectImage);
+
+        valueMinusOneImage = new Image(emptySlotTexture);
+        valueMinusOneImage.setPosition(312, 295);
+        valueMinusOneImage.setVisible(false);
+        stage.addActor(valueMinusOneImage);
+        valueMinusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                blurryScreen.setVisible(true);
-                readyButton.setVisible(true);
-                readyButton.toFront();
-                movementSound.play(1.0f);
+                updateDiceImages();
             }
         });
-        table.add(endTurnButton).bottom().width(200).height(50).padTop(950);
+
+        valuePlusOneImage = new Image(emptySlotTexture);
+        valuePlusOneImage.setPosition(1110, 295);
+        valuePlusOneImage.setVisible(false);
+        stage.addActor(valuePlusOneImage);
+        valuePlusOneImage.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                updateDiceImages();
+            }
+        });
 
     }
 
-    // update plane visuals
+    // show concentration background
+    public void showDiceSelectImages(int diceValue) {
+        diceSelectImage.setVisible(true);
+
+        int minusOneValue = Math.max(1, diceValue - 1);
+        int plusOneValue = Math.min(6, diceValue + 1);
+
+        valueMinusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[minusOneValue]));
+        valueMinusOneImage.setVisible(true);
+
+        valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
+        valuePlusOneImage.setVisible(true);
+    }
+
     public void updateAxisPlaneVisuals(int currentPosition) {
         int angle = currentPosition * -30;
         int duration = 1;
@@ -554,6 +582,7 @@ public class GamePlayScene implements Screen {
         int movement = 30;
         lowMarkerImage.addAction(Actions.moveBy(movement * (activatedGears), 0, duration));
     }
+
 
     public void updateHighMarkerVisuals (int activatedGears) {
         int duration = 1;
@@ -612,7 +641,12 @@ public class GamePlayScene implements Screen {
         }
     }
 
-    // Place a tick icon when a refuel is activated
+    public void diceSelected(int diceIndex) {
+        if (diceValues[diceIndex] != 0) {
+            selectedDiceValue = diceValues[diceIndex];
+            selectedSound.play(1.0f);
+        }
+    }
 
     // Update the dice array
     private void updateDiceImages() {
@@ -627,35 +661,6 @@ public class GamePlayScene implements Screen {
                 diceValues[i] = 0;
                 diceImages[i].setDrawable(new Image(diceTextures[0]).getDrawable());
             }
-        }
-    }
-
-
-    private void diceSelected(int diceIndex) {
-        if (diceValues[diceIndex] != 0) {
-            selectedDiceValue = diceValues[diceIndex];
-            selectedSound.play(1.0f);
-        }
-    }
-
-    private void placeDiceCoffee(Image slot) {
-        if (selectedDiceValue != 0) {
-
-            int slotIndex;
-            if (slot == firstCoffeeSlot) {
-                slotIndex = 0;
-            } else if (slot == secondCoffeeSlot) {
-                slotIndex = 1;
-            } else if (slot == thirdCoffeeSlot) {
-                slotIndex = 2;
-            } else {
-                return;
-            }
-
-            gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
-            updateDiceImages();
-            selectedDiceValue = 0;
-
         }
     }
 
@@ -765,6 +770,8 @@ public class GamePlayScene implements Screen {
                     placedSound.play(1.0f);
                     updateDiceImages();
                     selectedDiceValue = 0;
+                    changeTurn();
+
 
                     if (gameController.isGameOver()) {
                         showGameOverDialog();
@@ -778,6 +785,37 @@ public class GamePlayScene implements Screen {
         }
     }
 
+    private void placeDiceCoffee(Image slot) {
+        if (selectedDiceValue != 0) {
+
+            int slotIndex;
+            if (slot == firstCoffeeSlot) {
+                slotIndex = 0;
+            } else if (slot == secondCoffeeSlot) {
+                slotIndex = 1;
+            } else if (slot == thirdCoffeeSlot) {
+                slotIndex = 2;
+            } else {
+                return;
+            }
+
+            gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
+            updateDiceImages();
+            selectedDiceValue = 0;
+
+        }
+    }
+
+    private void changeTurn() {
+        Timer.schedule(new Timer.Task() {
+            public void run() {
+                blurryScreen.setVisible(true);
+                readyButton.setVisible(true);
+                readyButton.toFront();
+                movementSound.play(1.0f);
+            }
+        }, 1);
+    }
 
     public void showErrorMessage(String errorMessage) {
         Dialog dialog = new Dialog("Error", skin);
