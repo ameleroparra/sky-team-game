@@ -157,6 +157,10 @@ public class GameController {
     public Player getCoPilot() { return coPilot; }
     public Player getCurrentPlayer() { return currentPlayer; }
 
+    public int[] getApproachTrackPlaneTokens() {
+        return approachTrack.getPlaneTokens();
+    }
+
     public void switchTurn() {
         if (isRoundOver()) {
             if (altitudeTrack.isLastRound()) {
@@ -184,18 +188,22 @@ public class GameController {
 
     public boolean isPilotTurn() { return currentPlayer == pilot; }
 
-    // Dice Placement
-    public void placeDiceOnRadio(int diceValue) {
-        radio.placeDice(currentPlayer, diceValue);
-    }
-
     // Radios
     public void placeDiceOnPilotRadioSlot(int diceValue) {
         if (currentPlayer instanceof Pilot) {
             radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
+            radio.removePlaneToken(diceValue, approachTrack);
+            gamePlayScene.updateApproachTrackVisuals();
         }
         else{
             showErrorMessage("Only the Pilot can place dice on the Radio.");
+        }
+    }
+
+    public void moveForwardApproachTrack(){
+        if(engines.getPilotSlot() > 0 && engines.getCopilotSlot() > 0){
+            approachTrack.moveForward(engines);
+            gamePlayScene.updateApproachTrackVisuals();
         }
     }
 
@@ -285,7 +293,6 @@ public class GameController {
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {
         landGear.activateLandGear((Pilot) currentPlayer, gearIndex, diceValue);
 
-
         if (landGear.isActivated(gearIndex)) {
             engines.advancePilotMarker();
         }
@@ -301,6 +308,11 @@ public class GameController {
             engines.advanceCopilotMarker();
         }
         return flaps.isActivated(flapsIndex);
+
+    }
+
+    public void removePlaneToken(int diceValue) {
+
 
     }
 

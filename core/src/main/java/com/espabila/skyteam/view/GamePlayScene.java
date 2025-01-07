@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
+import com.espabila.skyteam.model.ApproachTrack;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
 import com.espabila.skyteam.model.Player;
@@ -102,13 +104,10 @@ public class GamePlayScene implements Screen {
     private Image lowMarkerImage;
     private Image highMarkerImage;
 
-
     // General slots
     private Texture emptySlotTexture;
     private Texture noRerollTexture;
     private Texture tickIcon;
-
-
 
     private boolean isPilotTurn = false;
 
@@ -128,7 +127,6 @@ public class GamePlayScene implements Screen {
         gameController.setGamePlayScene(this);
         // Initialize your UI components here
     }
-
 
     @Override
     public void show() {
@@ -266,6 +264,7 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
                 placeDiceCoffee(firstCoffeeSlot);
+
             }
         });
 
@@ -415,6 +414,7 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof Pilot) {
                     placeDice(pilotEngineSlot);
+//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the pilot can interact with this slot.");
                 }
@@ -429,6 +429,7 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof CoPilot) {
                     placeDice(copilotEngineSlot);
+//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the copilot can interact with this slot.");
                 }
@@ -498,6 +499,8 @@ public class GamePlayScene implements Screen {
             approachTrackSlots[i].setPosition(860, 531 + i * 50);
             stage.addActor(approachTrackSlots[i]);
         }
+
+        updateApproachTrackVisuals();
 
         // table creation
         Table table = new Table();
@@ -857,6 +860,16 @@ public class GamePlayScene implements Screen {
 
         for (Texture texture : diceTextures) {
             texture.dispose();
+        }
+    }
+
+    public void updateApproachTrackVisuals() {
+        int[] planeTokens = gameController.getApproachTrackPlaneTokens();
+        for (int i = 0; i < approachTrackAmount; i++) {
+            int planeCount = planeTokens[i];
+            if (planeCount >= 0 && planeCount < approachTextures.length) {
+                approachTrackSlots[i].setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+            }
         }
     }
 }

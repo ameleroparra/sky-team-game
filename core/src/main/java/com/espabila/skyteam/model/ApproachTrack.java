@@ -1,5 +1,7 @@
 package com.espabila.skyteam.model;
 
+import java.util.Arrays;
+
 public class ApproachTrack {
     private int currentPosition;
     private Boolean lastTrack;
@@ -49,34 +51,37 @@ public class ApproachTrack {
 
 
     public void moveForward(Engines engines) {
-        int moveOneForward = currentPosition + 1;
-        int moveTwoForward = currentPosition + 2;
+        int moveAmount = engines.getApproachTrackMove();
 
-        if (engines.getApproachTrackMove() != 0) {
-            if (engines.getApproachTrackMove() == 1 && moveOneForward <= lastTrackNum) {
-                if (planeTokens[moveOneForward] == 0) {
-                    currentPosition = moveOneForward;
+        if (moveAmount != 0) {
+            for (int i = 0; i < moveAmount; i++) {
+                if (currentPosition + 1 < planeTokens.length) {
+                    if (planeTokens[0] == 0) {
+                        // Remove the first element (pop)
+                        planeTokens = Arrays.copyOfRange(planeTokens, 1, planeTokens.length);
+                        currentPosition++;
+                    } else {
+                        gameOver = true;
+                        break;
+                    }
                 } else {
+                    // We've reached the end of the track
                     gameOver = true;
+                    break;
                 }
-            } else if (engines.getApproachTrackMove() == 2 && moveTwoForward <= lastTrackNum) {
-                if (planeTokens[moveOneForward] == 0 && planeTokens[moveTwoForward] == 0) {
-                    currentPosition = moveTwoForward;
-                } else {
-                    gameOver = true;
-                }
-            } else {
-                gameOver = true;
             }
         }
+
+        // Update lastTrackNum
+        lastTrackNum = planeTokens.length - 1;
+
         isLastTrack();
     }
 
-    public void isLastTrack(){
-        if(currentPosition == 6){
-            lastTrack = true;
-        }
+    public void isLastTrack() {
+        lastTrack = (planeTokens.length == 1);
     }
+
 
     public Boolean isGameOver(){
         return gameOver;
