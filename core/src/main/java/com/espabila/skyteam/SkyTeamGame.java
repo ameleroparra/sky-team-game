@@ -6,8 +6,8 @@ import com.espabila.skyteam.view.MenuScene;
 import com.espabila.skyteam.view.GamePlayScene;
 
 public class SkyTeamGame extends Game {
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int WIDTH = 1920;
+    public static final int HEIGHT = 1080;
 
     private GameController gameController;
 
