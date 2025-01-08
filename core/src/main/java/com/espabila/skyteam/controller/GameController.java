@@ -285,9 +285,11 @@ public class GameController {
             isActivated = concentration.isActivated(slotIndex);
             gamePlayScene.updateCoffeeVisuals(slotIndex, isActivated);
         } else {
-            gamePlayScene.showDiceSelectImages(diceValue);
+            gamePlayScene.showErrorMessage("this Slot is already activated");
         }
     }
+
+    public void changeValue(int slotIndex) {}
 
     // Land Gear
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {

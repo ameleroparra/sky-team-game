@@ -272,7 +272,7 @@ public class GamePlayScene implements Screen {
         firstCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(firstCoffeeSlot);
+                placeDice(firstCoffeeSlot);
 
             }
         });
@@ -284,7 +284,7 @@ public class GamePlayScene implements Screen {
         secondCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(secondCoffeeSlot);
+                placeDice(secondCoffeeSlot);
             }
         });
 
@@ -295,7 +295,7 @@ public class GamePlayScene implements Screen {
         thirdCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(thirdCoffeeSlot);
+                placeDice(thirdCoffeeSlot);
             }
         });
 
@@ -645,7 +645,15 @@ public class GamePlayScene implements Screen {
 
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(coffeeTexture));
+            slotImage.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    showErrorMessage("choose a dice now");
+                }
+            });
+
             placedSound.play(1.0f);
+            changeTurn();
+            selectedDiceValue = 0;
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
@@ -699,13 +707,6 @@ public class GamePlayScene implements Screen {
                     placementSuccessful = true;
                 }
 
-                // Radios
-                else if (slot == pilotRadioSlot){
-                    gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
-                    placementSuccessful = true;
-
-                }
-
                 // Land Gear
                 else if (slot == firstLandGearSlot || slot == secondLandGearSlot || slot == thirdLandGearSlot) {
                     int gearIndex;
@@ -727,23 +728,6 @@ public class GamePlayScene implements Screen {
                         showErrorMessage("invalid dice value");
                     }
 
-
-                }
-
-                // Brakes
-                else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
-                    int brakeIndex;
-                    if (slot == firstBrakesSlot) {
-                        brakeIndex = 0;
-                    } else if (slot == secondBrakesSlot) {
-                        brakeIndex = 1;
-                    } else if (slot == thirdBrakesSlot) {
-                        brakeIndex = 2;
-                    } else {
-                        return;
-                    }
-
-                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
 
                 }
 
@@ -772,6 +756,53 @@ public class GamePlayScene implements Screen {
 
                 }
 
+                // Brakes
+                else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
+                    int brakeIndex;
+                    if (slot == firstBrakesSlot) {
+                        brakeIndex = 0;
+                    } else if (slot == secondBrakesSlot) {
+                        brakeIndex = 1;
+                    } else if (slot == thirdBrakesSlot) {
+                        brakeIndex = 2;
+                    } else {
+                        return;
+                    }
+
+                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
+
+
+                }
+
+                // Radios
+                else if (slot == pilotRadioSlot){
+                    gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
+                    placementSuccessful = true;
+
+                }
+
+                // coffee
+                else if (slot == firstCoffeeSlot || slot == secondCoffeeSlot || slot == thirdCoffeeSlot) {
+                    if (selectedDiceValue != 0) {
+
+                        int slotIndex;
+                        if (slot == firstCoffeeSlot) {
+                            slotIndex = 0;
+                        } else if (slot == secondCoffeeSlot) {
+                            slotIndex = 1;
+                        } else if (slot == thirdCoffeeSlot) {
+                            slotIndex = 2;
+                        } else {
+                            return;
+                        }
+
+                        gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
+
+                    }
+                }
+
+
+
                 else {
                     throw new IllegalArgumentException("Invalid slot selected");
                 }
@@ -792,27 +823,6 @@ public class GamePlayScene implements Screen {
             }
 
             updateDiceImages();
-        }
-    }
-
-    private void placeDiceCoffee(Image slot) {
-        if (selectedDiceValue != 0) {
-
-            int slotIndex;
-            if (slot == firstCoffeeSlot) {
-                slotIndex = 0;
-            } else if (slot == secondCoffeeSlot) {
-                slotIndex = 1;
-            } else if (slot == thirdCoffeeSlot) {
-                slotIndex = 2;
-            } else {
-                return;
-            }
-
-            gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
-            updateDiceImages();
-            selectedDiceValue = 0;
-
         }
     }
 
