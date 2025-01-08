@@ -202,7 +202,12 @@ public class GamePlayScene implements Screen {
         pilotRadioSlot.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
-                placeDice(pilotRadioSlot);
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    placeDice(pilotRadioSlot);
+                }
+                else {
+                    showErrorMessage("Only the pilot can use this slot.");
+                }
             }
         });
 
@@ -615,6 +620,7 @@ public class GamePlayScene implements Screen {
             slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
             placedSound.play(1.0f);
             selectedDiceValue = 0;
+            changeTurn();
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
