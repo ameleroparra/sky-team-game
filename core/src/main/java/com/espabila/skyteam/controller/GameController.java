@@ -157,7 +157,19 @@ public class GameController {
     public Player getCoPilot() { return coPilot; }
     public Player getCurrentPlayer() { return currentPlayer; }
 
+    public int getLastApproachTrackNum(){
+        return approachTrack.getLastTrackNum();
+    }
+    public int getCurrentApproachTrackPosition() {
+        return approachTrack.getCurrentPosition();
+    }
+
     public int[] getApproachTrackPlaneTokens() {
+        return approachTrack.getPlaneTokens();
+    }
+
+    public int[] setApproachTrackPlaneTokens(int[] planeTokens) {
+        approachTrack.setPlaneTokens(planeTokens);
         return approachTrack.getPlaneTokens();
     }
 
@@ -194,9 +206,8 @@ public class GameController {
             radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
             radio.removePlaneToken(diceValue, approachTrack);
             gamePlayScene.updateApproachTrackVisuals();
-        }
-        else{
-            showErrorMessage("Only the Pilot can place dice on the Radio.");
+        } else {
+            gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
         }
     }
 
@@ -204,6 +215,8 @@ public class GameController {
         if(engines.getPilotSlot() > 0 && engines.getCopilotSlot() > 0){
             approachTrack.moveForward(engines);
             gamePlayScene.updateApproachTrackVisuals();
+            for(int i = 0; i < approachTrack.getPlaneTokens().length; i++)
+                System.out.println(approachTrack.getPlaneTokens()[i]);
         }
     }
 
