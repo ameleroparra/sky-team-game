@@ -62,16 +62,20 @@ public class Concentration {
         return true;
     }
 
-    public void useUp(Player player, int SlotIndex, int diceValue, int diceIndex){
-        if (diceValue != 6) {
-            diceValue = diceValue + 1;
-        }
-    }
-
-    public void useDown(Player player, int SlotIndex, int diceValue, int diceIndex){
+    public int useDown(int diceValue){
         if (diceValue != 1) {
             diceValue = diceValue - 1;
         }
+
+        return diceValue;
+    }
+
+    public int useUp(int diceValue, int diceIndex){
+        if (diceValue != 6) {
+            diceValue = diceValue + 1;
+        }
+
+        return diceValue;
     }
 
     public void useToken(Player player, int slotIndex, int diceValue, int diceIndex){
