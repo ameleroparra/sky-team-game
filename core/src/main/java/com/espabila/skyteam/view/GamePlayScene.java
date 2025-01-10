@@ -20,7 +20,6 @@ import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
-import com.espabila.skyteam.model.Player;
 
 import java.util.List;
 
@@ -62,10 +61,12 @@ public class GamePlayScene implements Screen {
     private Image thirdCoffeeSlot;
     private Texture coffeeTexture;
 
-    private Image diceSelectImage;
+    private Image concentrationDecisionImage;
     private Texture diceSelectTexture;
     private Image valueMinusOneImage;
     private Image valuePlusOneImage;
+
+    public boolean useCoffee = false;
 
     // Engine slots
     private Image pilotEngineSlot;
@@ -620,9 +621,9 @@ public class GamePlayScene implements Screen {
 
     private void createConcentrationScreen() {
         diceSelectTexture = new Texture("diceSelect.png");
-        diceSelectImage = new Image(diceSelectTexture);
-        diceSelectImage.setVisible(false);
-        stage.addActor(diceSelectImage);
+        concentrationDecisionImage = new Image(diceSelectTexture);
+        concentrationDecisionImage.setVisible(false);
+        stage.addActor(concentrationDecisionImage);
 
         valueMinusOneImage = new Image(emptySlotTexture);
         valueMinusOneImage.setPosition(312, 295);
@@ -711,7 +712,7 @@ public class GamePlayScene implements Screen {
             slotImage.setDrawable(new TextureRegionDrawable(coffeeTexture));
             slotImage.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
-                    showErrorMessage("choose a dice now");
+                    useCoffee = true;
                 }
             });
 
@@ -736,7 +737,13 @@ public class GamePlayScene implements Screen {
     // Dice placement related
 
     public void diceSelected(int diceIndex) {
-        if (diceValues[diceIndex] != 0) {
+        if (useCoffee) {
+            useCoffee = false;
+            selectedDiceValue = diceValues[diceIndex];
+            showConcentrationImages(selectedDiceValue);
+
+        }
+        else if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
         }
@@ -908,8 +915,8 @@ public class GamePlayScene implements Screen {
     // Some rules
 
     // show concentration background
-    public void turnDiceSelectImages(int diceValue) {
-        diceSelectImage.setVisible(true);
+    public void showConcentrationImages(int diceValue) {
+        concentrationDecisionImage.setVisible(true);
 
         int minusOneValue = Math.max(1, diceValue - 1);
         int plusOneValue = Math.min(6, diceValue + 1);
