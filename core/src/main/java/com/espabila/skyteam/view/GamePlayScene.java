@@ -44,6 +44,7 @@ public class GamePlayScene implements Screen {
     private static final int diceAmount = 4;
     private int[] diceValues;
     private int selectedDiceValue = 0;
+    public int selectedDiceIndex = 0;
 
     // Radio slots
     private Image pilotRadioSlot;
@@ -65,6 +66,7 @@ public class GamePlayScene implements Screen {
     private Texture diceSelectTexture;
     private Image valueMinusOneImage;
     private Image valuePlusOneImage;
+    private TextButton backButton;
 
     public boolean useCoffee = false;
 
@@ -274,7 +276,6 @@ public class GamePlayScene implements Screen {
             diceImages[i].setPosition(719 + i * (100 + 28), 960);
             stage.addActor(diceImages[i]);
             diceImages[i].addListener(new ClickListener() { //make images clickable
-                @Override
                 public void clicked(InputEvent event, float x, float y) {
                     diceSelected(index);
                 }
@@ -601,7 +602,7 @@ public class GamePlayScene implements Screen {
         stage.addActor(blurryScreen);
 
         readyButton = new TextButton("Ready", skin);
-        readyButton.setPosition(backgroundTexture.getWidth() / 2.5f, backgroundTexture.getHeight() / 8f);
+        readyButton.setPosition(860, backgroundTexture.getHeight() / 8f);
         readyButton.setSize(200, 50);
         readyButton.setVisible(false);
         stage.addActor(readyButton);
@@ -631,7 +632,7 @@ public class GamePlayScene implements Screen {
         stage.addActor(valueMinusOneImage);
         valueMinusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                selectedDiceValue = gameController.changeValueDown(selectedDiceValue);
+                gameController.changeValueDown(selectedDiceValue, selectedDiceIndex);
                 updateDiceImages();
             }
         });
@@ -643,6 +644,17 @@ public class GamePlayScene implements Screen {
         valuePlusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 selectedDiceValue = gameController.changeValueUp(4, 4);
+            }
+        });
+
+        backButton = new TextButton("back", skin);
+        backButton.setPosition(860, 100);
+        backButton.setSize(200, 50);
+        backButton.setVisible(false);
+        stage.addActor(backButton);
+        backButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                hideConcentrationImages();
             }
         });
     }
@@ -739,6 +751,7 @@ public class GamePlayScene implements Screen {
 
     public void diceSelected(int diceIndex) {
         if (useCoffee) {
+            selectedDiceIndex = diceIndex;
             useCoffee = false;
             selectedDiceValue = diceValues[diceIndex];
             showConcentrationImages(selectedDiceValue);
@@ -746,6 +759,7 @@ public class GamePlayScene implements Screen {
         else if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
+            System.out.println(diceIndex);
         }
     }
 
@@ -925,12 +939,15 @@ public class GamePlayScene implements Screen {
 
         valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
         valuePlusOneImage.setVisible(true);
+
+        backButton.setVisible(true);
     }
 
     public void hideConcentrationImages() {
         concentrationDecisionImage.setVisible(false);
         valueMinusOneImage.setVisible(false);
         valuePlusOneImage.setVisible(false);
+        backButton.setVisible(false);
     }
 
     public void showErrorMessage(String errorMessage) {

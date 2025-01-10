@@ -62,7 +62,7 @@ public class Concentration {
         return true;
     }
 
-    public int useDown(int diceValue){
+    public int useDown(int diceValue, int diceIndex){
         if (diceValue != 1) {
             diceValue = diceValue - 1;
         }

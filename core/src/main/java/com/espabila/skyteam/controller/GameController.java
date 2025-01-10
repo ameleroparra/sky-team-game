@@ -289,11 +289,10 @@ public class GameController {
         }
     }
 
-    public int changeValueDown(int diceValue) {
-        diceValue = concentration.useDown(diceValue);
+    public void changeValueDown(int diceValue, int diceIndex) {
+        concentration.useDown(diceValue, diceIndex);
         gamePlayScene.hideConcentrationImages();
 
-        return diceValue;
     }
 
     public int changeValueUp(int diceValue, int diceIndex) {
