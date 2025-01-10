@@ -71,6 +71,7 @@ public class ApproachTrack {
                 }
             }
         }
+        currentPosition = 0;
 
         // Update lastTrackNum
         lastTrackNum = planeTokens.length - 1;
@@ -81,7 +82,6 @@ public class ApproachTrack {
     public void isLastTrack() {
         lastTrack = (planeTokens.length == 1);
     }
-
 
     public Boolean isGameOver(){
         return gameOver;
