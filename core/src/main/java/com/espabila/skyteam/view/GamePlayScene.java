@@ -738,6 +738,7 @@ public class GamePlayScene implements Screen {
             slotImage.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     useCoffee = true;
+                    System.out.println("Using coffee");
                     if (slotImage == firstCoffeeSlot) {
                         coffeeSlotIndex = 0;
                     }
@@ -755,6 +756,7 @@ public class GamePlayScene implements Screen {
             selectedDiceValue = 0;
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+            slotImage.clearListeners();
         }
     }
 

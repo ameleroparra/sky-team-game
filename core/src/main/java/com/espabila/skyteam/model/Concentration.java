@@ -29,6 +29,7 @@ public class Concentration {
     }
 
     public void setActivated(int slotIndex, boolean activated) {
+        System.out.println("Slot " + slotIndex + " activated: " + activated);
         this.activated[slotIndex] = activated;
     }
 
