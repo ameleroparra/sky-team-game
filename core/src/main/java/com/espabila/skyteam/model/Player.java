@@ -18,10 +18,6 @@ public abstract class Player {
         }
     }
 
-    public void rollSpecificDices(int diceIndex) {
-
-    }
-
     public List<Integer> getDiceList() {
         return diceList;
     }

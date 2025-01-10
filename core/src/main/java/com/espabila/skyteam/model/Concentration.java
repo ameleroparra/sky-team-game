@@ -28,6 +28,10 @@ public class Concentration {
         this.minusOne = minusOne;
     }
 
+    public void setActivated(int slotIndex, boolean activated) {
+        this.activated[slotIndex] = activated;
+    }
+
     public void placeDice(Player player, int diceValue, int slotIndex){
         if (slotIndex == 0 && !activated[0]){
             activated[0] = true;
@@ -53,6 +57,8 @@ public class Concentration {
         return activated[slotIndex];
     }
 
+
+
     public boolean allActivated(){
         for (int i = 0; i < 3; i++){
             if (!activated[i]){
@@ -62,70 +68,23 @@ public class Concentration {
         return true;
     }
 
-    public int useDown(int diceValue, int diceIndex){
+    public void useDown(Player player, int diceValue, int diceIndex){
         if (diceValue != 1) {
-            diceValue = diceValue - 1;
+            int newValue = diceValue - 1;
+            player.getDiceList().set(diceIndex, newValue);
         }
 
-        return diceValue;
     }
 
-    public int useUp(int diceValue, int diceIndex){
+    public void useUp(Player player, int diceValue, int diceIndex){
         if (diceValue != 6) {
-            diceValue = diceValue + 1;
+            int newValue = diceValue + 1;
+            player.getDiceList().set(diceIndex, newValue);
         }
 
-        return diceValue;
+
     }
 
-    public void useToken(Player player, int slotIndex, int diceValue, int diceIndex){
-
-        int counter = 0;
-        for (int i = 0; i < 3; i++){
-            if (activated[i]){
-                counter++;
-            }
-        }
-        if (counter == 0){
-            System.out.println("No coffee tokens available.");
-        }
-
-        else if(plusOne &&!minusOne){
-            if (diceValue == 6){
-                System.out.println("Cannot add + 1 to dice value. Choose substracting 1 or change the dice");
-            }
-            else if(slotIndex == 0){
-                activated[0] = false;
-                player.getDiceList().set(diceIndex, diceValue + 1);
-            }
-            else if(slotIndex == 1){
-                activated[1] = false;
-                player.getDiceList().set(diceIndex, diceValue + 1);
-            }
-            else if(slotIndex == 2){
-                activated[2] = false;
-                player.getDiceList().set(diceIndex, diceValue + 1);
-            }
-        }
-
-        else if(minusOne &&!plusOne){
-            if(diceValue == 1){
-                System.out.println("Cannot substract 1 from the dice value. Choose adding 1 or change the dice");
-            }
-            else if(slotIndex == 0){
-                activated[0] = false;
-                player.getDiceList().set(diceIndex, diceValue - 1);
-            }
-            else if(slotIndex == 1){
-                activated[1] = false;
-                player.getDiceList().set(diceIndex, diceValue - 1);
-            }
-            else if(slotIndex == 2){
-                activated[2] = false;
-                player.getDiceList().set(diceIndex, diceValue - 1);
-            }
-        }
-    }
 
     public void resetConcentration(){
         for (int i = 0; i < activated.length; i++) {
