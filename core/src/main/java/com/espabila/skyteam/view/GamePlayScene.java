@@ -732,10 +732,24 @@ public class GamePlayScene implements Screen {
 
     public void updateApproachTrackVisuals() {
         int[] planeTokens = gameController.getApproachTrackPlaneTokens();
-        for (int i = 0; i < approachTrackAmount; i++) {
-            int planeCount = planeTokens[i];
-            if (planeCount >= 0 && planeCount < approachTextures.length) {
-                approachTrackSlots.get(i).setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+
+        for (int i = 0; i < approachTrackSlots.size(); i++) {
+            Image slot = approachTrackSlots.get(i);
+
+            if (i < planeTokens.length) {
+                int planeCount = planeTokens[i];
+
+                planeCount = Math.min(planeCount, approachTextures.length - 1);
+                planeCount = Math.max(planeCount, 0);
+
+                slot.setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+
+                float yPosition = approachSlotBaseY + i * approachSlotSpacing;
+                slot.setPosition(860, yPosition);
+
+                slot.setVisible(true);
+            } else {
+                slot.setVisible(false);
             }
         }
     }
