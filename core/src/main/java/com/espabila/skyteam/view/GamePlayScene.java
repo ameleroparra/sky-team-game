@@ -21,6 +21,7 @@ import com.espabila.skyteam.controller.GameController;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -94,11 +95,14 @@ public class GamePlayScene implements Screen {
     // Altitude Tracks slot
     private Texture[] altitudeTextures;
     private Image altitudeTrackSlot;
+    private int altitudeTrackTextureNum = 6;
 
     // Approach Tracks slots
     private Texture[] approachTextures;
-    private Image[] approachTrackSlots;
-    private static final int approachTrackAmount = 7;
+    private int approachTrackAmount;
+    private List<Image> approachTrackSlots;
+    private float approachSlotBaseY = 531; // Base Y position for the first slot
+    private float approachSlotSpacing = 50;
 
     // Reroll slots
     private Texture rerollTexture;
@@ -129,6 +133,9 @@ public class GamePlayScene implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         gameController.setGamePlayScene(this);
+        // Initialize your UI components here
+
+        approachTrackAmount = gameController.getLastApproachTrackNum();
     }
 
     @Override
@@ -152,22 +159,6 @@ public class GamePlayScene implements Screen {
         createAxisSlots();
         createAltitudeSlots();
         createApproachSlots();
-
-        // Approach track slots creation
-        approachTextures = new Texture[5]; // create textures
-        for (int i = 0; i <= 4; i++) {
-            approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
-        }
-
-        approachTrackSlots = new Image[approachTrackAmount]; // create slots
-        for (int i = 0; i < approachTrackAmount; i++) {
-            approachTrackSlots[i] = new Image(approachTextures[0]);
-            approachTrackSlots[i].setPosition(860, 531 + i * 50);
-            stage.addActor(approachTrackSlots[i]);
-        }
-
-        updateApproachTrackVisuals();
-
 
         createBlurryScreen();
         createConcentrationScreen();
@@ -505,7 +496,8 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof Pilot) {
                     placeDice(pilotEngineSlot);
-//                    gameController.moveForwardApproachTrack();
+                    gameController.moveForwardApproachTrack();
+//                    updateApproachTrackVisuals();
                 } else {
                     showErrorMessage("Only the pilot can interact with this slot.");
                 }
@@ -520,7 +512,8 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof CoPilot) {
                     placeDice(copilotEngineSlot);
-//                    gameController.moveForwardApproachTrack();
+                    gameController.moveForwardApproachTrack();
+//                    updateApproachTrackVisuals();
                 } else {
                     showErrorMessage("Only the copilot can interact with this slot.");
                 }
@@ -579,7 +572,8 @@ public class GamePlayScene implements Screen {
         for (int i = 0; i <= 6; i++) {
             altitudeTextures[i] = new Texture("altitude" + i + ".jpg"); // generate altitude textures
         }
-        altitudeTrackSlot = new Image(altitudeTextures[6]);
+
+        altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum]);
         altitudeTrackSlot.setPosition(1100,875);
         stage.addActor(altitudeTrackSlot);
 
@@ -592,6 +586,18 @@ public class GamePlayScene implements Screen {
     }
 
     private void createApproachSlots() {
+        approachTextures = new Texture[5]; // create textures
+        for (int i = 0; i <= 4; i++) {
+            approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
+        }
+        approachTrackSlots = new ArrayList<>();
+        for (int i = 0; i <= approachTrackAmount; i++) {
+            Image slot = new Image(approachTextures[0]);
+            slot.setPosition(860, approachSlotBaseY + i * approachSlotSpacing);
+            stage.addActor(slot);
+            approachTrackSlots.add(slot);
+        }
+        updateApproachTrackVisuals();
 
     }
 
@@ -739,10 +745,24 @@ public class GamePlayScene implements Screen {
 
     public void updateApproachTrackVisuals() {
         int[] planeTokens = gameController.getApproachTrackPlaneTokens();
-        for (int i = 0; i < approachTrackAmount; i++) {
-            int planeCount = planeTokens[i];
-            if (planeCount >= 0 && planeCount < approachTextures.length) {
-                approachTrackSlots[i].setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+
+        for (int i = 0; i < approachTrackSlots.size(); i++) {
+            Image slot = approachTrackSlots.get(i);
+
+            if (i < planeTokens.length) {
+                int planeCount = planeTokens[i];
+
+                planeCount = Math.min(planeCount, approachTextures.length - 1);
+                planeCount = Math.max(planeCount, 0);
+
+                slot.setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+
+                float yPosition = approachSlotBaseY + i * approachSlotSpacing;
+                slot.setPosition(860, yPosition);
+
+                slot.setVisible(true);
+            } else {
+                slot.setVisible(false);
             }
         }
     }
@@ -958,6 +978,39 @@ public class GamePlayScene implements Screen {
     }
 
     private void showGameOverDialog() {
+    }
+
+    public void startNewRound() {
+        resetRadioSlots();
+        resetEnginesSlots();
+        resetAxisSlots();
+
+        if((altitudeTrackTextureNum -= 1) > 0) {
+            altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum -= 1]);
+        }
+        else {
+
+        }
+    }
+
+    public void resetRadioSlots() {
+        pilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        firstCoPilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        secondCoPilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void resetEnginesSlots(){
+        pilotEngineSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        copilotEngineSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void resetAxisSlots(){
+        pilotAxisSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        copilotAxisSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void gameOverScreen(){
+        game.setScreen(new CrashScene(game));
     }
 
 }

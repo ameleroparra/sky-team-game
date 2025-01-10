@@ -1,7 +1,9 @@
 package com.espabila.skyteam.controller;
 
+import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.model.*;
 import com.espabila.skyteam.view.GamePlayScene;
+import com.espabila.skyteam.view.CrashScene;
 
 public class GameController {
     private Player pilot;
@@ -18,6 +20,7 @@ public class GameController {
     private Flaps flaps;
     private GamePlayScene gamePlayScene;
     private Boolean gameOver;
+    private SkyTeamGame game;
 
     public void setPilot(Player pilot) {
         this.pilot = pilot;
@@ -195,7 +198,11 @@ public class GameController {
         altitudeTrack.newRound();
         pilot.rollDices();
         coPilot.rollDices();
-        currentPlayer = altitudeTrack.isPilotTurn() ? pilot : coPilot;
+        if (altitudeTrack.isPilotTurn()) {
+            currentPlayer = pilot;
+        } else {
+            currentPlayer = coPilot;
+        }
     }
 
     public boolean isPilotTurn() { return currentPlayer == pilot; }
@@ -206,6 +213,9 @@ public class GameController {
             radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
             radio.removePlaneToken(diceValue, approachTrack);
             gamePlayScene.updateApproachTrackVisuals();
+            if(isRoundOver()){
+
+            }
         } else {
             gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
         }
@@ -214,9 +224,13 @@ public class GameController {
     public void moveForwardApproachTrack(){
         if(engines.getPilotSlot() > 0 && engines.getCopilotSlot() > 0){
             approachTrack.moveForward(engines);
-            gamePlayScene.updateApproachTrackVisuals();
-            for(int i = 0; i < approachTrack.getPlaneTokens().length; i++)
-                System.out.println(approachTrack.getPlaneTokens()[i]);
+            if(approachTrack.getGameOver()){
+                gameOver = true;
+                gamePlayScene.gameOverScreen();
+            }
+            else{
+                gamePlayScene.updateApproachTrackVisuals();
+            }
         }
     }
 
@@ -334,11 +348,6 @@ public class GameController {
             engines.advanceCopilotMarker();
         }
         return flaps.isActivated(flapsIndex);
-
-    }
-
-    public void removePlaneToken(int diceValue) {
-
 
     }
 

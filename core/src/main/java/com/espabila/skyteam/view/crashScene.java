@@ -10,13 +10,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.espabila.skyteam.SkyTeamGame;
+import com.espabila.skyteam.controller.GameController;
 
-public class crashScene implements Screen {
+public class CrashScene implements Screen {
     private Stage stage;
     private Skin skin;
     private Texture background;
     private SpriteBatch batch;
     private Table table;
+    private final SkyTeamGame game;
+
+    public CrashScene(SkyTeamGame game) {
+        this.game = game;
+    }
 
     public void show() {
         stage = new Stage(new ScreenViewport());
