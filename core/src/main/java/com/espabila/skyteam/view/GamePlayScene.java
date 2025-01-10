@@ -21,7 +21,6 @@ import com.espabila.skyteam.controller.GameController;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -98,11 +97,8 @@ public class GamePlayScene implements Screen {
 
     // Approach Tracks slots
     private Texture[] approachTextures;
-//    private Image[] approachTrackSlots;
-    private int approachTrackAmount;
-    private List<Image> approachTrackSlots;
-    private float approachSlotBaseY = 531; // Base Y position for the first slot
-    private float approachSlotSpacing = 50;
+    private Image[] approachTrackSlots;
+    private static final int approachTrackAmount = 7;
 
     // Reroll slots
     private Texture rerollTexture;
@@ -133,9 +129,6 @@ public class GamePlayScene implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         gameController.setGamePlayScene(this);
-        // Initialize your UI components here
-
-        approachTrackAmount = gameController.getLastApproachTrackNum();
     }
 
     @Override
@@ -512,8 +505,7 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof Pilot) {
                     placeDice(pilotEngineSlot);
-                    gameController.moveForwardApproachTrack();
-//                    updateApproachTrackVisuals();
+//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the pilot can interact with this slot.");
                 }
@@ -528,8 +520,7 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof CoPilot) {
                     placeDice(copilotEngineSlot);
-                    gameController.moveForwardApproachTrack();
-//                    updateApproachTrackVisuals();
+//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the copilot can interact with this slot.");
                 }
@@ -599,17 +590,10 @@ public class GamePlayScene implements Screen {
         rerollSlot.setSize(50, 50);
         stage.addActor(rerollSlot);
     }
-    private void createApproachSlots() {
-        approachTrackSlots = new ArrayList<>(); // create slots
-        for (int i = 0; i <= approachTrackAmount; i++) {
-            Image slot = new Image(approachTextures[0]);
-            slot.setPosition(860, approachSlotBaseY + i * approachSlotSpacing);
-            stage.addActor(slot);
-            approachTrackSlots.add(slot);
-            updateApproachTrackVisuals();
-        }
-    }
 
+    private void createApproachSlots() {
+
+    }
 
     private void createBlurryScreen() {
         //Change turns System
@@ -755,24 +739,10 @@ public class GamePlayScene implements Screen {
 
     public void updateApproachTrackVisuals() {
         int[] planeTokens = gameController.getApproachTrackPlaneTokens();
-
-        for (int i = 0; i < approachTrackSlots.size(); i++) {
-            Image slot = approachTrackSlots.get(i);
-
-            if (i < planeTokens.length) {
-                int planeCount = planeTokens[i];
-
-                planeCount = Math.min(planeCount, approachTextures.length - 1);
-                planeCount = Math.max(planeCount, 0);
-
-                slot.setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
-
-                float yPosition = approachSlotBaseY + i * approachSlotSpacing;
-                slot.setPosition(860, yPosition);
-
-                slot.setVisible(true);
-            } else {
-                slot.setVisible(false);
+        for (int i = 0; i < approachTrackAmount; i++) {
+            int planeCount = planeTokens[i];
+            if (planeCount >= 0 && planeCount < approachTextures.length) {
+                approachTrackSlots[i].setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
             }
         }
     }
