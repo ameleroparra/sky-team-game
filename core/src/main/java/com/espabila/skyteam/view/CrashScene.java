@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.espabila.skyteam.SkyTeamGame;
-import com.espabila.skyteam.controller.GameController;
 
 public class CrashScene implements Screen {
     private Stage stage;
