@@ -317,16 +317,18 @@ public class GameController {
     }
 
     public void changeValueDown(int diceValue, int diceIndex) {
-        concentration.useDown(diceValue, diceIndex);
+        concentration.useDown(currentPlayer, diceValue, diceIndex);
         gamePlayScene.hideConcentrationImages();
-
+        concentration.setActivated(gamePlayScene.coffeeSlotIndex, false);
+        gamePlayScene.updateCoffeeVisuals(gamePlayScene.coffeeSlotIndex, false);
     }
 
-    public int changeValueUp(int diceValue, int diceIndex) {
-        diceValue = concentration.useUp(diceValue, diceIndex);
+    public void changeValueUp(int diceValue, int diceIndex) {
+        concentration.useUp(currentPlayer, diceValue, diceIndex);
         gamePlayScene.hideConcentrationImages();
+        concentration.setActivated(gamePlayScene.coffeeSlotIndex, false);
+        gamePlayScene.updateCoffeeVisuals(gamePlayScene.coffeeSlotIndex, false);
 
-        return diceValue;
     }
 
     // Land Gear

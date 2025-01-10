@@ -68,6 +68,7 @@ public class GamePlayScene implements Screen {
     private Image valueMinusOneImage;
     private Image valuePlusOneImage;
     private TextButton backButton;
+    public int coffeeSlotIndex;
 
     public boolean useCoffee = false;
 
@@ -639,6 +640,7 @@ public class GamePlayScene implements Screen {
         valueMinusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 gameController.changeValueDown(selectedDiceValue, selectedDiceIndex);
+                selectedDiceValue = 0;
                 updateDiceImages();
             }
         });
@@ -649,7 +651,10 @@ public class GamePlayScene implements Screen {
         stage.addActor(valuePlusOneImage);
         valuePlusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                selectedDiceValue = gameController.changeValueUp(4, 4);
+                gameController.changeValueUp(selectedDiceValue, selectedDiceIndex);
+                selectedDiceValue = 0;
+                updateDiceImages();
+
             }
         });
 
@@ -661,6 +666,7 @@ public class GamePlayScene implements Screen {
         backButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 hideConcentrationImages();
+                selectedDiceValue = 0;
             }
         });
     }
@@ -732,6 +738,15 @@ public class GamePlayScene implements Screen {
             slotImage.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     useCoffee = true;
+                    if (slotImage == firstCoffeeSlot) {
+                        coffeeSlotIndex = 0;
+                    }
+                    else if (slotImage == secondCoffeeSlot) {
+                        coffeeSlotIndex = 1;
+                    }
+                    else if (slotImage == thirdCoffeeSlot) {
+                        coffeeSlotIndex = 2;
+                    }
                 }
             });
 
@@ -779,7 +794,6 @@ public class GamePlayScene implements Screen {
         else if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
-            System.out.println(diceIndex);
         }
     }
 
@@ -931,7 +945,7 @@ public class GamePlayScene implements Screen {
     }
 
     // Update the dice array
-    private void updateDiceImages() {
+    public void updateDiceImages() {
         List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
         diceValues = new int[diceAmount];
 
