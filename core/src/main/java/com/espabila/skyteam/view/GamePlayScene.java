@@ -57,6 +57,10 @@ public class GamePlayScene implements Screen {
     private Image secondBrakesSlot;
     private Image thirdBrakesSlot;
 
+    private Texture noNumber2;
+    private Texture noNumber4;
+    private Texture noNumber6;
+
     // Coffee related things
     private Image firstCoffeeSlot;
     private Image secondCoffeeSlot;
@@ -342,7 +346,12 @@ public class GamePlayScene implements Screen {
     }
 
     private void createBrakeSlots() {
-        firstBrakesSlot = new Image(emptySlotTexture);
+
+        noNumber2 = new Texture("noNumber2.jpg");
+        noNumber4 = new Texture("noNumber4.jpg");
+        noNumber6 = new Texture("noNumber6.jpg");
+
+        firstBrakesSlot = new Image(noNumber2);
         firstBrakesSlot.setPosition(110,525);
         firstBrakesSlot.setSize(100,100);
 
@@ -354,7 +363,7 @@ public class GamePlayScene implements Screen {
         });
         stage.addActor(firstBrakesSlot);
 
-        secondBrakesSlot = new Image(emptySlotTexture);
+        secondBrakesSlot = new Image(noNumber4);
         secondBrakesSlot.setPosition(260,525);
         secondBrakesSlot.setSize(100,100);
         stage.addActor(secondBrakesSlot);
@@ -366,7 +375,7 @@ public class GamePlayScene implements Screen {
             }
         });
 
-        thirdBrakesSlot = new Image(emptySlotTexture);
+        thirdBrakesSlot = new Image(noNumber6);
         thirdBrakesSlot.setPosition(408,525);
         thirdBrakesSlot.setSize(100,100);
         stage.addActor(thirdBrakesSlot);
@@ -805,7 +814,10 @@ public class GamePlayScene implements Screen {
                 boolean placementSuccessful = false;
 
                 if (!(slot.getDrawable() instanceof TextureRegionDrawable) ||
-                    ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != emptySlotTexture) {
+                    (((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != emptySlotTexture &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber2 &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber4 &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber6)) {
                     showErrorMessage("This slot is already occupied.");
                     return;
                 }
@@ -1026,7 +1038,7 @@ public class GamePlayScene implements Screen {
     }
 
     public void gameOverScreen(){
-        game.setScreen(new CrashScene(game));
+        game.setScreen(new CrashScene(game, gameController));
     }
 
 }
