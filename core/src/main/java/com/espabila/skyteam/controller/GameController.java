@@ -289,7 +289,19 @@ public class GameController {
         }
     }
 
-    public void changeValue(int slotIndex) {}
+    public int changeValueDown(int diceValue) {
+        diceValue = concentration.useDown(diceValue);
+        gamePlayScene.hideConcentrationImages();
+
+        return diceValue;
+    }
+
+    public int changeValueUp(int diceValue, int diceIndex) {
+        diceValue = concentration.useUp(diceValue, diceIndex);
+        gamePlayScene.hideConcentrationImages();
+
+        return diceValue;
+    }
 
     // Land Gear
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {

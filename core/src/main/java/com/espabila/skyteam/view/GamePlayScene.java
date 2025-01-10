@@ -631,6 +631,7 @@ public class GamePlayScene implements Screen {
         stage.addActor(valueMinusOneImage);
         valueMinusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                selectedDiceValue = gameController.changeValueDown(selectedDiceValue);
                 updateDiceImages();
             }
         });
@@ -641,7 +642,7 @@ public class GamePlayScene implements Screen {
         stage.addActor(valuePlusOneImage);
         valuePlusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                updateDiceImages();
+                selectedDiceValue = gameController.changeValueUp(4, 4);
             }
         });
     }
@@ -741,7 +742,6 @@ public class GamePlayScene implements Screen {
             useCoffee = false;
             selectedDiceValue = diceValues[diceIndex];
             showConcentrationImages(selectedDiceValue);
-
         }
         else if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
@@ -914,7 +914,6 @@ public class GamePlayScene implements Screen {
 
     // Some rules
 
-    // show concentration background
     public void showConcentrationImages(int diceValue) {
         concentrationDecisionImage.setVisible(true);
 
@@ -926,6 +925,12 @@ public class GamePlayScene implements Screen {
 
         valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
         valuePlusOneImage.setVisible(true);
+    }
+
+    public void hideConcentrationImages() {
+        concentrationDecisionImage.setVisible(false);
+        valueMinusOneImage.setVisible(false);
+        valuePlusOneImage.setVisible(false);
     }
 
     public void showErrorMessage(String errorMessage) {
