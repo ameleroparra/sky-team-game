@@ -208,13 +208,35 @@ public class GameController {
     public boolean isPilotTurn() { return currentPlayer == pilot; }
 
     // Radios
-    public void placeDiceOnPilotRadioSlot(int diceValue) {
+    public void placeDiceRadioSlot(int diceValue) {
         if (currentPlayer instanceof Pilot) {
-            radio.placeDicePilotSlot((Pilot) currentPlayer, diceValue);
+            radio.placeDice(currentPlayer, diceValue);
             radio.removePlaneToken(diceValue, approachTrack);
             gamePlayScene.updateApproachTrackVisuals();
             if(isRoundOver()){
-
+                checkEndRoundConditions();
+                if(isGameOver()){
+                    gamePlayScene.gameOverScreen();
+                }
+                else{
+                    startNewRound();
+                    gamePlayScene.startNewRound();
+                }
+            }
+        }
+        else if(currentPlayer instanceof CoPilot){
+            radio.placeDice(currentPlayer, diceValue);
+            radio.removePlaneToken(diceValue, approachTrack);
+            gamePlayScene.updateApproachTrackVisuals();
+            if(isRoundOver()){
+                checkEndRoundConditions();
+                if(isGameOver()){
+                    gamePlayScene.gameOverScreen();
+                }
+                else{
+                    startNewRound();
+                    gamePlayScene.startNewRound();
+                }
             }
         } else {
             gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
@@ -241,6 +263,16 @@ public class GameController {
             boolean success = brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
             if (success) {
                 gamePlayScene.updateBrakeVisuals(brakeSlot, true);
+                if(isRoundOver()){
+                    checkEndRoundConditions();
+                    if(isGameOver()){
+                        gamePlayScene.gameOverScreen();
+                    }
+                    else{
+                        startNewRound();
+                        gamePlayScene.startNewRound();
+                    }
+                }
             } else {
                 if (brakeSlot > 0 && !brakes.isBrakeActivated(brakeSlot - 1)) {
                     gamePlayScene.showErrorMessage("You must activate the previous brake first.");
@@ -258,6 +290,16 @@ public class GameController {
         if (currentPlayer instanceof Pilot) {
             if (engines.getPilotSlot() == 0) {
                 engines.placeDice(currentPlayer, diceValue);
+                if(isRoundOver()){
+                    checkEndRoundConditions();
+                    if(isGameOver()){
+                        gamePlayScene.gameOverScreen();
+                    }
+                    else{
+                        startNewRound();
+                        gamePlayScene.startNewRound();
+                    }
+                }
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
@@ -265,6 +307,16 @@ public class GameController {
         }else if (currentPlayer instanceof CoPilot) {
             if (engines.getCopilotSlot() == 0) {
                 engines.placeDice(currentPlayer, diceValue);
+                if(isRoundOver()){
+                    checkEndRoundConditions();
+                    if(isGameOver()){
+                        gamePlayScene.gameOverScreen();
+                    }
+                    else{
+                        startNewRound();
+                        gamePlayScene.startNewRound();
+                    }
+                }
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
@@ -282,6 +334,16 @@ public class GameController {
         if (currentPlayer instanceof Pilot) {
             if (axis.getPilotSlot() == 0) {
                 axis.placeDice(currentPlayer, diceValue);
+                if(isRoundOver()){
+                    checkEndRoundConditions();
+                    if(isGameOver()){
+                        gamePlayScene.gameOverScreen();
+                    }
+                    else{
+                        startNewRound();
+                        gamePlayScene.startNewRound();
+                    }
+                }
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
@@ -289,6 +351,16 @@ public class GameController {
         }else if (currentPlayer instanceof CoPilot) {
             if (axis.getCopilotSlot() == 0) {
                 axis.placeDice(currentPlayer, diceValue);
+                if(isRoundOver()){
+                    checkEndRoundConditions();
+                    if(isGameOver()){
+                        gamePlayScene.gameOverScreen();
+                    }
+                    else{
+                        startNewRound();
+                        gamePlayScene.startNewRound();
+                    }
+                }
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
@@ -311,6 +383,16 @@ public class GameController {
             concentration.placeDice(currentPlayer, diceValue, slotIndex);
             isActivated = concentration.isActivated(slotIndex);
             gamePlayScene.updateCoffeeVisuals(slotIndex, isActivated);
+            if(isRoundOver()){
+                checkEndRoundConditions();
+                if(isGameOver()){
+                    gamePlayScene.gameOverScreen();
+                }
+                else{
+                    startNewRound();
+                    gamePlayScene.startNewRound();
+                }
+            }
         } else {
             gamePlayScene.showErrorMessage("this Slot is already activated");
         }

@@ -297,11 +297,30 @@ public class GamePlayScene implements Screen {
         firstCoPilotRadioSlot.setPosition(1490,960);
         firstCoPilotRadioSlot.setSize(100,100);
         stage.addActor(firstCoPilotRadioSlot);
+        firstCoPilotRadioSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(firstCoPilotRadioSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
+
 
         secondCoPilotRadioSlot = new Image(emptySlotTexture);
         secondCoPilotRadioSlot.setPosition(1618,960);
         secondCoPilotRadioSlot.setSize(100,100);
         stage.addActor(secondCoPilotRadioSlot);
+        secondCoPilotRadioSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(secondCoPilotRadioSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
     }
 
     private void createCoffeeSlots() {
@@ -738,6 +757,7 @@ public class GamePlayScene implements Screen {
             slotImage.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     useCoffee = true;
+                    System.out.println("Using coffee");
                     if (slotImage == firstCoffeeSlot) {
                         coffeeSlotIndex = 0;
                     }
@@ -755,6 +775,7 @@ public class GamePlayScene implements Screen {
             selectedDiceValue = 0;
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+            slotImage.clearListeners();
         }
     }
 
@@ -888,8 +909,8 @@ public class GamePlayScene implements Screen {
                 }
 
                 // Radios
-                else if (slot == pilotRadioSlot){
-                    gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
+                else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
+                    gameController.placeDiceRadioSlot(selectedDiceValue);
                     placementSuccessful = true;
                 }
 
@@ -1003,7 +1024,7 @@ public class GamePlayScene implements Screen {
             altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum -= 1]);
         }
         else {
-
+            gameOverScreen();
         }
     }
 
