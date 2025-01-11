@@ -13,22 +13,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
 
 import java.util.Random;
 
-public class CrashScene implements Screen {
+public class LandScene implements Screen {
     private Stage stage;
     private Skin skin;
     private Texture background;
-    private Music crashMusic;
-    private Array<Sound> electricity;
-    private Random random;
-    private Timer.Task soundTask;
+    private Sound clapsSound;
 
     private SpriteBatch batch;
     private Table table;
@@ -37,11 +32,9 @@ public class CrashScene implements Screen {
 
 
 
-    public CrashScene(SkyTeamGame game, GameController gameController) {
+    public LandScene(SkyTeamGame game, GameController gameController) {
         this.game = game;
         this.gameController = new GameController();
-        this.electricity = new Array<>();
-        this.random = new Random();
     }
 
     public void show() {
@@ -49,22 +42,13 @@ public class CrashScene implements Screen {
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        background = new Texture("crash.png");
+        background = new Texture("land.png");
         batch = new SpriteBatch();
 
-        crashMusic = Gdx.audio.newMusic(Gdx.files.internal("fire.mp3"));
-        crashMusic.setVolume(0.75f);
-        crashMusic.setLooping(true);
-        crashMusic.play();
-        electricity.add(Gdx.audio.newSound(Gdx.files.internal("electricity1.mp3")));
-        electricity.add(Gdx.audio.newSound(Gdx.files.internal("electricity2.mp3")));
-        electricity.add(Gdx.audio.newSound(Gdx.files.internal("electricity3.mp3")));
+        clapsSound = Gdx.audio.newSound(Gdx.files.internal("claps.mp3"));
+        clapsSound.play();
 
-        soundTask = Timer.schedule(new Timer.Task() {
-            public void run() {
-                playRandomSound();
-            }
-        }, 0, 2);
+
 
         // Table creation
         table = new Table();
@@ -114,9 +98,4 @@ public class CrashScene implements Screen {
     public void hide() {}
 
     public void dispose() {}
-
-    private void playRandomSound() {
-        int index = random.nextInt(electricity.size);
-        electricity.get(index).play();
-    }
 }
