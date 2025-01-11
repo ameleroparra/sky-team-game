@@ -525,8 +525,6 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof Pilot) {
                     placeDice(pilotEngineSlot);
-                    gameController.moveForwardApproachTrack();
-//                    updateApproachTrackVisuals();
                 } else {
                     showErrorMessage("Only the pilot can interact with this slot.");
                 }
@@ -541,8 +539,6 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof CoPilot) {
                     placeDice(copilotEngineSlot);
-                    gameController.moveForwardApproachTrack();
-//                    updateApproachTrackVisuals();
                 } else {
                     showErrorMessage("Only the copilot can interact with this slot.");
                 }
@@ -649,8 +645,11 @@ public class GamePlayScene implements Screen {
                 readyButton.toFront();
 
                 movementSound.play(1.0f);
-                gameController.switchTurn();
-                updateDiceImages();
+                if(!gameController.isRoundOver()){
+                    gameController.switchTurn();
+                    updateDiceImages();
+                }
+
             }
         });
     }
@@ -922,7 +921,7 @@ public class GamePlayScene implements Screen {
 
                 // Radios
                 else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
-                    gameController.placeDiceRadioSlot(selectedDiceValue);
+                    gameController.placeDiceOnRadioSlot(selectedDiceValue);
                     placementSuccessful = true;
                 }
 
@@ -980,6 +979,7 @@ public class GamePlayScene implements Screen {
     // Update the dice array
     public void updateDiceImages() {
         List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
+        System.out.println(currentPlayerDice);
         diceValues = new int[diceAmount];
 
         for (int i = 0; i < diceAmount; i++) {
@@ -1027,17 +1027,23 @@ public class GamePlayScene implements Screen {
     private void showGameOverDialog() {
     }
 
-    public void startNewRound() {
+    public void resetNextRoundSlots(){
         resetRadioSlots();
         resetEnginesSlots();
         resetAxisSlots();
+    }
 
-        if((altitudeTrackTextureNum -= 1) > 0) {
-            altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum -= 1]);
+    public void startNewRound() {
+        System.out.println("View: new round started");
+        int altitudeTextureNum = altitudeTrackTextureNum - 1;
+
+        if((altitudeTextureNum) > 0) {
+            altitudeTrackSlot.setDrawable(new Image(altitudeTextures[altitudeTrackTextureNum -= 1]).getDrawable());
         }
         else {
             gameOverScreen();
         }
+
     }
 
     public void resetRadioSlots() {
@@ -1059,5 +1065,4 @@ public class GamePlayScene implements Screen {
     public void gameOverScreen(){
         game.setScreen(new CrashScene(game, gameController));
     }
-
 }

@@ -8,6 +8,7 @@ public class Engines {
     private int approachTrackMove;
     private int pilotSlot;
     private int copilotSlot;
+    private int diceSum;
 
     private Flaps flaps;
     private LandGear landGear;
@@ -21,6 +22,7 @@ public class Engines {
         this.approachTrackMove = 0;
         this.pilotSlot = 0;
         this.copilotSlot = 0;
+        this.diceSum = 0;
     }
 
     public double getPilotMarker() {
@@ -45,6 +47,10 @@ public class Engines {
 
     public void setCopilotSlot(int copilotSlot) {
         this.copilotSlot = copilotSlot;
+    }
+
+    public int getDiceSum() {
+        return diceSum;
     }
 
     public void placeDice(Player player, int diceValue){
@@ -101,7 +107,7 @@ public class Engines {
     }
 
     public void countDiceSum(){
-        int diceSum = this.pilotSlot + this.copilotSlot;
+        diceSum = this.pilotSlot + this.copilotSlot;
         if(diceSum < pilotMarker){
             this.approachTrackMove = 0;
             System.out.println("Approach track moved 0");
@@ -116,6 +122,12 @@ public class Engines {
         }
         System.out.println("Dice sum: " + diceSum);
     }
+
+    public void resetEnginesSlots(){
+        this.pilotSlot = 0;
+        this.copilotSlot = 0;
+    }
+
 
     public void resetEngines(){
         this.pilotMarker = 4.5;

@@ -100,5 +100,9 @@ public class Axis {
          copilotSlot = 0;
      }
 
+     public boolean axisAreHorizontal(){
+         return getPosition() == 0;
+     }
+
 
 }

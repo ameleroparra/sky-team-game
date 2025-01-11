@@ -52,7 +52,6 @@ public class ApproachTrack {
 
     public void moveForward(Engines engines) {
         int moveAmount = engines.getApproachTrackMove();
-
         if (moveAmount != 0) {
             for (int i = 0; i < moveAmount; i++) {
                 if (currentPosition + 1 < planeTokens.length) {
@@ -72,14 +71,13 @@ public class ApproachTrack {
         }
         currentPosition = 0;
 
-        // Update lastTrackNum
         lastTrackNum = planeTokens.length - 1;
 
         isLastTrack();
     }
 
-    public void isLastTrack() {
-        lastTrack = (planeTokens.length == 1);
+    public boolean isLastTrack() {
+        return lastTrack = (planeTokens.length == 1);
     }
 
     public Boolean isGameOver(){

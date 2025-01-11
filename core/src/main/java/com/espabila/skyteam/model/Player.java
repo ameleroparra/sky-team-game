@@ -12,6 +12,9 @@ public abstract class Player {
     }
 
     public void rollDices(){
+        if(!diceList.isEmpty()){
+            resetDiceList();
+        }
         for(int i = 0; i < 4; i++){
             Dice dice = new Dice();
             diceList.add(dice.roll());
