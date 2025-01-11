@@ -124,6 +124,14 @@ public class GamePlayScene implements Screen {
     private Texture noRerollTexture;
     private Texture tickIcon;
 
+    private Texture coverTexture;
+    private Image coverImage;
+
+    private Texture pilotIndicatorTexture;
+    private Image pilotIndicatorImage;
+    private Texture copilotIndicatorTexture;
+    private Image copilotIndicatorImage;
+
     // Change Turn button
     private Image blurryScreen;
     private TextButton readyButton;
@@ -164,9 +172,11 @@ public class GamePlayScene implements Screen {
         createAxisSlots();
         createAltitudeSlots();
         createApproachSlots();
-
         createBlurryScreen();
         createConcentrationScreen();
+        createCover();
+
+        updatePlayerIndicators();
     }
 
     @Override
@@ -251,9 +261,49 @@ public class GamePlayScene implements Screen {
         emptySlotTexture = new Texture("noNumber.jpg");
         tickIcon = new Texture("tickIcon.jpg");
 
+        pilotIndicatorTexture = new Texture("pilot.png");
+        pilotIndicatorImage = new Image(pilotIndicatorTexture);
+        pilotIndicatorImage.setPosition(835, 10);
+        pilotIndicatorImage.setVisible(false);
+        stage.addActor(pilotIndicatorImage);
+
+        copilotIndicatorTexture = new Texture("copilot.png");
+        copilotIndicatorImage = new Image(copilotIndicatorTexture);
+        copilotIndicatorImage.setPosition(710, 10);
+        copilotIndicatorImage.setVisible(false);
+        stage.addActor(copilotIndicatorImage);
+
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
+    }
+
+    private void updatePlayerIndicators() {
+        if (gameController.getCurrentPlayer() instanceof Pilot) {
+            copilotIndicatorImage.setVisible(false);
+            pilotIndicatorImage.setVisible(true);
+        }
+        else {
+            pilotIndicatorImage.setVisible(false);
+            copilotIndicatorImage.setVisible(true);
+        }
+    }
+
+    private void createCover() {
+        coverTexture = new Texture("cover.png");
+        coverImage = new Image(coverTexture);
+        coverImage.setPosition(580, 943);
+        coverImage.setVisible(true);
+        stage.addActor(coverImage);
+        coverImage.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                coverImage.setVisible(false);
+            }
+        });
+    }
+
+    public void showCover() {
+        coverImage.setVisible(true);
     }
 
     private void createDiceSlots() {
@@ -648,6 +698,7 @@ public class GamePlayScene implements Screen {
                 if(!gameController.isRoundOver()){
                     gameController.switchTurn();
                     updateDiceImages();
+                    updatePlayerIndicators();
                 }
 
             }
