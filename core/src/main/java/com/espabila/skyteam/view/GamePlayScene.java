@@ -37,8 +37,6 @@ public class GamePlayScene implements Screen {
     private Stage stage;
     Skin skin;
 
-
-
     //dices code
     private Texture[] diceTextures;
     private Image[] diceImages;
@@ -700,6 +698,9 @@ public class GamePlayScene implements Screen {
                     updateDiceImages();
                     updatePlayerIndicators();
                 }
+                else {
+                    updateDiceImages();
+                }
 
             }
         });
@@ -830,7 +831,9 @@ public class GamePlayScene implements Screen {
             });
 
             placedSound.play(1.0f);
-            changeTurn();
+            if(!gameController.isRoundOver()){
+                changeTurn();
+            }
             selectedDiceValue = 0;
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
@@ -891,7 +894,6 @@ public class GamePlayScene implements Screen {
                     return;
                 }
 
-                // Determine which component the dice is being placed on
                 // Engines
                 if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
                     gameController.placeDiceOnEngines(selectedDiceValue);
@@ -925,8 +927,6 @@ public class GamePlayScene implements Screen {
                     else {
                         showErrorMessage("invalid dice value");
                     }
-
-
                 }
 
                 // Flaps
@@ -951,7 +951,6 @@ public class GamePlayScene implements Screen {
                     else {
                         showErrorMessage("you can not do that");
                     }
-
                 }
 
                 // Brakes
@@ -1030,7 +1029,6 @@ public class GamePlayScene implements Screen {
     // Update the dice array
     public void updateDiceImages() {
         List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
-        System.out.println(currentPlayerDice);
         diceValues = new int[diceAmount];
 
         for (int i = 0; i < diceAmount; i++) {
@@ -1090,11 +1088,19 @@ public class GamePlayScene implements Screen {
 
         if((altitudeTextureNum) > 0) {
             altitudeTrackSlot.setDrawable(new Image(altitudeTextures[altitudeTrackTextureNum -= 1]).getDrawable());
+            resetNextRoundSlots();
+            updateApproachTrackVisuals();
+
+            selectedDiceValue = 0;
+            selectedDiceIndex = -1;
+            useCoffee = false;
+
+            updateDiceImages();
+
         }
         else {
             gameOverScreen();
         }
-
     }
 
     public void resetRadioSlots() {

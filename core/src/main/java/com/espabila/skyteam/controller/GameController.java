@@ -177,6 +177,7 @@ public class GameController {
 
     public void switchTurn() {
         if (isRoundOver()) {
+            System.out.println("Switch Turn Method: the round is Over");
             if (altitudeTrack.isLastRound()) {
                 gameOver = true;
                 gamePlayScene.gameOverScreen();
@@ -184,19 +185,21 @@ public class GameController {
                 startNewRound();
             }
         } else {
+            System.out.println("Switch Turn Method: the round is not Over");
             currentPlayer = (currentPlayer == pilot) ? coPilot : pilot;
         }
     }
 
     private void startNewRound() {
         System.out.println("Controller: new round started");
+        System.out.println("Turn before calling new round: " + currentPlayer);
         checkSpecialCases();
         if(gameOver){
             gamePlayScene.gameOverScreen();
         }
         else{
-
             altitudeTrack.newRound();
+            System.out.println("Turn after calling new round: " + currentPlayer);
             radio.resetSlots();
             engines.resetEnginesSlots();
             axis.resetAxisSlots();
