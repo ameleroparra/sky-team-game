@@ -656,6 +656,13 @@ public class GamePlayScene implements Screen {
         rerollSlot.setPosition(1335, 875);
         rerollSlot.setSize(50, 50);
         stage.addActor(rerollSlot);
+        rerollSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                gameController.useReroll(0);
+                updateDiceImages();
+            }
+        });
+        updateRerollVisuals();
     }
 
     private void createApproachSlots() {
@@ -741,6 +748,10 @@ public class GamePlayScene implements Screen {
                 selectedDiceValue = 0;
             }
         });
+    }
+
+    private void createRerollScreen() {
+
     }
 
     // Update visuals
@@ -882,6 +893,16 @@ public class GamePlayScene implements Screen {
         }
     }
 
+    public void updateRerollVisuals(){
+        System.out.println(gameController.isRerollAvailable());
+        if(gameController.isRerollAvailable()){
+            rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(rerollTexture)));
+        }
+        else {
+            rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(noRerollTexture)));
+        }
+    }
+
     public void updateApproachTrackVisuals() {
         int[] planeTokens = gameController.getApproachTrackPlaneTokens();
 
@@ -941,6 +962,10 @@ public class GamePlayScene implements Screen {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
         }
+    }
+
+    public void rerollClicked(){
+
     }
 
     private void placeDice(Image slot) {

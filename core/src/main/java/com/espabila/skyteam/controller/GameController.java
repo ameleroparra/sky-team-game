@@ -20,6 +20,8 @@ public class GameController {
     private GamePlayScene gamePlayScene;
     private Boolean gameOver;
     private SkyTeamGame game;
+    private final Reroll reroll;
+    private boolean rerollUsedThisRound;
 
     public void setPilot(Player pilot) {
         this.pilot = pilot;
@@ -130,9 +132,11 @@ public class GameController {
         concentration = new Concentration();
         landGear = new LandGear();
         flaps = new Flaps();
+        reroll = new Reroll();
         approachTrack = new ApproachTrack();
         gamePlayScene = null;
         gameOver = false;
+        rerollUsedThisRound = false;
     }
 
     public void startNewGame(){
@@ -148,6 +152,7 @@ public class GameController {
         landGear.resetLandGear();
         flaps.resetFlaps();
         approachTrack.resetApproachTrack();
+
 
         // Initial dice roll for both players
         pilot.rollDices();
@@ -174,6 +179,21 @@ public class GameController {
         approachTrack.setPlaneTokens(planeTokens);
         return approachTrack.getPlaneTokens();
     }
+
+    public boolean isRerollAvailable() {
+//        altitudeTrack.rerollAvailable(reroll);
+//        return reroll.isRerollAvailable();
+        if(!rerollUsedThisRound) {
+            altitudeTrack.rerollAvailable(reroll);
+            return reroll.isRerollAvailable();
+        }
+        else{
+            reroll.setRerollAvailable(false);
+            return reroll.isRerollAvailable();
+        }
+
+    }
+
 
     public void switchTurn() {
         currentPlayer = (currentPlayer == pilot) ? coPilot : pilot;
@@ -221,6 +241,7 @@ public class GameController {
             } else {
                 currentPlayer = coPilot;
             }
+            rerollUsedThisRound = false;
 
             gamePlayScene.resetNextRoundSlots();
             gamePlayScene.updateDiceImages();
@@ -288,7 +309,6 @@ public class GameController {
                 gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
             }
         }
-
         if (engines.areDicesPlaced()) {
             engines.countDiceSum();
             if(altitudeTrack.isLastRound()){
@@ -368,6 +388,21 @@ public class GameController {
         gamePlayScene.hideConcentrationImages();
         concentration.setActivated(gamePlayScene.coffeeSlotIndex, false);
         gamePlayScene.updateCoffeeVisuals(gamePlayScene.coffeeSlotIndex, false);
+    }
+
+    public void useReroll(int diceValue) {
+        if(reroll.isRerollAvailable()) {
+            reroll.useReroll(pilot, pilot.getDiceList().get(diceValue));
+//            reroll.useReroll(coPilot, diceValue);
+            reroll.setRerollAvailable(false);
+            rerollUsedThisRound = true;
+            System.out.println("Use Reroll method: " + reroll.isRerollAvailable());
+            gamePlayScene.updateRerollVisuals();
+        }
+
+        else {
+            gamePlayScene.showErrorMessage("Reroll is not available.");
+        }
 
     }
 

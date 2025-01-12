@@ -63,14 +63,14 @@ public class Radio {
         int planePosition = currentTrackPosition + diceValue - 1;
         int lastTrackNum = approachTrack.getLastTrackNum();
 
-        if(planePosition <= lastTrackNum){
+        if(planePosition > lastTrackNum){
+            planePosition = lastTrackNum;
+            planeTokens[planePosition] -= 1;
+        }
+
+        else {
             if(planeTokens[planePosition] > 0){
             planeTokens[planePosition] -= 1;
-            }
-        }
-        else {
-            if(planeTokens[lastTrackNum-1] > 0){
-                planeTokens[lastTrackNum-1] -=1;
             }
         }
         approachTrack.setPlaneTokens(planeTokens);
