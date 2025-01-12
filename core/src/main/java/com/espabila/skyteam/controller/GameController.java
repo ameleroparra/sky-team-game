@@ -140,21 +140,19 @@ public class GameController {
     }
 
     public void startNewGame(){
-//        pilot.resetDiceList();
-//        coPilot.resetDiceList();
+        pilot.resetDiceList();
+        coPilot.resetDiceList();
         currentPlayer = pilot;
-//        radio.resetSlots();
-//        brakes.resetBrakes();
-//        engines.resetEngines();
-//        axis.resetAxisSlots();
-//        altitudeTrack.resetAltitudeTrack();
-//        concentration.resetConcentration();
-//        landGear.resetLandGear();
-//        flaps.resetFlaps();
-//        approachTrack.resetApproachTrack();
-
-
-        setupLastRoundForTesting();
+        radio.resetSlots();
+        brakes.resetBrakes();
+        engines.resetEngines();
+        axis.resetAxisSlots();
+        altitudeTrack.resetAltitudeTrack();
+        concentration.resetConcentration();
+        landGear.resetLandGear();
+        flaps.resetFlaps();
+        approachTrack.resetApproachTrack();
+        altitudeTrack.rerollAvailable(reroll);
 
 
         // Initial dice roll for both players
@@ -187,75 +185,7 @@ public class GameController {
         return approachTrack.getPlaneTokens();
     }
 
-    //For testing last round
-    public void setupLastRoundForTesting() {
-        // Activate all landing gears
-        activateAllLandingGear();
 
-        // Activate all brakes
-//        setBrakesActivated();
-
-        // Activate all flaps
-        setFlapsActivated();
-
-        approachTrack.setCurrentPosition(6);
-
-        approachTrack.setPlaneTokens(new int[]{0});
-
-        altitudeTrack.setCurrentRound(6);
-
-        gamePlayScene.lastRoundTest();
-
-//        gamePlayScene.updateLowMarkerVisuals(1);
-//        gamePlayScene.updateLowMarkerVisuals(2);
-//        gamePlayScene.updateLowMarkerVisuals(3);
-
-//        gamePlayScene.updateHighMarkerVisuals(1);
-//        gamePlayScene.updateHighMarkerVisuals(2);
-//        gamePlayScene.updateHighMarkerVisuals(3);
-//
-//        for (int i = 0; i < 3; i++) {
-//            gamePlayScene.updateBrakeVisuals(i, true);
-//        }
-    }
-
-
-    public void activateAllLandingGear() {
-        boolean[] allActivated = new boolean[3];
-        for (int i = 0; i < allActivated.length; i++) {
-            allActivated[i] = true;
-        }
-        landGear.setActivated(allActivated);
-    }
-
-    public void setBrakesActivated() {
-        boolean[] allActivated = new boolean[3];
-        for (int i = 0; i < allActivated.length; i++) {
-            allActivated[i] = true;
-        }
-        brakes.setActivated(allActivated);
-    }
-    public void setFlapsActivated() {
-        boolean[] allActivated = new boolean[4];
-        for (int i = 0; i < allActivated.length; i++) {
-            allActivated[i] = true;
-        }
-        flaps.setActivated(allActivated);
-    }
-
-    public boolean isRerollAvailable() {
-//        altitudeTrack.rerollAvailable(reroll);
-//        return reroll.isRerollAvailable();
-        if(!rerollUsedThisRound) {
-            altitudeTrack.rerollAvailable(reroll);
-            return reroll.isRerollAvailable();
-        }
-        else{
-            reroll.setRerollAvailable(false);
-            return reroll.isRerollAvailable();
-        }
-
-    }
 
 
     public void switchTurn() {
@@ -287,6 +217,8 @@ public class GameController {
 
     public void startNewRound() {
         gamePlayScene.showCover();
+        altitudeTrack.rerollAvailable(reroll);
+        gamePlayScene.updateRerollVisuals();
         checkSpecialCases();
         if(gameOver){
             gamePlayScene.gameOverScreen();
@@ -309,6 +241,7 @@ public class GameController {
             gamePlayScene.resetNextRoundSlots();
             gamePlayScene.updateDiceImages();
             gamePlayScene.updateApproachTrackVisuals();
+            gamePlayScene.updateRerollVisuals();
 
             gamePlayScene.startNewRound();
         }
@@ -453,21 +386,97 @@ public class GameController {
         gamePlayScene.updateCoffeeVisuals(gamePlayScene.coffeeSlotIndex, false);
     }
 
-    public void useReroll(int diceValue) {
-        if(reroll.isRerollAvailable()) {
-            reroll.useReroll(pilot, pilot.getDiceList().get(diceValue));
-//            reroll.useReroll(coPilot, diceValue);
-            reroll.setRerollAvailable(false);
-            rerollUsedThisRound = true;
-            System.out.println("Use Reroll method: " + reroll.isRerollAvailable());
-            gamePlayScene.updateRerollVisuals();
-        }
 
-        else {
-            gamePlayScene.showErrorMessage("Reroll is not available.");
-        }
 
+
+
+
+
+
+
+
+
+    public void useRerollDice(int diceIndex) {
+        if(currentPlayer instanceof Pilot && getPilotRerollActive()) {
+            reroll.useReroll(currentPlayer, diceIndex);
+        }
+        else if(currentPlayer instanceof CoPilot && getCoPilotRerollActive()){
+            reroll.useReroll(currentPlayer, diceIndex);
+        }
     }
+
+    public void useRerollSlot() {
+        if (reroll.isRerollAvailable()) {
+            gamePlayScene.createRerollScreen();
+            reroll.setPilotRerollActive(true);
+            reroll.setCoPilotRerollActive(true);
+            reroll.setRerollAvailable(false);
+        }
+        else {
+            gamePlayScene.showErrorMessage("No reroll available.");
+        }
+    }
+
+    public boolean isRerollAvailable() {
+
+        return reroll.isRerollAvailable();
+    }
+
+//    public boolean isRerollAvailable() {
+//        altitudeTrack.rerollAvailable(reroll);
+//        return reroll.isRerollAvailable();
+//        if(getPilotRerollActive()) {
+//            altitudeTrack.rerollAvailable(reroll);
+//            return isRerollAvailable();
+//        }
+//        else if (getCoPilotRerollActive()) {
+//            altitudeTrack.rerollAvailable(reroll);
+//            return isRerollAvailable();
+//        }
+//        else{
+//            reroll.setRerollAvailable(false);
+//            return reroll.isRerollAvailable();
+//        }
+//
+//    }
+
+    public void setPilotRerollActive(boolean active) {
+        reroll.setPilotRerollActive(active);
+    }
+
+    public void setCoPilotRerollActive(boolean active) {
+        reroll.setCoPilotRerollActive(active);
+    }
+
+    public boolean getPilotRerollActive() {
+        return reroll.isPilotRerollActive();
+    }
+
+    public boolean getCoPilotRerollActive() {
+        return reroll.isCoPilotRerollActive();
+    }
+
+    public void setRerollUsedThisRound(boolean rerollUsedThisRound) {
+        this.rerollUsedThisRound = rerollUsedThisRound;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Land Gear
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {
@@ -527,5 +536,4 @@ public class GameController {
             gameOver = true;
         }
     }
-
 }

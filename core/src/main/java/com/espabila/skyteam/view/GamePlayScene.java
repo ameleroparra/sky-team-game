@@ -138,6 +138,15 @@ public class GamePlayScene implements Screen {
     private boolean isPilotTurn = false;
     private final SkyTeamGame game;
 
+    // reroll images
+    private Texture rerollSelectTexture;
+    private Image rerollSelectImage;
+    private Image diceReroll1;
+    private Image diceReroll2;
+    private Image diceReroll3;
+    private Image diceReroll4;
+    private TextButton exitRerollButton;
+
     public GamePlayScene(SkyTeamGame game, GameController gameController) {
         this.game = game;
         this.gameController = gameController;
@@ -298,10 +307,6 @@ public class GamePlayScene implements Screen {
                 coverImage.setVisible(false);
             }
         });
-    }
-
-    public void showCover() {
-        coverImage.setVisible(true);
     }
 
     private void createDiceSlots() {
@@ -657,12 +662,7 @@ public class GamePlayScene implements Screen {
         rerollSlot.setPosition(1335, 875);
         rerollSlot.setSize(50, 50);
         stage.addActor(rerollSlot);
-        rerollSlot.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) { // make slot clickable
-                gameController.useReroll(0);
-                updateDiceImages();
-            }
-        });
+
         updateRerollVisuals();
     }
 
@@ -755,11 +755,137 @@ public class GamePlayScene implements Screen {
         });
     }
 
-    private void createRerollScreen() {
+    public void createRerollScreen() {
+        rerollSelectTexture = new Texture("rerollSelect.png");
+        rerollSelectImage = new Image(rerollSelectTexture);
+        rerollSelectImage.setVisible(true);
+        stage.addActor(rerollSelectImage);
 
+        diceReroll1 = new Image(diceImages[0].getDrawable());
+        diceReroll1.setPosition(353, 505);
+        diceReroll1.setSize(200, 200);
+        diceReroll1.setVisible(true);
+        stage.addActor(diceReroll1);
+        diceReroll1.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(0);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll1.removeListener(this);
+            }
+        });
+
+        diceReroll2 = new Image(diceImages[1].getDrawable());
+        diceReroll2.setPosition(693, 505);
+        diceReroll2.setSize(200, 200);
+        diceReroll2.setVisible(true);
+        stage.addActor(diceReroll2);
+        diceReroll2.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(1);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll2.removeListener(this);
+            }
+        });
+
+        diceReroll3 = new Image(diceImages[2].getDrawable());
+        diceReroll3.setPosition(1031, 505);
+        diceReroll3.setSize(200, 200);
+        diceReroll3.setVisible(true);
+        stage.addActor(diceReroll3);
+        diceReroll3.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(2);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll3.removeListener(this);
+            }
+        });
+
+        diceReroll4 = new Image(diceImages[3].getDrawable());
+        diceReroll4.setPosition(1370, 505);
+        diceReroll4.setSize(200, 200);
+        diceReroll4.setVisible(true);
+        stage.addActor(diceReroll4);
+        diceReroll4.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(3);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll4.removeListener(this);
+            }
+        });
+
+        exitRerollButton = new TextButton("Exit", skin);
+        exitRerollButton.setPosition(860, 200);
+        exitRerollButton.setSize(200, 50);
+        exitRerollButton.setVisible(true);
+        stage.addActor(exitRerollButton);
+        exitRerollButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                removeRerollScreen();
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    gameController.setPilotRerollActive(false);
+                    updateRerollVisuals();
+                }
+                else {
+                    gameController.setCoPilotRerollActive(false);
+                    updateRerollVisuals();
+
+                }
+            }
+        });
+
+        if (blurryScreen != null) {
+            blurryScreen.toFront();
+        }
+        if (readyButton != null) {
+            readyButton.toFront();
+        }
     }
 
     // Update visuals
+
+    private void updateRerollDiceImages() {
+        if (diceReroll1 != null && diceImages != null && diceImages.length > 0) {
+            diceReroll1.setDrawable(diceImages[0].getDrawable());
+        }
+        if (diceReroll2 != null && diceImages!= null && diceImages.length > 1) {
+            diceReroll2.setDrawable(diceImages[1].getDrawable());
+        }
+        if (diceReroll3 != null && diceImages!= null && diceImages.length > 2) {
+            diceReroll3.setDrawable(diceImages[2].getDrawable());
+        }
+        if (diceReroll4 != null && diceImages!= null && diceImages.length > 3) {
+            diceReroll4.setDrawable(diceImages[3].getDrawable());
+        }
+    }
+
+    public void removeRerollScreen() {
+        rerollSelectImage.remove();
+        diceReroll1.remove();
+        diceReroll2.remove();
+        diceReroll3.remove();
+        diceReroll4.remove();
+        exitRerollButton.remove();
+    }
+
+    public void showCover() {
+        coverImage.setVisible(true);
+    }
+
+    private void showBlurryScreen() {
+        Timer.schedule(new Timer.Task() {
+            public void run() {
+                blurryScreen.setVisible(true);
+                readyButton.setVisible(true);
+                blurryScreen.toFront();
+                readyButton.toFront();
+                movementSound.play(1.0f);
+            }
+        }, 1);
+    }
 
     public void updateAxisPlaneVisuals(int currentPosition) {
         int angle = currentPosition * -30;
@@ -899,13 +1025,24 @@ public class GamePlayScene implements Screen {
     }
 
     public void updateRerollVisuals(){
-        System.out.println(gameController.isRerollAvailable());
+
+
+        System.out.println("update reroll visuals is being called" + gameController.isRerollAvailable());
         if(gameController.isRerollAvailable()){
             rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(rerollTexture)));
+            rerollSlot.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                    gameController.useRerollSlot();
+                }
+            });
         }
-        else {
+
+        else if (gameController.getPilotRerollActive() || gameController.getCoPilotRerollActive()) {
+            System.out.println("update reroll visuals went to else if" + gameController.getPilotRerollActive());
             rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(noRerollTexture)));
+            rerollSlot.clearListeners();
         }
+
     }
 
     public void updateApproachTrackVisuals() {
@@ -1125,20 +1262,11 @@ public class GamePlayScene implements Screen {
                 diceImages[i].setDrawable(new Image(diceTextures[0]).getDrawable());
             }
         }
+
+        updateRerollDiceImages();
     }
 
     // Some rules
-
-    private void showBlurryScreen() {
-        Timer.schedule(new Timer.Task() {
-            public void run() {
-                blurryScreen.setVisible(true);
-                readyButton.setVisible(true);
-                readyButton.toFront();
-                movementSound.play(1.0f);
-            }
-        }, 1);
-    }
 
     private void switchTurn() {
         Timer.schedule(new Timer.Task() {
@@ -1146,6 +1274,17 @@ public class GamePlayScene implements Screen {
                 gameController.switchTurn();
                 updateDiceImages();
                 updatePlayerIndicators();
+
+                if (gameController.getPilotRerollActive() || gameController.getCoPilotRerollActive()) {
+                    createRerollScreen();
+                }
+
+                if (blurryScreen != null) {
+                    blurryScreen.toFront();
+                }
+                if (readyButton != null) {
+                    readyButton.toFront();
+                }
             }
         }, 1);
     }

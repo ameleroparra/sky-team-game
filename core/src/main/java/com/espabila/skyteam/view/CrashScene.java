@@ -113,7 +113,8 @@ public class CrashScene implements Screen {
 
     public void hide() {}
 
-    public void dispose() {}
+    public void dispose() {
+    }
 
     private void playRandomSound() {
         int index = random.nextInt(electricity.size);
