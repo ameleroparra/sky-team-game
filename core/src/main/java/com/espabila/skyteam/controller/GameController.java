@@ -176,30 +176,40 @@ public class GameController {
     }
 
     public void switchTurn() {
-        if (isRoundOver()) {
-            System.out.println("Switch Turn Method: the round is Over");
-            if (altitudeTrack.isLastRound()) {
-                gameOver = true;
-                gamePlayScene.gameOverScreen();
-            } else {
-                startNewRound();
+        currentPlayer = (currentPlayer == pilot) ? coPilot : pilot;
+    }
+
+    public boolean isRoundOver() {
+        return pilot.getDiceList().isEmpty() && coPilot.getDiceList().isEmpty();
+    }
+
+    public void checkUpAfterDicePlacement(){
+        if(isRoundOver()){
+            System.out.println("round over");
+            if(altitudeTrack.isLastRound()){
+                if(checkLandingConditions()){
+//                    gamePlayScene.winScreen();
+                }
+                else{
+                    gameOver = true;
+                    gamePlayScene.gameOverScreen();
+                }
             }
-        } else {
-            System.out.println("Switch Turn Method: the round is not Over");
-            currentPlayer = (currentPlayer == pilot) ? coPilot : pilot;
+            else {
+                checkEndRoundConditions();
+            }
+
         }
     }
 
-    private void startNewRound() {
-        System.out.println("Controller: new round started");
-        System.out.println("Turn before calling new round: " + currentPlayer);
+    public void startNewRound() {
+        gamePlayScene.showCover();
         checkSpecialCases();
         if(gameOver){
             gamePlayScene.gameOverScreen();
         }
         else{
             altitudeTrack.newRound();
-            System.out.println("Turn after calling new round: " + currentPlayer);
             radio.resetSlots();
             engines.resetEnginesSlots();
             axis.resetAxisSlots();
@@ -211,10 +221,6 @@ public class GameController {
             } else {
                 currentPlayer = coPilot;
             }
-
-            System.out.println("Controller, pilot: " + pilot.getDiceList());
-            System.out.println("Controller, coPilot: " + coPilot.getDiceList());
-
 
             gamePlayScene.resetNextRoundSlots();
             gamePlayScene.updateDiceImages();
@@ -232,13 +238,13 @@ public class GameController {
             radio.placeDice(currentPlayer, diceValue);
             radio.removePlaneToken(diceValue, approachTrack);
             gamePlayScene.updateApproachTrackVisuals();
-            checkUpAfterDicePlacement();
+//            checkUpAfterDicePlacement();
         }
         else if(currentPlayer instanceof CoPilot){
             radio.placeDice(currentPlayer, diceValue);
             radio.removePlaneToken(diceValue, approachTrack);
             gamePlayScene.updateApproachTrackVisuals();
-            checkUpAfterDicePlacement();
+//            checkUpAfterDicePlacement();
         } else {
             gamePlayScene.showErrorMessage("Only the Pilot can place dice on the Radio.");
         }
@@ -250,7 +256,7 @@ public class GameController {
             boolean success = brakes.activateBrakes((Pilot) currentPlayer, brakeSlot, diceValue);
             if (success) {
                 gamePlayScene.updateBrakeVisuals(brakeSlot, true);
-                checkUpAfterDicePlacement();
+//                checkUpAfterDicePlacement();
             } else {
                 if (brakeSlot > 0 && !brakes.isBrakeActivated(brakeSlot - 1)) {
                     gamePlayScene.showErrorMessage("You must activate the previous brake first.");
@@ -268,7 +274,7 @@ public class GameController {
         if (currentPlayer instanceof Pilot) {
             if (engines.getPilotSlot() == 0) {
                 engines.placeDice(currentPlayer, diceValue);
-                checkUpAfterDicePlacement();
+//                checkUpAfterDicePlacement();
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
@@ -276,7 +282,7 @@ public class GameController {
         } else if (currentPlayer instanceof CoPilot) {
             if (engines.getCopilotSlot() == 0) {
                 engines.placeDice(currentPlayer, diceValue);
-                checkUpAfterDicePlacement();
+//                checkUpAfterDicePlacement();
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
@@ -310,7 +316,7 @@ public class GameController {
         if (currentPlayer instanceof Pilot) {
             if (axis.getPilotSlot() == 0) {
                 axis.placeDice(currentPlayer, diceValue);
-                checkUpAfterDicePlacement();
+//                checkUpAfterDicePlacement();
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the pilot slot.");
@@ -318,7 +324,7 @@ public class GameController {
         }else if (currentPlayer instanceof CoPilot) {
             if (axis.getCopilotSlot() == 0) {
                 axis.placeDice(currentPlayer, diceValue);
-                checkUpAfterDicePlacement();
+//                checkUpAfterDicePlacement();
             }
             else {
                 gamePlayScene.showErrorMessage("There is already a dice in the co-pilot slot.");
@@ -344,7 +350,7 @@ public class GameController {
             concentration.placeDice(currentPlayer, diceValue, slotIndex);
             isActivated = concentration.isActivated(slotIndex);
             gamePlayScene.updateCoffeeVisuals(slotIndex, isActivated);
-            checkUpAfterDicePlacement();
+//            checkUpAfterDicePlacement();
         } else {
             gamePlayScene.showErrorMessage("this Slot is already activated");
         }
@@ -373,7 +379,7 @@ public class GameController {
             engines.advancePilotMarker();
         }
 
-        checkUpAfterDicePlacement();
+//        checkUpAfterDicePlacement();
         return landGear.isActivated(gearIndex);
     }
 
@@ -385,12 +391,8 @@ public class GameController {
             engines.advanceCopilotMarker();
         }
 
-        checkUpAfterDicePlacement();
+//        checkUpAfterDicePlacement();
         return flaps.isActivated(flapsIndex);
-    }
-
-    public boolean isRoundOver() {
-        return pilot.getDiceList().isEmpty() && coPilot.getDiceList().isEmpty();
     }
 
     public boolean isGameOver() {
@@ -406,24 +408,6 @@ public class GameController {
         }
     }
 
-    private void checkUpAfterDicePlacement(){
-        if(isRoundOver()){
-            System.out.println("round over");
-            if(altitudeTrack.isLastRound()){
-                if(checkLandingConditions()){
-//                    gamePlayScene.winScreen();
-                }
-                else{
-                    gameOver = true;
-                    gamePlayScene.gameOverScreen();
-                }
-            }
-            else {
-                checkEndRoundConditions();
-            }
-
-        }
-    }
 //
     private boolean checkLandingConditions() {
         return approachTrack.isLastTrack() &&

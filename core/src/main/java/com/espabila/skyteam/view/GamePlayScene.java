@@ -693,14 +693,7 @@ public class GamePlayScene implements Screen {
                 readyButton.toFront();
 
                 movementSound.play(1.0f);
-                if(!gameController.isRoundOver()){
-                    gameController.switchTurn();
-                    updateDiceImages();
-                    updatePlayerIndicators();
-                }
-                else {
-                    updateDiceImages();
-                }
+
 
             }
         });
@@ -788,9 +781,18 @@ public class GamePlayScene implements Screen {
 
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
-            placedSound.play(1.0f);
-            selectedDiceValue = 0;
-            changeTurn();
+            if (!gameController.isRoundOver()) {
+                placedSound.play(1.0f);
+                updateDiceImages();
+                selectedDiceValue = 0;
+                showBlurryScreen();
+
+                switchTurn();
+            }
+            else {
+                gameController.checkUpAfterDicePlacement();
+            }
+
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
@@ -827,17 +829,56 @@ public class GamePlayScene implements Screen {
                     else if (slotImage == thirdCoffeeSlot) {
                         coffeeSlotIndex = 2;
                     }
+
+                    //slotImage.removeListener(this);
                 }
             });
 
-            placedSound.play(1.0f);
-            if(!gameController.isRoundOver()){
-                changeTurn();
+            if (!gameController.isRoundOver()) {
+
+                placedSound.play(1.0f);
+                updateDiceImages();
+                selectedDiceValue = 0;
+                showBlurryScreen();
+
+                switchTurn();
             }
-            selectedDiceValue = 0;
+            else {
+                gameController.checkUpAfterDicePlacement();
+            }
+
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+            System.out.println("slot deactivated");
             slotImage.clearListeners();
+            if (slotImage == firstCoffeeSlot) {
+                firstCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(firstCoffeeSlot);
+
+                    }
+                });
+            }
+            else if (slotImage == secondCoffeeSlot) {
+                secondCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(secondCoffeeSlot);
+
+                    }
+                });
+            }
+            else if (slotImage == thirdCoffeeSlot) {
+                thirdCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(thirdCoffeeSlot);
+
+                    }
+                });
+            }
+
         }
     }
 
@@ -863,6 +904,28 @@ public class GamePlayScene implements Screen {
                 slot.setVisible(false);
             }
         }
+    }
+
+    public void showConcentrationImages(int diceValue) {
+        concentrationDecisionImage.setVisible(true);
+
+        int minusOneValue = Math.max(1, diceValue - 1);
+        int plusOneValue = Math.min(6, diceValue + 1);
+
+        valueMinusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[minusOneValue]));
+        valueMinusOneImage.setVisible(true);
+
+        valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
+        valuePlusOneImage.setVisible(true);
+
+        backButton.setVisible(true);
+    }
+
+    public void hideConcentrationImages() {
+        concentrationDecisionImage.setVisible(false);
+        valueMinusOneImage.setVisible(false);
+        valuePlusOneImage.setVisible(false);
+        backButton.setVisible(false);
     }
 
     // Dice placement related
@@ -953,6 +1016,12 @@ public class GamePlayScene implements Screen {
                     }
                 }
 
+                // Radios
+                else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
+                    gameController.placeDiceOnRadioSlot(selectedDiceValue);
+                    placementSuccessful = true;
+                }
+
                 // Brakes
                 else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
                     int brakeIndex;
@@ -967,12 +1036,6 @@ public class GamePlayScene implements Screen {
                     }
 
                     gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
-                }
-
-                // Radios
-                else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
-                    gameController.placeDiceOnRadioSlot(selectedDiceValue);
-                    placementSuccessful = true;
                 }
 
                 // coffee
@@ -997,33 +1060,25 @@ public class GamePlayScene implements Screen {
                     throw new IllegalArgumentException("Invalid slot selected");
                 }
                 if (placementSuccessful) {
-                    slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
-                    placedSound.play(1.0f);
-                    updateDiceImages();
-                    selectedDiceValue = 0;
-                    changeTurn();
+                    if (!gameController.isRoundOver()) {
+                        slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
+                        placedSound.play(1.0f);
+                        updateDiceImages();
+                        selectedDiceValue = 0;
+                        showBlurryScreen();
 
-
-                    if (gameController.isGameOver()) {
-                        showGameOverDialog();
+                        switchTurn();
                     }
+                    else {
+                        gameController.checkUpAfterDicePlacement();
+                    }
+
                 }
             } catch (Exception e) {
                 showErrorMessage("Invalid placement: " + e.getMessage());
             }
             updateDiceImages();
         }
-    }
-
-    private void changeTurn() {
-        Timer.schedule(new Timer.Task() {
-            public void run() {
-                blurryScreen.setVisible(true);
-                readyButton.setVisible(true);
-                readyButton.toFront();
-                movementSound.play(1.0f);
-            }
-        }, 1);
     }
 
     // Update the dice array
@@ -1044,26 +1099,25 @@ public class GamePlayScene implements Screen {
 
     // Some rules
 
-    public void showConcentrationImages(int diceValue) {
-        concentrationDecisionImage.setVisible(true);
-
-        int minusOneValue = Math.max(1, diceValue - 1);
-        int plusOneValue = Math.min(6, diceValue + 1);
-
-        valueMinusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[minusOneValue]));
-        valueMinusOneImage.setVisible(true);
-
-        valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
-        valuePlusOneImage.setVisible(true);
-
-        backButton.setVisible(true);
+    private void showBlurryScreen() {
+        Timer.schedule(new Timer.Task() {
+            public void run() {
+                blurryScreen.setVisible(true);
+                readyButton.setVisible(true);
+                readyButton.toFront();
+                movementSound.play(1.0f);
+            }
+        }, 1);
     }
 
-    public void hideConcentrationImages() {
-        concentrationDecisionImage.setVisible(false);
-        valueMinusOneImage.setVisible(false);
-        valuePlusOneImage.setVisible(false);
-        backButton.setVisible(false);
+    private void switchTurn() {
+        Timer.schedule(new Timer.Task() {
+            public void run() {
+                gameController.switchTurn();
+                updateDiceImages();
+                updatePlayerIndicators();
+            }
+        }, 1);
     }
 
     public void showErrorMessage(String errorMessage) {
