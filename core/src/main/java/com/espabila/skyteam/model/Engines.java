@@ -13,6 +13,61 @@ public class Engines {
     private Flaps flaps;
     private LandGear landGear;
 
+    public double getPilotMarker() {
+        return pilotMarker;
+    }
+
+    public void setPilotMarker(double pilotMarker) {
+        this.pilotMarker = pilotMarker;
+    }
+
+    public double getCopilotMarker() {
+        return copilotMarker;
+    }
+
+    public void setCopilotMarker(double copilotMarker) {
+        this.copilotMarker = copilotMarker;
+    }
+
+    public double getFinalPilotMarker() {
+        return finalPilotMarker;
+    }
+
+    public void setFinalPilotMarker(double finalPilotMarker) {
+        this.finalPilotMarker = finalPilotMarker;
+    }
+
+    public double getFinalCopilotMarker() {
+        return finalCopilotMarker;
+    }
+
+    public void setFinalCopilotMarker(double finalCopilotMarker) {
+        this.finalCopilotMarker = finalCopilotMarker;
+    }
+
+    public int getPilotSlot() {
+        return pilotSlot;
+    }
+
+    public void setPilotSlot(int pilotSlot) {
+        this.pilotSlot = pilotSlot;
+    }
+
+    public int getCopilotSlot() {
+        return copilotSlot;
+    }
+
+    public void setCopilotSlot(int copilotSlot) {
+        this.copilotSlot = copilotSlot;
+    }
+
+    public int getDiceSum() {
+        return diceSum;
+    }
+
+    public void setDiceSum(int diceSum) {
+        this.diceSum = diceSum;
+    }
 
     public Engines(){
         this.pilotMarker = 4.5;
@@ -23,34 +78,6 @@ public class Engines {
         this.pilotSlot = 0;
         this.copilotSlot = 0;
         this.diceSum = 0;
-    }
-
-    public double getPilotMarker() {
-        return pilotMarker;
-    }
-
-    public double getCopilotMarker() {
-        return copilotMarker;
-    }
-
-    public int getPilotSlot() {
-        return pilotSlot;
-    }
-
-    public int getCopilotSlot() {
-        return copilotSlot;
-    }
-
-    public void setPilotSlot(int pilotSlot) {
-        this.pilotSlot = pilotSlot;
-    }
-
-    public void setCopilotSlot(int copilotSlot) {
-        this.copilotSlot = copilotSlot;
-    }
-
-    public int getDiceSum() {
-        return diceSum;
     }
 
     public void placeDice(Player player, int diceValue){

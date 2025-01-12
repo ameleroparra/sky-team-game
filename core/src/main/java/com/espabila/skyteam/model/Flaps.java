@@ -7,16 +7,52 @@ public class Flaps {
     private int[] thirdRequired;
     private int[] fourthRequired;
 
+    public boolean[] getActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean[] activated) {
+        this.activated = activated;
+    }
+
+    public int[] getFirstRequired() {
+        return firstRequired;
+    }
+
+    public void setFirstRequired(int[] firstRequired) {
+        this.firstRequired = firstRequired;
+    }
+
+    public int[] getSecondRequired() {
+        return secondRequired;
+    }
+
+    public void setSecondRequired(int[] secondRequired) {
+        this.secondRequired = secondRequired;
+    }
+
+    public int[] getThirdRequired() {
+        return thirdRequired;
+    }
+
+    public void setThirdRequired(int[] thirdRequired) {
+        this.thirdRequired = thirdRequired;
+    }
+
+    public int[] getFourthRequired() {
+        return fourthRequired;
+    }
+
+    public void setFourthRequired(int[] fourthRequired) {
+        this.fourthRequired = fourthRequired;
+    }
+
     public Flaps() {
         this.activated = new boolean[4]; //flaps deactivated
         this.firstRequired = new int[]{1, 2};
         this.secondRequired = new int[]{2, 3};
         this.thirdRequired = new int[]{4, 5};
         this.fourthRequired = new int[]{5, 6};
-    }
-
-    public void setActivated(boolean[] activated) {
-        this.activated = activated;
     }
 
     public boolean activateFlap(CoPilot coPilot, int flapIndex, int value){

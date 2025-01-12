@@ -4,13 +4,7 @@ package com.espabila.skyteam.model;
 public class Brakes {
     private int[] requiredValue;
     private boolean[] activated;
-    private int brakesSum;
-
-    public Brakes() {
-        this.requiredValue = new int[]{2,4,6};
-        this.activated = new boolean[3];
-        this.brakesSum = 0;
-    }
+    private double brakesSum;
 
     public int[] getRequiredValue() {
         return requiredValue;
@@ -28,12 +22,18 @@ public class Brakes {
         this.activated = activated;
     }
 
-    public int getBrakesSum() {
+    public double getBrakesSum() {
         return brakesSum;
     }
 
-    public void setBrakesSum(int brakesSum) {
+    public void setBrakesSum(double brakesSum) {
         this.brakesSum = brakesSum;
+    }
+
+    public Brakes() {
+        this.requiredValue = new int[]{2,4,6};
+        this.activated = new boolean[3];
+        this.brakesSum = 0;
     }
 
     public boolean activateBrakes(Pilot pilot, int brakeSlot, int diceValue){
@@ -42,7 +42,8 @@ public class Brakes {
         }
         else if (diceValue == requiredValue[brakeSlot]){
             activated[brakeSlot] = true;
-            brakesSum = diceValue;
+            System.out.println("Brake slot "+ brakeSlot + "activated " + activated[brakeSlot] + " with dice " + diceValue);
+            brakesSum = diceValue + 0.5;
             pilot.removeDice(diceValue);
             return true;
         }

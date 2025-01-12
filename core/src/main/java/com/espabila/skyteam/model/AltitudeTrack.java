@@ -9,6 +9,22 @@ public class AltitudeTrack {
         this.currentRound = currentRound;
     }
 
+    public Boolean getPilotTurn() {
+        return pilotTurn;
+    }
+
+    public void setPilotTurn(Boolean pilotTurn) {
+        this.pilotTurn = pilotTurn;
+    }
+
+    public Boolean getLastRound() {
+        return lastRound;
+    }
+
+    public void setLastRound(Boolean lastRound) {
+        this.lastRound = lastRound;
+    }
+
     public AltitudeTrack(){
         this.pilotTurn = true;
         this.currentRound = 0;

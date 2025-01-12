@@ -5,12 +5,6 @@ public class Radio {
     private int copilotFirstSlot;
     private int copilotSecondSlot;
 
-    public Radio(){
-        this.pilotSlot = 0;
-        this.copilotFirstSlot = 0;
-        this.copilotSecondSlot = 0;
-    }
-
     public int getPilotSlot() {
         return pilotSlot;
     }
@@ -33,6 +27,12 @@ public class Radio {
 
     public void setCopilotSecondSlot(int copilotSecondSlot) {
         this.copilotSecondSlot = copilotSecondSlot;
+    }
+
+    public Radio(){
+        this.pilotSlot = 0;
+        this.copilotFirstSlot = 0;
+        this.copilotSecondSlot = 0;
     }
 
     public void placeDice(Player player, int diceValue){

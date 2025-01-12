@@ -6,13 +6,6 @@ public class LandGear {
     private int[] secondRequired;
     private int[] thirdRequired;
 
-    public LandGear(){
-        this.activated = new boolean[3];
-        this.firstRequired = new int[]{1, 2};
-        this.secondRequired = new int[]{3, 4};
-        this.thirdRequired = new int[]{5, 6};
-    }
-
     public boolean[] getActivated() {
         return activated;
     }
@@ -43,6 +36,13 @@ public class LandGear {
 
     public void setThirdRequired(int[] thirdRequired) {
         this.thirdRequired = thirdRequired;
+    }
+
+    public LandGear(){
+        this.activated = new boolean[3];
+        this.firstRequired = new int[]{1, 2};
+        this.secondRequired = new int[]{3, 4};
+        this.thirdRequired = new int[]{5, 6};
     }
 
     public boolean activateLandGear(Pilot pilot, int gearIndex, int value){

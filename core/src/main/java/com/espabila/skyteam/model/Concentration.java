@@ -11,6 +11,46 @@ public class Concentration {
     private boolean plusOne; //should be changed in controller to work here
     private boolean minusOne; //should be changed in controller to work here
 
+    public int getFirstSlot() {
+        return firstSlot;
+    }
+
+    public void setFirstSlot(int firstSlot) {
+        this.firstSlot = firstSlot;
+    }
+
+    public int getSecondSlot() {
+        return secondSlot;
+    }
+
+    public void setSecondSlot(int secondSlot) {
+        this.secondSlot = secondSlot;
+    }
+
+    public int getThirdSlot() {
+        return thirdSlot;
+    }
+
+    public void setThirdSlot(int thirdSlot) {
+        this.thirdSlot = thirdSlot;
+    }
+
+    public boolean[] getActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean[] activated) {
+        this.activated = activated;
+    }
+
+    public boolean isPlusOne() {
+        return plusOne;
+    }
+
+    public boolean isMinusOne() {
+        return minusOne;
+    }
+
     public Concentration(){
         this.firstSlot = 0;
         this.secondSlot = 0;
@@ -29,28 +69,21 @@ public class Concentration {
     }
 
     public void setActivated(int slotIndex, boolean activated) {
-        System.out.println("Slot " + slotIndex + " activated: " + activated);
         this.activated[slotIndex] = activated;
     }
 
     public void placeDice(Player player, int diceValue, int slotIndex){
         if (slotIndex == 0 && !activated[0]){
             activated[0] = true;
-            System.out.println("Coffee placed on Slot 1");
             player.removeDice(diceValue);
         }
         else if (slotIndex == 1 && !activated[1]){
             activated[1] = true;
-            System.out.println("Coffee placed on Slot 2");
             player.removeDice(diceValue);
         }
         else if (slotIndex == 2 && !activated[2]){
             activated[2] = true;
-            System.out.println("Coffee placed on Slot 3");
             player.removeDice(diceValue);
-        }
-        else {
-            System.out.println("Coffee is already available on this slot.");
         }
     }
 

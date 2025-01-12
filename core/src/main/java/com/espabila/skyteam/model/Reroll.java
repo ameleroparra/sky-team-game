@@ -9,31 +9,39 @@ public class Reroll {
     private boolean pilotRerollActive;
     private boolean coPilotRerollActive;
 
-    public Reroll(){
-        this.rerollAvailable = false;
-        this.rerolledDices = new ArrayList<>();
-        pilotRerollActive = false;
-        coPilotRerollActive = false;
+    public Boolean getRerollAvailable() {
+        return rerollAvailable;
     }
 
-    public void setPilotRerollActive(boolean pilotRerollActive) {
-        this.pilotRerollActive = pilotRerollActive;
+    public List<Integer> getRerolledDices() {
+        return rerolledDices;
     }
 
-    public void setCoPilotRerollActive(boolean coPilotRerollActive) {
-        this.coPilotRerollActive = coPilotRerollActive;
+    public void setRerolledDices(List<Integer> rerolledDices) {
+        this.rerolledDices = rerolledDices;
     }
 
     public boolean isPilotRerollActive() {
         return pilotRerollActive;
     }
 
+    public void setPilotRerollActive(boolean pilotRerollActive) {
+        this.pilotRerollActive = pilotRerollActive;
+    }
+
     public boolean isCoPilotRerollActive() {
         return coPilotRerollActive;
     }
 
-    public Boolean isRerollAvailable() {
-        return rerollAvailable;
+    public void setCoPilotRerollActive(boolean coPilotRerollActive) {
+        this.coPilotRerollActive = coPilotRerollActive;
+    }
+
+    public Reroll(){
+        this.rerollAvailable = false;
+        this.rerolledDices = new ArrayList<>();
+        pilotRerollActive = false;
+        coPilotRerollActive = false;
     }
 
     public void setRerollAvailable(Boolean rerollAvailable) {
