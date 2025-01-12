@@ -672,9 +672,6 @@ public class GamePlayScene implements Screen {
             approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
         }
 
-        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
-        altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum]);
-
         approachTrackSlots = new ArrayList<>();
         for (int i = 0; i <= approachTrackAmount; i++) {
             Image slot = new Image(approachTextures[0]);
@@ -1309,7 +1306,7 @@ public class GamePlayScene implements Screen {
         updateRerollVisuals();
         altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
         if((altitudeTrackTextureNum) < 6) {
-            altitudeTrackSlot.setDrawable(new Image(altitudeTextures[altitudeTrackTextureNum]).getDrawable());
+            updateAltitudeTrackVisual();
             resetNextRoundSlots();
             updateApproachTrackVisuals();
 
@@ -1322,6 +1319,16 @@ public class GamePlayScene implements Screen {
         }
         else {
             gameOverScreen();
+        }
+    }
+
+    private void updateAltitudeTrackVisual() {
+        if (altitudeTrackTextureNum >= 0 && altitudeTrackTextureNum < altitudeTextures.length) {
+            Texture newTexture = altitudeTextures[altitudeTrackTextureNum];
+            altitudeTrackSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+            System.out.println("Updated altitude track visual to: " + altitudeTrackTextureNum);
+        } else {
+            System.err.println("Invalid altitudeTrackTextureNum: " + altitudeTrackTextureNum);
         }
     }
 

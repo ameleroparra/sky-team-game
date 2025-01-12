@@ -154,6 +154,8 @@ public class GameController {
         approachTrack.resetApproachTrack();
         altitudeTrack.rerollAvailable(reroll);
 
+        //        setupLastRoundForTesting();
+
 
         // Initial dice roll for both players
         pilot.rollDices();
@@ -185,8 +187,61 @@ public class GameController {
         return approachTrack.getPlaneTokens();
     }
 
+    //For testing last round
+    public void setupLastRoundForTesting() {
+        // Activate all landing gears
+        activateAllLandingGear();
+
+        // Activate all brakes
+//        setBrakesActivated();
+
+        // Activate all flaps
+        setFlapsActivated();
+
+        approachTrack.setCurrentPosition(6);
+
+        approachTrack.setPlaneTokens(new int[]{0});
+
+        altitudeTrack.setCurrentRound(6);
+
+        gamePlayScene.lastRoundTest();
+
+//        gamePlayScene.updateLowMarkerVisuals(1);
+//        gamePlayScene.updateLowMarkerVisuals(2);
+//        gamePlayScene.updateLowMarkerVisuals(3);
+
+//        gamePlayScene.updateHighMarkerVisuals(1);
+//        gamePlayScene.updateHighMarkerVisuals(2);
+//        gamePlayScene.updateHighMarkerVisuals(3);
+//
+//        for (int i = 0; i < 3; i++) {
+//            gamePlayScene.updateBrakeVisuals(i, true);
+//        }
+    }
 
 
+    public void activateAllLandingGear() {
+        boolean[] allActivated = new boolean[3];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        landGear.setActivated(allActivated);
+    }
+
+    public void setBrakesActivated() {
+        boolean[] allActivated = new boolean[3];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        brakes.setActivated(allActivated);
+    }
+    public void setFlapsActivated() {
+        boolean[] allActivated = new boolean[4];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        flaps.setActivated(allActivated);
+    }
 
     public void switchTurn() {
         currentPlayer = (currentPlayer == pilot) ? coPilot : pilot;
@@ -225,6 +280,7 @@ public class GameController {
         }
         else{
             altitudeTrack.newRound();
+            System.out.println(altitudeTrack.getCurrentRound() + " round started");
             radio.resetSlots();
             engines.resetEnginesSlots();
             axis.resetAxisSlots();
@@ -418,7 +474,6 @@ public class GameController {
     }
 
     public boolean isRerollAvailable() {
-
         return reroll.isRerollAvailable();
     }
 
@@ -459,24 +514,6 @@ public class GameController {
     public void setRerollUsedThisRound(boolean rerollUsedThisRound) {
         this.rerollUsedThisRound = rerollUsedThisRound;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Land Gear
     public boolean placeDiceOnLandGear(int diceValue, int gearIndex) {
