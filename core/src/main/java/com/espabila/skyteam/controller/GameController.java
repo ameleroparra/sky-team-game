@@ -59,8 +59,7 @@ public class GameController {
         concentration.resetConcentration();
         landGear.resetLandGear();
         flaps.resetFlaps();
-//        approachTrack.resetApproachTrack();
-        approachTrack.setPlaneTokens(new int[]{0, 0, 0, 0, 0, 0, 0});
+        approachTrack.resetApproachTrack();
         altitudeTrack.rerollAvailable(reroll);
         pilot.rollDices();
         coPilot.rollDices();
@@ -90,6 +89,8 @@ public class GameController {
                 currentPlayer = coPilot;
             }
             rerollUsedThisRound = false;
+            setPilotRerollActive(false);
+            setPilotRerollActive(false);
 
             gamePlayScene.resetNextRoundSlots();
             gamePlayScene.updateDiceImages();
@@ -263,7 +264,7 @@ public class GameController {
     }
 
     public void useRerollSlot() {
-        if (reroll.isRerollAvailable()) {
+        if (reroll.getRerollAvailable()) {
             gamePlayScene.createRerollScreen();
             reroll.setPilotRerollActive(true);
             reroll.setCoPilotRerollActive(true);
@@ -272,7 +273,7 @@ public class GameController {
     }
 
     public boolean isRerollAvailable() {
-        return reroll.isRerollAvailable();
+        return reroll.getRerollAvailable();
     }
 
     public void setPilotRerollActive(boolean active) {
