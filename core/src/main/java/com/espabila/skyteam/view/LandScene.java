@@ -67,6 +67,7 @@ public class LandScene implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 gameController.startNewGame();
                 game.setScreen(new GamePlayScene(game, gameController));
+                clapsSound.stop();
             }
         });
 
