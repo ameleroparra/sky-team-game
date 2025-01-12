@@ -284,6 +284,8 @@ public class GameController {
             axis.resetAxisSlots();
             altitudeTrack.rerollAvailable(reroll);
             gamePlayScene.updateRerollVisuals();
+            gamePlayScene.updateFlapImages();
+            gamePlayScene.updateLandGearImages();
 
             pilot.rollDices();
             coPilot.rollDices();
@@ -442,16 +444,6 @@ public class GameController {
         gamePlayScene.updateCoffeeVisuals(gamePlayScene.coffeeSlotIndex, false);
     }
 
-
-
-
-
-
-
-
-
-
-
     public void useRerollDice(int diceIndex) {
         if(currentPlayer instanceof Pilot && getPilotRerollActive()) {
             reroll.useReroll(currentPlayer, diceIndex);
@@ -473,24 +465,6 @@ public class GameController {
     public boolean isRerollAvailable() {
         return reroll.isRerollAvailable();
     }
-
-//    public boolean isRerollAvailable() {
-//        altitudeTrack.rerollAvailable(reroll);
-//        return reroll.isRerollAvailable();
-//        if(getPilotRerollActive()) {
-//            altitudeTrack.rerollAvailable(reroll);
-//            return isRerollAvailable();
-//        }
-//        else if (getCoPilotRerollActive()) {
-//            altitudeTrack.rerollAvailable(reroll);
-//            return isRerollAvailable();
-//        }
-//        else{
-//            reroll.setRerollAvailable(false);
-//            return reroll.isRerollAvailable();
-//        }
-//
-//    }
 
     public void setPilotRerollActive(boolean active) {
         reroll.setPilotRerollActive(active);
@@ -520,7 +494,7 @@ public class GameController {
             engines.advancePilotMarker();
         }
 
-//        checkUpAfterDicePlacement();
+
         return landGear.isActivated(gearIndex);
     }
 
@@ -534,6 +508,14 @@ public class GameController {
 
 //        checkUpAfterDicePlacement();
         return flaps.isActivated(flapsIndex);
+    }
+
+    public boolean flapIsActivated(int flapIndex) {
+        return flaps.isActivated(flapIndex);
+    }
+
+    public boolean landGearIsActivated(int gearIndex) {
+        return landGear.isActivated(gearIndex);
     }
 
     public boolean isGameOver() {

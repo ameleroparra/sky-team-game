@@ -1,6 +1,7 @@
 package com.espabila.skyteam.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -222,6 +223,11 @@ public class GamePlayScene implements Screen {
         stage.getViewport().apply();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            game.setScreen(new LandScene(game, gameController));
+            return;
+        }
     }
 
     @Override
@@ -843,6 +849,33 @@ public class GamePlayScene implements Screen {
     }
 
     // Update visuals
+
+    public void updateFlapImages() {
+        if (gameController.flapIsActivated(0)) {
+            firstFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(1)) {
+            secondFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(2)) {
+            thirdFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(3)) {
+            fourthFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+    }
+
+    public void updateLandGearImages() {
+        if (gameController.landGearIsActivated(0)) {
+            firstLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.landGearIsActivated(1)) {
+            secondLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.landGearIsActivated(2)) {
+            thirdLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+    }
 
     private void updateRerollDiceImages() {
         if (diceReroll1 != null && diceImages != null && diceImages.length > 0) {

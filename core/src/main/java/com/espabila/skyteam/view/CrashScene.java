@@ -83,6 +83,11 @@ public class CrashScene implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 gameController.startNewGame();
                 game.setScreen(new GamePlayScene(game, gameController));
+                crashMusic.stop();
+                soundTask.cancel();
+                for (Sound sound : electricity) {
+                    sound.stop();
+                }
             }
         });
 
