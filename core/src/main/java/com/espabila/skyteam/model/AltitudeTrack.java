@@ -33,7 +33,7 @@ public class AltitudeTrack {
     public void rerollAvailable(Reroll reroll){
         if(currentRound == 0 || currentRound== 4){
             reroll.setRerollAvailable(true);
-            System.out.println("rerollAvailable was called" + currentRound);
+            System.out.println("rerollAvailable was called " + currentRound);
         }
     }
 

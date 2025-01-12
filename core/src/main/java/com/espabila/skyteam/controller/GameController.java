@@ -272,8 +272,6 @@ public class GameController {
 
     public void startNewRound() {
         gamePlayScene.showCover();
-        altitudeTrack.rerollAvailable(reroll);
-        gamePlayScene.updateRerollVisuals();
         checkSpecialCases();
         if(gameOver){
             gamePlayScene.gameOverScreen();
@@ -284,6 +282,8 @@ public class GameController {
             radio.resetSlots();
             engines.resetEnginesSlots();
             axis.resetAxisSlots();
+            altitudeTrack.rerollAvailable(reroll);
+            gamePlayScene.updateRerollVisuals();
 
             pilot.rollDices();
             coPilot.rollDices();
@@ -467,9 +467,6 @@ public class GameController {
             reroll.setPilotRerollActive(true);
             reroll.setCoPilotRerollActive(true);
             reroll.setRerollAvailable(false);
-        }
-        else {
-            gamePlayScene.showErrorMessage("No reroll available.");
         }
     }
 
