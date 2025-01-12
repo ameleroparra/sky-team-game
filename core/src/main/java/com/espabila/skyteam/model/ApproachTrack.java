@@ -54,7 +54,7 @@ public class ApproachTrack {
         int moveAmount = engines.getApproachTrackMove();
         if (moveAmount != 0) {
             for (int i = 0; i < moveAmount; i++) {
-                if (currentPosition + 1 < planeTokens.length) {
+                if (currentPosition + 1 <= planeTokens.length) {
                     if (planeTokens[0] == 0) {
                         // Remove the first element (pop)
                         planeTokens = Arrays.copyOfRange(planeTokens, 1, planeTokens.length);

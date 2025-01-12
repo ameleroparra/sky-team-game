@@ -1326,9 +1326,6 @@ public class GamePlayScene implements Screen {
         dialog.show(stage);
     }
 
-    private void showGameOverDialog() {
-    }
-
     public void resetNextRoundSlots(){
         resetRadioSlots();
         resetEnginesSlots();
@@ -1338,7 +1335,7 @@ public class GamePlayScene implements Screen {
     public void startNewRound() {
         updateRerollVisuals();
         altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
-        if((altitudeTrackTextureNum) < 6) {
+        if((altitudeTrackTextureNum) <= 6) {
             updateAltitudeTrackVisual();
             resetNextRoundSlots();
             updateApproachTrackVisuals();

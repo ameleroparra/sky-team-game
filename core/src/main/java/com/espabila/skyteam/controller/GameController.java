@@ -151,12 +151,12 @@ public class GameController {
         concentration.resetConcentration();
         landGear.resetLandGear();
         flaps.resetFlaps();
-        approachTrack.resetApproachTrack();
+//        approachTrack.resetApproachTrack();
         altitudeTrack.rerollAvailable(reroll);
 
-        //        setupLastRoundForTesting();
+        approachTrack.setPlaneTokens(new int[]{0, 0, 0, 0, 0, 0, 0});
 
-
+        System.out.println(getCurrentApproachTrackPosition());
         // Initial dice roll for both players
         pilot.rollDices();
         coPilot.rollDices();
@@ -255,15 +255,19 @@ public class GameController {
         if(isRoundOver()){
             System.out.println("round over");
             if(altitudeTrack.isLastRound()){
+                System.out.println("I'm here because last round");
                 if(checkLandingConditions()){
+                    System.out.println("I'm checking landing conditions because true");
                     gamePlayScene.winScreen();
                 }
                 else{
+                    System.out.println("Check up after dice placement - last round and landing conditions are not met");
                     gameOver = true;
                     gamePlayScene.gameOverScreen();
                 }
             }
             else {
+                System.out.println("Check up after dice placement - NOT last round");
                 checkEndRoundConditions();
             }
 
@@ -534,6 +538,7 @@ public class GameController {
 
 //
     private boolean checkLandingConditions() {
+        System.out.println("I started checking landing conditions");
         return approachTrack.isLastTrack() &&
         altitudeTrack.isLastRound() &&
         engines.areDicesPlaced() &&
@@ -545,10 +550,9 @@ public class GameController {
     }
 
     private void checkSpecialCases() {
-        if(approachTrack.isLastTrack() && !altitudeTrack.isLastRound()){
-            gameOver = true;
-        }
-        else if(!approachTrack.isLastTrack() && altitudeTrack.isLastRound()){
+        System.out.println("I'm checking special cases");
+        if(!approachTrack.isLastTrack() && altitudeTrack.isLastRound()){
+            System.out.println("special case is met - game over");
             gameOver = true;
         }
     }
