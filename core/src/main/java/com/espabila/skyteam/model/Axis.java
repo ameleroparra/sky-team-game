@@ -78,7 +78,7 @@ public class Axis {
          // moves axis to the pilot side, left
          if (pilotSlot > copilotSlot) {
              if (leftMove < 0) {
-                 currentIndexPosition = leftMove;
+                 currentIndexPosition = 0;
                  gameOver = true;
              } else {
                  currentIndexPosition = leftMove;
@@ -87,7 +87,7 @@ public class Axis {
          //moves axis to the copilot side, right
          else if (pilotSlot < copilotSlot) {
              if (rightMove > 4) {
-                 currentIndexPosition = rightMove;
+                 currentIndexPosition = 4;
                  gameOver = true;
              } else {
                  currentIndexPosition = rightMove;

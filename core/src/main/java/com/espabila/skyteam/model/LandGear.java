@@ -13,6 +13,38 @@ public class LandGear {
         this.thirdRequired = new int[]{5, 6};
     }
 
+    public boolean[] getActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean[] activated) {
+        this.activated = activated;
+    }
+
+    public int[] getFirstRequired() {
+        return firstRequired;
+    }
+
+    public void setFirstRequired(int[] firstRequired) {
+        this.firstRequired = firstRequired;
+    }
+
+    public int[] getSecondRequired() {
+        return secondRequired;
+    }
+
+    public void setSecondRequired(int[] secondRequired) {
+        this.secondRequired = secondRequired;
+    }
+
+    public int[] getThirdRequired() {
+        return thirdRequired;
+    }
+
+    public void setThirdRequired(int[] thirdRequired) {
+        this.thirdRequired = thirdRequired;
+    }
+
     public boolean activateLandGear(Pilot pilot, int gearIndex, int value){
         //check if the value used by the player match the necessary ones to activate the flap
         if (gearIndex == 0) {

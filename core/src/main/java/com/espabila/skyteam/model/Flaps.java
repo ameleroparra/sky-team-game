@@ -15,6 +15,10 @@ public class Flaps {
         this.fourthRequired = new int[]{5, 6};
     }
 
+    public void setActivated(boolean[] activated) {
+        this.activated = activated;
+    }
+
     public boolean activateFlap(CoPilot coPilot, int flapIndex, int value){
         if (flapIndex > 0 && !activated[flapIndex - 1]){
             return false;

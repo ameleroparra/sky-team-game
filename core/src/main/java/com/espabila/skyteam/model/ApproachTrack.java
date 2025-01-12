@@ -13,7 +13,7 @@ public class ApproachTrack {
         this.currentPosition = 0;
         this.lastTrack = false;
         this.lastTrackNum = 6;
-        this.planeTokens = new int[]{1, 0, 1, 2, 1, 3, 2};
+        this.planeTokens = new int[]{0, 0, 1, 2, 1, 3, 2};
         this.gameOver = false;
     }
 
@@ -88,7 +88,7 @@ public class ApproachTrack {
         this.currentPosition = 0;
         this.lastTrack = false;
         this.lastTrackNum = 6;
-        this.planeTokens = new int[]{1, 0, 1, 2, 1, 3, 2};
+        this.planeTokens = new int[]{0, 0, 1, 2, 1, 3, 2};
         this.gameOver = false;
     }
 }

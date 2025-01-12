@@ -140,18 +140,21 @@ public class GameController {
     }
 
     public void startNewGame(){
-        pilot.resetDiceList();
-        coPilot.resetDiceList();
+//        pilot.resetDiceList();
+//        coPilot.resetDiceList();
         currentPlayer = pilot;
-        radio.resetSlots();
-        brakes.resetBrakes();
-        engines.resetEngines();
-        axis.resetAxisSlots();
-        altitudeTrack.resetAltitudeTrack();
-        concentration.resetConcentration();
-        landGear.resetLandGear();
-        flaps.resetFlaps();
-        approachTrack.resetApproachTrack();
+//        radio.resetSlots();
+//        brakes.resetBrakes();
+//        engines.resetEngines();
+//        axis.resetAxisSlots();
+//        altitudeTrack.resetAltitudeTrack();
+//        concentration.resetConcentration();
+//        landGear.resetLandGear();
+//        flaps.resetFlaps();
+//        approachTrack.resetApproachTrack();
+
+
+        setupLastRoundForTesting();
 
 
         // Initial dice roll for both players
@@ -175,9 +178,69 @@ public class GameController {
         return approachTrack.getPlaneTokens();
     }
 
+    public int getAltitudeTrackCurrentRound() {
+        return altitudeTrack.getCurrentRound();
+    }
+
     public int[] setApproachTrackPlaneTokens(int[] planeTokens) {
         approachTrack.setPlaneTokens(planeTokens);
         return approachTrack.getPlaneTokens();
+    }
+
+    //For testing last round
+    public void setupLastRoundForTesting() {
+        // Activate all landing gears
+        activateAllLandingGear();
+
+        // Activate all brakes
+//        setBrakesActivated();
+
+        // Activate all flaps
+        setFlapsActivated();
+
+        approachTrack.setCurrentPosition(6);
+
+        approachTrack.setPlaneTokens(new int[]{0});
+
+        altitudeTrack.setCurrentRound(6);
+
+        gamePlayScene.lastRoundTest();
+
+//        gamePlayScene.updateLowMarkerVisuals(1);
+//        gamePlayScene.updateLowMarkerVisuals(2);
+//        gamePlayScene.updateLowMarkerVisuals(3);
+
+//        gamePlayScene.updateHighMarkerVisuals(1);
+//        gamePlayScene.updateHighMarkerVisuals(2);
+//        gamePlayScene.updateHighMarkerVisuals(3);
+//
+//        for (int i = 0; i < 3; i++) {
+//            gamePlayScene.updateBrakeVisuals(i, true);
+//        }
+    }
+
+
+    public void activateAllLandingGear() {
+        boolean[] allActivated = new boolean[3];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        landGear.setActivated(allActivated);
+    }
+
+    public void setBrakesActivated() {
+        boolean[] allActivated = new boolean[3];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        brakes.setActivated(allActivated);
+    }
+    public void setFlapsActivated() {
+        boolean[] allActivated = new boolean[4];
+        for (int i = 0; i < allActivated.length; i++) {
+            allActivated[i] = true;
+        }
+        flaps.setActivated(allActivated);
     }
 
     public boolean isRerollAvailable() {
@@ -208,7 +271,7 @@ public class GameController {
             System.out.println("round over");
             if(altitudeTrack.isLastRound()){
                 if(checkLandingConditions()){
-//                    gamePlayScene.winScreen();
+                    gamePlayScene.winScreen();
                 }
                 else{
                     gameOver = true;
@@ -440,6 +503,7 @@ public class GameController {
         }
         else {
             gameOver = true;
+            gamePlayScene.gameOverScreen();
         }
     }
 
@@ -463,4 +527,5 @@ public class GameController {
             gameOver = true;
         }
     }
+
 }

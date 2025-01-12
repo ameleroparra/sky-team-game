@@ -98,7 +98,7 @@ public class GamePlayScene implements Screen {
     // Altitude Tracks slot
     private Texture[] altitudeTextures;
     private Image altitudeTrackSlot;
-    private int altitudeTrackTextureNum = 6;
+    private int altitudeTrackTextureNum;
 
     // Approach Tracks slots
     private Texture[] approachTextures;
@@ -643,9 +643,10 @@ public class GamePlayScene implements Screen {
     private void createAltitudeSlots() {
         altitudeTextures = new Texture[7];
         for (int i = 0; i <= 6; i++) {
-            altitudeTextures[i] = new Texture("altitude" + i + ".jpg"); // generate altitude textures
+            altitudeTextures[i] = new Texture("altitude_" + i + ".jpg"); // generate altitude textures
         }
 
+        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
         altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum]);
         altitudeTrackSlot.setPosition(1100,875);
         stage.addActor(altitudeTrackSlot);
@@ -670,6 +671,10 @@ public class GamePlayScene implements Screen {
         for (int i = 0; i <= 4; i++) {
             approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
         }
+
+        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
+        altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum]);
+
         approachTrackSlots = new ArrayList<>();
         for (int i = 0; i <= approachTrackAmount; i++) {
             Image slot = new Image(approachTextures[0]);
@@ -1162,11 +1167,10 @@ public class GamePlayScene implements Screen {
     }
 
     public void startNewRound() {
-        System.out.println("View: new round started");
-        int altitudeTextureNum = altitudeTrackTextureNum - 1;
-
-        if((altitudeTextureNum) > 0) {
-            altitudeTrackSlot.setDrawable(new Image(altitudeTextures[altitudeTrackTextureNum -= 1]).getDrawable());
+        updateRerollVisuals();
+        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
+        if((altitudeTrackTextureNum) < 6) {
+            altitudeTrackSlot.setDrawable(new Image(altitudeTextures[altitudeTrackTextureNum]).getDrawable());
             resetNextRoundSlots();
             updateApproachTrackVisuals();
 
@@ -1201,4 +1205,18 @@ public class GamePlayScene implements Screen {
     public void gameOverScreen(){
         game.setScreen(new CrashScene(game, gameController));
     }
+
+    public void winScreen(){
+        game.setScreen(new LandScene(game, gameController));
+    }
+
+    public void lastRoundTest(){
+        selectedDiceValue = 2;
+        placeDice(firstBrakesSlot);
+        selectedDiceValue = 4;
+        placeDice(secondBrakesSlot);
+        selectedDiceValue = 6;
+        placeDice(thirdBrakesSlot);
+    }
+
 }
