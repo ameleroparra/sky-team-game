@@ -276,12 +276,12 @@ public class GameController {
 
     public void startNewRound() {
         gamePlayScene.showCover();
-        checkSpecialCases();
         if(gameOver){
             gamePlayScene.gameOverScreen();
         }
         else{
             altitudeTrack.newRound();
+            checkSpecialCases();
             System.out.println(altitudeTrack.getCurrentRound() + " round started");
             radio.resetSlots();
             engines.resetEnginesSlots();
@@ -538,7 +538,6 @@ public class GameController {
 
 //
     private boolean checkLandingConditions() {
-        System.out.println("I started checking landing conditions");
         return approachTrack.isLastTrack() &&
         altitudeTrack.isLastRound() &&
         engines.areDicesPlaced() &&
@@ -550,10 +549,9 @@ public class GameController {
     }
 
     private void checkSpecialCases() {
-        System.out.println("I'm checking special cases");
         if(!approachTrack.isLastTrack() && altitudeTrack.isLastRound()){
-            System.out.println("special case is met - game over");
             gameOver = true;
+            gamePlayScene.gameOverScreen();
         }
     }
 }
