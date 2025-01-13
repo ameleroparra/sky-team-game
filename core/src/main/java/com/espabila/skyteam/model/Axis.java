@@ -16,6 +16,10 @@ public class Axis {
         this.position = position;
     }
 
+    public int getCurrentIndexPosition() {
+        return currentIndexPosition;
+    }
+
     public void setCurrentIndexPosition(int currentIndexPosition) {
         this.currentIndexPosition = currentIndexPosition;
     }
