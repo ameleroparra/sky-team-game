@@ -79,7 +79,7 @@ public class Axis {
          }
      }
 
-     public Boolean areDicesPlaced(){
+     public Boolean areDicePlaced(){
          if(pilotSlot > 0 && copilotSlot > 0){
              return true;
          }
@@ -120,9 +120,7 @@ public class Axis {
          copilotSlot = 0;
      }
 
-     public boolean axisAreHorizontal(){
-         return getPosition() == 0;
-     }
-
-
+    public boolean axisAreHorizontal(){
+        return getPosition() == 0;
+    }
 }

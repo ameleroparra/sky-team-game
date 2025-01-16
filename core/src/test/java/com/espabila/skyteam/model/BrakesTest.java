@@ -56,4 +56,17 @@ class BrakesTest {
 
         assertFalse(result);
     }
+
+    @Test
+    void testResetBrakesDeactivatesAllBrakeSlots() {
+        for (int i = 0; i < brakes.getActivated().length; i++) {
+            brakes.getActivated()[i] = true;
+        }
+
+        brakes.resetBrakes();
+
+        for (int i = 0; i < brakes.getActivated().length; i++) {
+            assertFalse(brakes.isBrakeActivated(i));
+        }
+    }
 }

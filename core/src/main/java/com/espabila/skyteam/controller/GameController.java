@@ -216,7 +216,7 @@ public class GameController {
             }
         }
 
-        if (axis.areDicesPlaced()) {
+        if (axis.areDicePlaced()) {
             axis.currentIndexCalculation();
             int currentPosition = axis.getPosition();
             gamePlayScene.updateAxisPlaneVisuals(currentPosition);
@@ -346,7 +346,7 @@ public class GameController {
     }
 
     private void checkEndRoundConditions() {
-        if(axis.areDicesPlaced() && engines.areDicesPlaced()) {
+        if(axis.areDicePlaced() && engines.areDicesPlaced()) {
             startNewRound();
         }
         else {
@@ -367,7 +367,7 @@ public class GameController {
         altitudeTrack.isLastRound() &&
         approachTrack.howManyplanesAtTheAirport() == 0 &&
         engines.areDicesPlaced() &&
-        axis.areDicesPlaced() &&
+        axis.areDicePlaced() &&
         axis.axisAreHorizontal() &&
         (engines.getDiceSum() < brakes.getBrakesSum()) &&
         flaps.allActivated() &&

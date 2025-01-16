@@ -61,32 +61,39 @@ public class AxisTest {
     }
 
     @Test
-    public void testReturnFalseWhenAreDicesPlacedCalledAndOnlyPilotSlotFilled() {
-        int diceValue = 4;
-
-        axis.placeDice(pilot, diceValue);
-
-        assertFalse(axis.areDicesPlaced());
-    }
-
-    @Test
-    public void testReturnFalseWhenAreDicesPlacedCalledAndOnlyCoPilotSlotFilled() {
-        int diceValue = 4;
-
-        axis.placeDice(copilot, diceValue);
-
-        assertFalse(axis.areDicesPlaced());
-    }
-
-    @Test
-    public void testReturnTrueWhenAreDicesPlacedCalledAndBothSlotsFilled() {
+    public void testReturnTrueWhenAreDicePlacedCalledAndBothSlotsFilled() {
         int pilotDiceValue = 4;
         int copilotDiceValue = 3;
 
         axis.placeDice(pilot, pilotDiceValue);
         axis.placeDice(copilot, copilotDiceValue);
 
-        assertTrue(axis.areDicesPlaced());
+        assertTrue(axis.areDicePlaced());
+    }
+
+    @Test
+    public void testReturnFalseWhenOnlyPilotSlotIsFilled() {
+        int diceValue = 4;
+
+        axis.placeDice(pilot, diceValue);
+
+        assertFalse(axis.areDicePlaced());
+    }
+
+    @Test
+    public void testReturnFalseWhenOnlyCopilotSlotIsFilled() {
+        int diceValue = 4;
+
+        axis.placeDice(copilot, diceValue);
+
+        assertFalse(axis.areDicePlaced());
+    }
+
+    @Test
+    public void testReturnFalseWhenBothSlotsAreEmpty() {
+        Axis axis = new Axis();
+
+        assertFalse(axis.areDicePlaced());
     }
 
     @Test
@@ -216,5 +223,37 @@ public class AxisTest {
 
         assertEquals(2, axis.getCurrentIndexPosition());
         assertFalse(axis.getGameOver());
+    }
+
+    @Test
+    public void testSetGameOverTrueWhenCurrentPositionMovesBelowZeroForPilotSide() {
+        axis.setCurrentIndexPosition(1);
+        axis.setPilotSlot(5);
+        axis.setCopilotSlot(2);
+
+        axis.currentIndexCalculation();
+
+        assertEquals(0, axis.getCurrentIndexPosition());
+        assertTrue(axis.getGameOver());
+    }
+
+    @Test
+    public void testSetGameOverTrueWhenCurrentPositionMovesAboveFourForCopilotSide() {
+        axis.setCurrentIndexPosition(3);
+        axis.setPilotSlot(2);
+        axis.setCopilotSlot(5);
+
+        axis.currentIndexCalculation();
+
+        assertEquals(4, axis.getCurrentIndexPosition());
+        assertTrue(axis.getGameOver());
+    }
+
+    @Test
+    public void testAxisAreHorizontalWhenPositionIsZero() {
+        Axis axis = new Axis();
+        axis.setCurrentIndexPosition(2); // Set to middle position (0)
+
+        assertTrue(axis.axisAreHorizontal());
     }
 }

@@ -99,7 +99,7 @@ public class ApproachTrack {
         this.gameOver = false;
     }
 
-    public int howManyplanesAtTheAirport() {
+    public int howManyplanesAtTheAirport() {  // it's a method for the last round when only one track is left to make sure there are no planes left at the airport otherwise game over
         return planeTokens[0];
     }
 }

@@ -1,7 +1,7 @@
 package com.espabila.skyteam.model;
-
+import org.mockito.Mockito;
 import org.junit.jupiter.api.*;
-
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AltitudeTrackTest {
@@ -45,6 +45,17 @@ class AltitudeTrackTest {
     }
 
     @Test
+    void testRerollAvailableWhenCurrentRoundIsZeroMockito() {
+        Reroll mockReroll = Mockito.mock(Reroll.class);
+        when(mockReroll.getRerollAvailable()).thenReturn(false);
+
+        altitudeTrack.rerollAvailable(mockReroll);
+
+        verify(mockReroll).setRerollAvailable(true);
+    }
+
+    // Integration test
+    @Test
     void testRerollAvailableWhenCurrentRoundIsZero() {
         Reroll reroll = new Reroll();
         reroll.setRerollAvailable(false);
@@ -54,6 +65,19 @@ class AltitudeTrackTest {
         assertTrue(reroll.getRerollAvailable());
     }
 
+    @Test
+    void testRerollAvailableWhenCurrentRoundIsFourMockito() {
+        Reroll mockReroll = Mockito.mock(Reroll.class);
+        when(mockReroll.getRerollAvailable()).thenReturn(false);
+
+        altitudeTrack.setCurrentRound(4);
+
+        altitudeTrack.rerollAvailable(mockReroll);
+
+        verify(mockReroll).setRerollAvailable(true);
+    }
+
+    // Integration test
     @Test
     void testRerollAvailableWhenCurrentRoundIsFour() {
         Reroll reroll = new Reroll();
@@ -67,6 +91,21 @@ class AltitudeTrackTest {
     }
 
     @Test
+    void testRerollAvailableWhenCurrentRoundIsNotZeroOrFourMockito() {
+        Reroll mockReroll = Mockito.mock(Reroll.class);
+
+        altitudeTrack.setCurrentRound(2);
+        altitudeTrack.rerollAvailable(mockReroll);
+
+        verify(mockReroll, never()).setRerollAvailable(anyBoolean());
+
+        verify(mockReroll, never()).getRerollAvailable();
+
+        verifyNoMoreInteractions(mockReroll);
+    }
+
+    // Integration test
+    @Test
     void testRerollAvailableWhenCurrentRoundIsNotZeroOrFour() {
         Reroll reroll = new Reroll();
         reroll.setRerollAvailable(false);
@@ -78,5 +117,16 @@ class AltitudeTrackTest {
         assertFalse(reroll.getRerollAvailable());
     }
 
-    // create test when reroll is available but not used in the current round
+    @Test
+    void testResetAltitudeTrack() {
+        altitudeTrack.setCurrentRound(5);
+        altitudeTrack.setPilotTurn(false);
+        altitudeTrack.setLastRound(true);
+
+        altitudeTrack.resetAltitudeTrack();
+
+        assertTrue(altitudeTrack.isPilotTurn());
+        assertEquals(0, altitudeTrack.getCurrentRound());
+        assertFalse(altitudeTrack.isLastRound());
+    }
 }
