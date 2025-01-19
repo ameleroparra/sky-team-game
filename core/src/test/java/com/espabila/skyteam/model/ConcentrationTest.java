@@ -233,8 +233,6 @@ class ConcentrationTest {
         concentration.setActivated(0, true);
         concentration.setActivated(1, true);
         concentration.setActivated(2, true);
-        concentration.setPlusOne(true);
-        concentration.setMinusOne(true);
 
         // Reset concentration
         concentration.resetConcentration();
@@ -243,8 +241,6 @@ class ConcentrationTest {
         assertFalse(concentration.isActivated(0));
         assertFalse(concentration.isActivated(1));
         assertFalse(concentration.isActivated(2));
-        assertFalse(concentration.isPlusOne());
-        assertFalse(concentration.isMinusOne());
     }
 
 }

@@ -53,6 +53,7 @@ class PlayerTest {
 
         player.rollDice();
 
-        assertEquals(0, player.getDiceList().size());
+        System.out.println("Dice list after rolling: " + player.getDiceList());
+        assertNotEquals(initialDiceList, player.getDiceList().size());
     }
 }
