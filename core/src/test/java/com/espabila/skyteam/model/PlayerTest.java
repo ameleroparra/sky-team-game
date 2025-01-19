@@ -20,7 +20,7 @@ class PlayerTest {
     }
 
     @Test
-    public void testRollFourDiceAndAddValuesToDiceList() {
+    public void testRollFourDiceAndAddValuesToList() {
         player.rollDice();
 
         List<Integer> diceList = player.getDiceList();
@@ -46,7 +46,7 @@ class PlayerTest {
     }
 
     @Test
-    void testRollDicesWhenDiceListIsNotEmpty() {
+    void testRollDicesWhenDiceListNotEmpty() {
 
         List<Integer> initialDiceList = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
         player.setDiceList(initialDiceList);

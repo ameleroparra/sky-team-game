@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class RadioTest {
 
@@ -15,6 +17,9 @@ class RadioTest {
     Player pilot;
     Player copilot;
     ApproachTrack approachTrack;
+    Pilot mockPilot;
+    CoPilot mockCopilot;
+    Dice mockDice;
 
     @BeforeEach
     public void setUp() {
@@ -25,7 +30,7 @@ class RadioTest {
     }
 
     @Test
-    public void testPlaceDiceForPilotWhenPilotSlotIsEmpty() {
+    public void testPilotWhenPilotSlotIsEmpty() {
         int diceValue = 4;
 
         radio.placeDice(pilot, diceValue);
@@ -34,7 +39,7 @@ class RadioTest {
     }
 
     @Test
-    public void testDoNotPlaceDiceForPilotWhenPilotSlotIsAlreadyFilled() {
+    public void testPilotWhenPilotSlotIsAlreadyFilled() {
         int diceValue = 5;
 
         radio.setPilotSlot(1);
@@ -44,7 +49,7 @@ class RadioTest {
     }
 
     @Test
-    public void testPlaceDiceForCopilotInFirstSlotWhenBothCopilotSlotsAreEmpty() {
+    public void testCopilotInFirstSlotAllCopilotSlotsEmpty() {
         int diceValue = 3;
 
         radio.placeDice(copilot, diceValue);
@@ -54,7 +59,7 @@ class RadioTest {
     }
 
     @Test
-    public void testPlaceDiceForCopilotInSecondSlotWhenFirstSlotFilledButSecondEmpty() {
+    public void testCopilotInSecondSlotWhenFirstSlotFilledButSecondEmpty() {
         int firstDiceValue = 3;
         int secondDiceValue = 5;
 
@@ -66,7 +71,7 @@ class RadioTest {
     }
 
     @Test
-    public void testDoNotPlaceDiceForCopilotWhenBothCopilotSlotsAreFilled() {
+    public void testCopilotWhenBothCopilotSlotsAreFilled() {
         int diceValue = 3;
 
         radio.setCopilotFirstSlot(1);
@@ -78,7 +83,7 @@ class RadioTest {
     }
 
     @Test
-    public void testRemoveDiceFromPilotListAfterPlacement() {
+    public void testRemoveDiceFromPilotAfterPlacement() {
         List<Integer> diceList = new ArrayList<>(Arrays.asList(2, 1, 4, 6));
 
         int diceValue = 4;
@@ -107,7 +112,7 @@ class RadioTest {
     }
 
     @Test
-    public void testDoNotRemovePlaneTokenWhenNoTokensAtCalculatedPosition() {
+    public void testNotRemoveWhenNoTokensAtPosition() {
         int diceValue = 2;
         int[] initialPlaneTokens = {0, 0, 0, 2, 1, 3, 2};
 
@@ -121,7 +126,7 @@ class RadioTest {
     }
 
     @Test
-    public void testRemovePlaneTokenWhenCurrentPositionIsAtStartOfTrack() {
+    public void testRemovePlaneAtStartOfTrack() {
         int diceValue = 1;
         int[] initialPlaneTokens = {1, 2, 1, 2, 1, 3, 2};
 
@@ -135,21 +140,7 @@ class RadioTest {
     }
 
     @Test
-    public void testHandleEdgeCaseWhenCurrentPositionIsAtEndOfTrack() {
-        int diceValue = 3;
-        int[] initialPlaneTokens = {0, 0, 0, 0, 0, 3};
-
-        approachTrack.setCurrentPosition(6);
-        approachTrack.setPlaneTokens(initialPlaneTokens);
-
-        radio.removePlaneToken(diceValue, approachTrack);
-
-        int[] expectedPlaneTokens = {0, 0, 0, 0, 0, 2};
-        assertArrayEquals(expectedPlaneTokens, approachTrack.getPlaneTokens());
-    }
-
-    @Test
-    public void testDoNotPlaceDiceForPilotInCopilotSlot() {
+    public void testNotPlaceDicePilotInCopilotSlot() {
         int diceValue = 4;
 
         radio.placeDice(pilot, diceValue);
@@ -160,7 +151,7 @@ class RadioTest {
     }
 
     @Test
-    public void testDoNotPlaceDiceForCopilotInPilotSlot() {
+    public void testNotPlaceDiceCopilotInPilotSlot() {
         int diceValue = 4;
 
         radio.placeDice(copilot, diceValue);

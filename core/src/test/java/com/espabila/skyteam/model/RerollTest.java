@@ -32,7 +32,7 @@ class RerollTest {
     }
 
     @Test
-    void testDNotModifyPlayerDiceListWhenRerollAvailableIsFalse() {
+    void testnoRerollAvailable() {
         player.rollDice();
 
         List<Integer> originalDiceList = player.getDiceList();
@@ -47,7 +47,7 @@ class RerollTest {
     }
 
     @Test
-    void testRerollBecomesUnavailableAfterUse() {
+    void testRerollNoAvailableAfterUse() {
         reroll.useReroll(player, 3);
         assertFalse(reroll.getRerollAvailable());
     }
