@@ -23,10 +23,10 @@ public class Lwjgl3Launcher {
         configuration.setTitle("SkyTeam");
 
         // full screen mode
-        configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+        //configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 
         // Windows Mode
-        //configuration.setWindowedMode(SkyTeam.WIDTH, SkyTeam.HEIGHT);
+        configuration.setWindowedMode(SkyTeam.WIDTH, SkyTeam.HEIGHT);
 
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;
