@@ -991,6 +991,7 @@ public class GamePlayScene implements Screen {
             slotImage.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     useCoffee = true;
+                    selectedSound.play();
                     System.out.println("Using coffee");
                     if (slotImage == firstCoffeeSlot) {
                         coffeeSlotIndex = 0;
@@ -1180,7 +1181,7 @@ public class GamePlayScene implements Screen {
                         return;
                     }
 
-                    placementSuccessful = gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
+                      placementSuccessful = gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
                     if (placementSuccessful) {
                         updateLowMarkerVisuals(1);
                     }
