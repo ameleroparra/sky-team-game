@@ -19,14 +19,12 @@ class AltitudeTrackTest {
         assertEquals(1, altitudeTrack.getCurrentRound());
         assertFalse(altitudeTrack.isPilotTurn());
 
-        // Test multiple rounds
         for (int i = 2; i <= 6; i++) {
             altitudeTrack.newRound();
             assertEquals(i, altitudeTrack.getCurrentRound());
             assertEquals(i % 2 == 0, altitudeTrack.isPilotTurn());
         }
 
-        // Test that round doesn't increase beyond 6
         altitudeTrack.newRound();
         assertEquals(6, altitudeTrack.getCurrentRound());
     }
@@ -38,14 +36,14 @@ class AltitudeTrackTest {
             assertFalse(altitudeTrack.isLastRound());
         }
 
-        altitudeTrack.newRound();  // This should be the 6th round
+        altitudeTrack.newRound();
         altitudeTrack.checkLastRound();
         assertTrue(altitudeTrack.isLastRound());
-        assertTrue(altitudeTrack.isPilotTurn());  // Should switch back to pilot on last round
+        assertTrue(altitudeTrack.isPilotTurn());
     }
 
     @Test
-    void testRerollAvailableWhenCurrentRoundIsZeroMockito() {
+    void testRerollAvailableWhenCurrentRoundIsZeroMock() {
         Reroll mockReroll = Mockito.mock(Reroll.class);
         when(mockReroll.getRerollAvailable()).thenReturn(false);
 
@@ -66,7 +64,7 @@ class AltitudeTrackTest {
     }
 
     @Test
-    void testRerollAvailableWhenCurrentRoundIsFourMockito() {
+    void testRerollAvailableWhenCurrentRoundIsFourMock() {
         Reroll mockReroll = Mockito.mock(Reroll.class);
         when(mockReroll.getRerollAvailable()).thenReturn(false);
 
@@ -91,7 +89,7 @@ class AltitudeTrackTest {
     }
 
     @Test
-    void testRerollAvailableWhenCurrentRoundIsNotZeroOrFourMockito() {
+    void testRerollAvailableWhenCurrentRoundIsNotZeroOrFourMock() {
         Reroll mockReroll = Mockito.mock(Reroll.class);
 
         altitudeTrack.setCurrentRound(2);

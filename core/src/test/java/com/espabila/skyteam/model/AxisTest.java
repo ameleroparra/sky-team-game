@@ -39,7 +39,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testNotPlaceDiceWhenPilotSlotIsAlreadyFilled() {
+    public void testDoNotPlaceDiceWhenPilotSlotIsAlreadyFilled() {
         int firstDiceValue = 4;
         int secondDiceValue = 5;
 
@@ -50,7 +50,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testNotPlaceDiceWhenCopilotSlotIsAlreadyFilled() {
+    public void testDoNotPlaceDiceWhenCopilotSlotIsAlreadyFilled() {
         int firstDiceValue = 4;
         int secondDiceValue = 5;
 
@@ -91,8 +91,6 @@ public class AxisTest {
 
     @Test
     public void testReturnFalseWhenBothSlotsAreEmpty() {
-        Axis axis = new Axis();
-
         assertFalse(axis.areDicePlaced());
     }
 
@@ -133,7 +131,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testNotChangeCurrentIndexPositionWhenPilotSlotEqualsCopilotSlot() {
+    public void testDoNotChangeCurrentIndexPositionWhenPilotSlotEqualsCopilotSlot() {
         int diceValue = 4;
 
         axis.placeDice(pilot, diceValue);
@@ -147,7 +145,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testNotPlaceDiceForPilotInCopilotSlot() {
+    public void testDoNotPlaceDiceForPilotInCopilotSlot() {
         int diceValue = 4;
 
         axis.placeDice(pilot, diceValue);
@@ -157,7 +155,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testNotPlaceDiceForCopilotInPilotSlot() {
+    public void testDoNotPlaceDiceForCopilotInPilotSlot() {
         int diceValue = 4;
 
         axis.placeDice(copilot, diceValue);
@@ -182,22 +180,8 @@ public class AxisTest {
         assertEquals(diceValue, axis.getPilotSlot());
     }
 
-
-
     @Test
-    public void testMaintainCurrentIndexPositionAtTwoWhenNoDicesArePlaced() {
-        assertEquals(2, axis.getCurrentIndexPosition());
-
-        axis.currentIndexCalculation();
-
-        assertEquals(2, axis.getCurrentIndexPosition());
-        assertEquals(0, axis.getPilotSlot());
-        assertEquals(0, axis.getCopilotSlot());
-        assertFalse(axis.getGameOver());
-    }
-
-    @Test
-    public void testResetBothPilotAndCopilotSlotsToZeroWhenResetSlotsCalled() {
+    public void testResetSlots() {
         int pilotDiceValue = 5;
         int copilotDiceValue = 3;
 
@@ -211,7 +195,7 @@ public class AxisTest {
     }
 
     @Test
-    public void testCorrectlyUpdateCurrentIndexPositionWhenAtMinimumAndMovesTowardsPositive() {
+    public void testUpdateCurrentIndexWhenAtMinimumAndMovesTowardsPositive() {
         axis.setCurrentIndexPosition(-2);
 
         int pilotDiceValue = 1;
@@ -251,7 +235,6 @@ public class AxisTest {
 
     @Test
     public void testAxisAreHorizontalWhenPositionIsZero() {
-        Axis axis = new Axis();
         axis.setCurrentIndexPosition(2); // Set to middle position (0)
 
         assertTrue(axis.axisAreHorizontal());

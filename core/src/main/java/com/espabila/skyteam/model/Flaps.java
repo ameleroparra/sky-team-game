@@ -61,7 +61,7 @@ public class Flaps {
         }
 
         else if (activated[flapIndex]) {
-            return false; // Flap is already activated, return false
+            return false;
         }
 
         else if (flapIndex == 0){

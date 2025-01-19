@@ -29,50 +29,21 @@ class ConcentrationTest {
     }
 
     @Test
-    void testPlaceDiceInUnactivatedSlotMock() {
-        int diceValue = 4;
-        int slotIndex = 1;
-
-        assertFalse(concentration.isActivated(slotIndex));
-
-        concentration.placeDice(mockPlayer, diceValue, slotIndex);
-
-        assertTrue(concentration.isActivated(slotIndex));
-        verify(mockPlayer).removeDice(diceValue);
-    }
-
-    // Integration test
-    @Test
-    void testPlaceDiceInUnactivatedSlot() {
-        Player player = new Player() {};
-        int diceValue = 4;
-        int slotIndex = 1;
-
-        assertFalse(concentration.isActivated(slotIndex));
-        concentration.placeDice(player, diceValue, slotIndex);
-        assertTrue(concentration.isActivated(slotIndex));
-    }
-
-    @Test
     void testDoNotPlaceDiceInActivatedSlotMock() {
         int diceValue = 4;
         int slotIndex = 1;
 
-        // Setup
         concentration.setActivated(slotIndex, true);
 
-        // Action
         concentration.placeDice(mockPlayer, diceValue, slotIndex);
 
-        // Verify
         assertTrue(concentration.isActivated(slotIndex));
         verify(mockPlayer, never()).removeDice(diceValue);
         verifyNoMoreInteractions(mockPlayer);
     }
-
+    // Integration test
     @Test
     void testDoNotPlaceDiceInActivatedSlot() {
-        Player player = new Player() {};
         int diceValue = 4;
         int slotIndex = 1;
 
@@ -101,7 +72,6 @@ class ConcentrationTest {
 
     @Test
     void testPlaceDiceInUnactivatedSlotZeroMock() {
-        Player mockPlayer = mock(Player.class);
         int diceValue = 3;
         int slotIndex = 0;
 
@@ -113,9 +83,27 @@ class ConcentrationTest {
         verify(mockPlayer).removeDice(diceValue);
     }
 
+    // Integration test
+    @Test
+    void testPlaceDiceInUnactivatedSlotZero() {
+        int diceValue = 3;
+        int slotIndex = 0;
+
+        List<Integer> initialDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+        List<Integer> copyDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+
+        player.setDiceList(initialDiceList);
+
+        assertFalse(concentration.isActivated(slotIndex));
+
+        concentration.placeDice(player, diceValue, slotIndex);
+
+        assertTrue(concentration.isActivated(slotIndex));
+        assertEquals(copyDiceList.size() - 1, player.getDiceList().size());
+    }
+
     @Test
     void testPlaceDiceInUnactivatedSlotOneMock() {
-        Player mockPlayer = mock(Player.class);
         int diceValue = 4;
         int slotIndex = 1;
 
@@ -127,9 +115,27 @@ class ConcentrationTest {
         verify(mockPlayer).removeDice(diceValue);
     }
 
+    // Integration test
+    @Test
+    void testPlaceDiceInUnactivatedSlotOne() {
+        int diceValue = 4;
+        int slotIndex = 1;
+
+        List<Integer> initialDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+        List<Integer> copyDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+
+        player.setDiceList(initialDiceList);
+
+        assertFalse(concentration.isActivated(slotIndex));
+
+        concentration.placeDice(player, diceValue, slotIndex);
+
+        assertTrue(concentration.isActivated(slotIndex));
+        assertEquals(copyDiceList.size() - 1, player.getDiceList().size());
+    }
+
     @Test
     void testPlaceDiceInUnactivatedSlotTwoMock() {
-        Player mockPlayer = mock(Player.class);
         int diceValue = 5;
         int slotIndex = 2;
 
@@ -141,34 +147,47 @@ class ConcentrationTest {
         verify(mockPlayer).removeDice(diceValue);
     }
 
+    // Integration test
+    @Test
+    void testPlaceDiceInUnactivatedSlotTwo() {
+        int diceValue = 5;
+        int slotIndex = 2;
+
+        List<Integer> initialDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+        List<Integer> copyDiceList = new ArrayList<>(Arrays.asList(diceValue, 4, 5));
+
+        player.setDiceList(initialDiceList);
+
+        assertFalse(concentration.isActivated(slotIndex));
+
+        concentration.placeDice(player, diceValue, slotIndex);
+
+        assertTrue(concentration.isActivated(slotIndex));
+        assertEquals(copyDiceList.size() - 1, player.getDiceList().size());
+    }
+
     @Test
     void testPlaceDiceWhenAllSlotsActivated() {
-        Player mockPlayer = mock(Player.class);
         int diceValue = 3;
 
-        // Activate all slots
         concentration.setActivated(0, true);
         concentration.setActivated(1, true);
         concentration.setActivated(2, true);
 
-        // Try to place dice in each slot
         concentration.placeDice(mockPlayer, diceValue, 0);
         concentration.placeDice(mockPlayer, diceValue, 1);
         concentration.placeDice(mockPlayer, diceValue, 2);
 
-        // Verify that removeDice was never called
         verify(mockPlayer, never()).removeDice(anyInt());
 
-        // Verify that all slots are still activated
         assertTrue(concentration.isActivated(0));
         assertTrue(concentration.isActivated(1));
         assertTrue(concentration.isActivated(2));
     }
 
     @Test
-    void testUseDownDoesNotModifyDiceValueWhenItIsOne() {
+    void testUseDownDoesNotModifyDiceValueWhenOne() {
         Concentration concentration = new Concentration();
-        Player player = new Player() {};
         List<Integer> diceList = new ArrayList<>(Arrays.asList(1, 4, 5));
         player.setDiceList(diceList);
 
@@ -182,8 +201,6 @@ class ConcentrationTest {
 
     @Test
     void testUseDownDecreasesDiceValueByOne() {
-        Concentration concentration = new Concentration();
-        Player player = new Player() {};
         List<Integer> diceList = new ArrayList<>(Arrays.asList(3, 4, 5));
         player.setDiceList(diceList);
 
@@ -196,9 +213,7 @@ class ConcentrationTest {
     }
 
     @Test
-    void testUseUpDoesNotModifyDiceValueWhenItIsSix() {
-        Concentration concentration = new Concentration();
-        Player player = new Player() {};
+    void testUseUpDoesNotModifyDiceValueWhenSix() {
         List<Integer> diceList = new ArrayList<>(Arrays.asList(6, 4, 5));
         player.setDiceList(diceList);
 
@@ -212,8 +227,6 @@ class ConcentrationTest {
 
     @Test
     void testUseUpIncreasesDiceValueByOne() {
-        Concentration concentration = new Concentration();
-        Player player = new Player() {};
         List<Integer> diceList = new ArrayList<>(Arrays.asList(3, 4, 5));
         player.setDiceList(diceList);
 
@@ -227,17 +240,12 @@ class ConcentrationTest {
 
     @Test
     void testResetConcentrationSetsAllActivatedSlotsToFalse() {
-        Concentration concentration = new Concentration();
-
-        // Activate all slots
         concentration.setActivated(0, true);
         concentration.setActivated(1, true);
         concentration.setActivated(2, true);
 
-        // Reset concentration
         concentration.resetConcentration();
 
-        // Assert that all slots are deactivated
         assertFalse(concentration.isActivated(0));
         assertFalse(concentration.isActivated(1));
         assertFalse(concentration.isActivated(2));

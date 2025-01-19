@@ -102,7 +102,4 @@ public class LandGear {
             activated[i] = false;
         }
     }
-
-
-
 }
