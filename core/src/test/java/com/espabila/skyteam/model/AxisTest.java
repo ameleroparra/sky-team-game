@@ -172,7 +172,7 @@ public class AxisTest {
         List<Integer> diceList = new ArrayList<>(Arrays.asList(2, 1, 4, 6));
 
         int diceValue = 4;
-        pilot.rollDices();
+        pilot.rollDice();
         pilot.setDiceList(diceList);
 
         axis.placeDice(pilot, diceValue);

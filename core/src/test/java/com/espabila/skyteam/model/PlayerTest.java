@@ -21,7 +21,7 @@ class PlayerTest {
 
     @Test
     public void testRollFourDiceAndAddValuesToDiceList() {
-        player.rollDices();
+        player.rollDice();
 
         List<Integer> diceList = player.getDiceList();
         assertEquals(4, diceList.size());
@@ -45,4 +45,14 @@ class PlayerTest {
         assertFalse(player.getDiceList().contains(3));
     }
 
+    @Test
+    void testRollDicesWhenDiceListIsNotEmpty() {
+
+        List<Integer> initialDiceList = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+        player.setDiceList(initialDiceList);
+
+        player.rollDice();
+
+        assertEquals(0, player.getDiceList().size());
+    }
 }

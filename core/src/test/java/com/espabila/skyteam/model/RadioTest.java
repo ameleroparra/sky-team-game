@@ -82,7 +82,7 @@ class RadioTest {
         List<Integer> diceList = new ArrayList<>(Arrays.asList(2, 1, 4, 6));
 
         int diceValue = 4;
-        pilot.rollDices();
+        pilot.rollDice();
         pilot.setDiceList(diceList);
 
         radio.placeDice(pilot, diceValue);

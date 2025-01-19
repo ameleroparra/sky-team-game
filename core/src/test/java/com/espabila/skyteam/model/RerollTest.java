@@ -33,7 +33,7 @@ class RerollTest {
 
     @Test
     void testDNotModifyPlayerDiceListWhenRerollAvailableIsFalse() {
-        player.rollDices();
+        player.rollDice();
 
         List<Integer> originalDiceList = player.getDiceList();
         reroll.useReroll(player, 3);
