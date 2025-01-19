@@ -60,6 +60,10 @@ public class Flaps {
             return false;
         }
 
+        else if (activated[flapIndex]) {
+            return false; // Flap is already activated, return false
+        }
+
         else if (flapIndex == 0){
             for (int element : firstRequired) {
                 if (element == value) {

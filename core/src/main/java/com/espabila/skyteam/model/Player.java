@@ -19,7 +19,7 @@ public abstract class Player {
         diceList =  new ArrayList<>();
     }
 
-    public void rollDices(){
+    public void rollDice(){
         if(!diceList.isEmpty()){
             resetDiceList();
         }

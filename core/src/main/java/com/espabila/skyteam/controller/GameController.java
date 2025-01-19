@@ -61,8 +61,8 @@ public class GameController {
         flaps.resetFlaps();
         approachTrack.resetApproachTrack();
         altitudeTrack.rerollAvailable(reroll);
-        pilot.rollDices();
-        coPilot.rollDices();
+        pilot.rollDice();
+        coPilot.rollDice();
     }
 
     public void startNewRound() {
@@ -81,8 +81,8 @@ public class GameController {
             gamePlayScene.updateFlapImages();
             gamePlayScene.updateLandGearImages();
 
-            pilot.rollDices();
-            coPilot.rollDices();
+            pilot.rollDice();
+            coPilot.rollDice();
             if (altitudeTrack.isPilotTurn()) {
                 currentPlayer = pilot;
             } else {

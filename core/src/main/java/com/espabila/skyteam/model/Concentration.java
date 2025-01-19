@@ -8,9 +8,6 @@ public class Concentration {
     private int secondSlot;
     private int thirdSlot;
     private boolean[] activated;
-    private boolean plusOne; //should be changed in controller to work here
-    private boolean minusOne; //should be changed in controller to work here
-
     public int getFirstSlot() {
         return firstSlot;
     }
@@ -43,29 +40,12 @@ public class Concentration {
         this.activated = activated;
     }
 
-    public boolean isPlusOne() {
-        return plusOne;
-    }
-
-    public boolean isMinusOne() {
-        return minusOne;
-    }
 
     public Concentration(){
         this.firstSlot = 0;
         this.secondSlot = 0;
         this.thirdSlot = 0;
         this.activated = new boolean[3];
-        this.plusOne = false;
-        this.minusOne = false;
-    }
-
-    public void setPlusOne(boolean plusOne) {
-        this.plusOne = plusOne;
-    }
-
-    public void setMinusOne(boolean minusOne) {
-        this.minusOne = minusOne;
     }
 
     public void setActivated(int slotIndex, boolean activated) {
@@ -107,7 +87,6 @@ public class Concentration {
             int newValue = diceValue - 1;
             player.getDiceList().set(diceIndex, newValue);
         }
-
     }
 
     public void useUp(Player player, int diceValue, int diceIndex){
@@ -115,8 +94,6 @@ public class Concentration {
             int newValue = diceValue + 1;
             player.getDiceList().set(diceIndex, newValue);
         }
-
-
     }
 
 
@@ -124,7 +101,5 @@ public class Concentration {
         for (int i = 0; i < activated.length; i++) {
             activated[i] = false;
         }
-        plusOne = false;
-        minusOne = false;
     }
 }
