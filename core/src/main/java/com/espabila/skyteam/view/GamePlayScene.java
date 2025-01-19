@@ -1,6 +1,7 @@
 package com.espabila.skyteam.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -20,8 +21,8 @@ import com.espabila.skyteam.SkyTeamGame;
 import com.espabila.skyteam.controller.GameController;
 import com.espabila.skyteam.model.CoPilot;
 import com.espabila.skyteam.model.Pilot;
-import com.espabila.skyteam.model.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,13 +38,13 @@ public class GamePlayScene implements Screen {
     private Stage stage;
     Skin skin;
 
-    private int[] diceValues;
-    private int selectedDiceValue = 0;
-
     //dices code
     private Texture[] diceTextures;
     private Image[] diceImages;
     private static final int diceAmount = 4;
+    private int[] diceValues;
+    private int selectedDiceValue = 0;
+    public int selectedDiceIndex = 0;
 
     // Radio slots
     private Image pilotRadioSlot;
@@ -55,16 +56,24 @@ public class GamePlayScene implements Screen {
     private Image secondBrakesSlot;
     private Image thirdBrakesSlot;
 
+    private Texture noNumber2;
+    private Texture noNumber4;
+    private Texture noNumber6;
+
     // Coffee related things
     private Image firstCoffeeSlot;
     private Image secondCoffeeSlot;
     private Image thirdCoffeeSlot;
     private Texture coffeeTexture;
 
-    private Image diceSelectImage;
+    private Image concentrationDecisionImage;
     private Texture diceSelectTexture;
     private Image valueMinusOneImage;
     private Image valuePlusOneImage;
+    private TextButton backButton;
+    public int coffeeSlotIndex;
+
+    public boolean useCoffee = false;
 
     // Engine slots
     private Image pilotEngineSlot;
@@ -90,11 +99,14 @@ public class GamePlayScene implements Screen {
     // Altitude Tracks slot
     private Texture[] altitudeTextures;
     private Image altitudeTrackSlot;
+    private int altitudeTrackTextureNum;
 
     // Approach Tracks slots
     private Texture[] approachTextures;
-    private Image[] approachTrackSlots;
-    private static final int approachTrackAmount = 7;
+    private int approachTrackAmount;
+    private List<Image> approachTrackSlots;
+    private float approachSlotBaseY = 531; // Base Y position for the first slot
+    private float approachSlotSpacing = 50;
 
     // Reroll slots
     private Texture rerollTexture;
@@ -111,30 +123,40 @@ public class GamePlayScene implements Screen {
     private Texture noRerollTexture;
     private Texture tickIcon;
 
+    private Texture coverTexture;
+    private Image coverImage;
+
+    private Texture pilotIndicatorTexture;
+    private Image pilotIndicatorImage;
+    private Texture copilotIndicatorTexture;
+    private Image copilotIndicatorImage;
+
     // Change Turn button
     private Image blurryScreen;
     private TextButton readyButton;
     private Sound movementSound;
 
-
-
     private boolean isPilotTurn = false;
-
     private final SkyTeamGame game;
+
+    // reroll images
+    private Texture rerollSelectTexture;
+    private Image rerollSelectImage;
+    private Image diceReroll1;
+    private Image diceReroll2;
+    private Image diceReroll3;
+    private Image diceReroll4;
+    private TextButton exitRerollButton;
 
     public GamePlayScene(SkyTeamGame game, GameController gameController) {
         this.game = game;
         this.gameController = gameController;
 
-        // Initialize components
-        stage = new Stage(new FitViewport(SkyTeamGame.WIDTH, SkyTeamGame.HEIGHT));
-        Gdx.input.setInputProcessor(stage);
-
-        // Initialize skin
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // Make sure this file exists in your assets folder
-
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
         gameController.setGamePlayScene(this);
         // Initialize your UI components here
+
+        approachTrackAmount = gameController.getLastApproachTrackNum();
     }
 
     @Override
@@ -142,29 +164,158 @@ public class GamePlayScene implements Screen {
         gameController.startNewGame();
         isPilotTurn = !isPilotTurn;
 
-        backgroundTexture = new Texture("background.png");
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("planeAmbience.wav"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
-        selectedSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
-        placedSound = Gdx.audio.newSound(Gdx.files.internal("ding.wav"));
-        movementSound = Gdx.audio.newSound(Gdx.files.internal("movement.mp3"));
-
-        tickIcon = new Texture("tickIcon.jpg");
-        axisPlaneTexture = new Texture("planeAxisIcon.png");
-        lowMarkerTexture = new Texture("lowMarkerIcon.png");
-        highMarkerTexture = new Texture("highMarkerIcon.png");
-        coffeeTexture = new Texture("coffeeIcon.jpg");
-        diceSelectTexture = new Texture("diceSelect.png");
-
         batch = new SpriteBatch();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+        createGenericAssets();
+        createDiceSlots();
+        createRadioSlots();
+        createBrakeSlots();
+        createCoffeeSlots();
+        createLandGearSlots();
+        createFlapSlots();
+        createEngineSlots();
+        createAxisSlots();
+        createAltitudeSlots();
+        createApproachSlots();
+        createBlurryScreen();
+        createConcentrationScreen();
+        createCover();
 
-        // dice code
+        updatePlayerIndicators();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
+
+        // Calculate the scaling factors
+        float scaleX = viewport.getWorldWidth() / backgroundTexture.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundTexture.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        // Calculate the dimensions to maintain aspect ratio
+        float width = backgroundTexture.getWidth() * scale;
+        float height = backgroundTexture.getHeight() * scale;
+
+        // Calculate position to center the background
+        float x = (viewport.getWorldWidth() - width) / 2;
+        float y = (viewport.getWorldHeight() - height) / 2;
+
+        // Draw the background
+        batch.draw(backgroundTexture, x, y, width, height);
+
+        batch.end();
+
+        stage.getViewport().apply();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            game.setScreen(new LandScene(game, gameController));
+            return;
+        }
+    }
+
+    @Override
+    public void pause() {
+        backgroundMusic.pause();
+    }
+
+    @Override
+    public void resume() {
+        backgroundMusic.play();
+    }
+
+    @Override
+    public void hide() {
+        // This method is called when this screen is no longer the current screen for a Game.
+        dispose();
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        backgroundTexture.dispose();
+        backgroundMusic.dispose();
+        selectedSound.dispose();
+        stage.dispose();
+
+        for (Texture texture : diceTextures) {
+            texture.dispose();
+        }
+    }
+
+    // Create Slots
+
+    private void createGenericAssets() {
+        backgroundTexture = new Texture("background.png");
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("planeAmbience.wav"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+
+        selectedSound = Gdx.audio.newSound(Gdx.files.internal("ding.wav"));
+        placedSound = Gdx.audio.newSound(Gdx.files.internal("beep.wav"));
+        movementSound = Gdx.audio.newSound(Gdx.files.internal("movement.mp3"));
+
+        emptySlotTexture = new Texture("noNumber.jpg");
+        tickIcon = new Texture("tickIcon.jpg");
+
+        pilotIndicatorTexture = new Texture("pilot.png");
+        pilotIndicatorImage = new Image(pilotIndicatorTexture);
+        pilotIndicatorImage.setPosition(835, 10);
+        pilotIndicatorImage.setVisible(false);
+        stage.addActor(pilotIndicatorImage);
+
+        copilotIndicatorTexture = new Texture("copilot.png");
+        copilotIndicatorImage = new Image(copilotIndicatorTexture);
+        copilotIndicatorImage.setPosition(710, 10);
+        copilotIndicatorImage.setVisible(false);
+        stage.addActor(copilotIndicatorImage);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+    }
+
+    private void updatePlayerIndicators() {
+        if (gameController.getCurrentPlayer() instanceof Pilot) {
+            copilotIndicatorImage.setVisible(false);
+            pilotIndicatorImage.setVisible(true);
+        }
+        else {
+            pilotIndicatorImage.setVisible(false);
+            copilotIndicatorImage.setVisible(true);
+        }
+    }
+
+    private void createCover() {
+        coverTexture = new Texture("cover.png");
+        coverImage = new Image(coverTexture);
+        coverImage.setPosition(580, 943);
+        coverImage.setVisible(true);
+        stage.addActor(coverImage);
+        coverImage.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                coverImage.setVisible(false);
+            }
+        });
+    }
+
+    private void createDiceSlots() {
         diceTextures = new Texture[7];
         diceTextures[0] = new Texture("noNumber.jpg"); // no number initial
 
@@ -178,27 +329,21 @@ public class GamePlayScene implements Screen {
             diceImages[i] = new Image(diceTextures[0]);
             diceImages[i].setSize(100, 100);
             diceImages[i].setPosition(719 + i * (100 + 28), 960);
-
+            stage.addActor(diceImages[i]);
             diceImages[i].addListener(new ClickListener() { //make images clickable
-                @Override
                 public void clicked(InputEvent event, float x, float y) {
                     diceSelected(index);
                 }
             });
-            stage.addActor(diceImages[i]);
-
         }
-
         updateDiceImages();
+    }
 
-        emptySlotTexture = new Texture("noNumber.jpg");
-
-
-        // pilot radio slot creation
+    private void createRadioSlots() {
         pilotRadioSlot = new Image(emptySlotTexture);
         pilotRadioSlot.setPosition(295,960);
         pilotRadioSlot.setSize(100,100);
-
+        stage.addActor(pilotRadioSlot);
         pilotRadioSlot.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
@@ -211,60 +356,38 @@ public class GamePlayScene implements Screen {
             }
         });
 
-        stage.addActor(pilotRadioSlot);
-
-
-        // copilot radio slot creation
         firstCoPilotRadioSlot = new Image(emptySlotTexture);
         firstCoPilotRadioSlot.setPosition(1490,960);
         firstCoPilotRadioSlot.setSize(100,100);
         stage.addActor(firstCoPilotRadioSlot);
+        firstCoPilotRadioSlot.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(firstCoPilotRadioSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
+            }
+        });
+
 
         secondCoPilotRadioSlot = new Image(emptySlotTexture);
         secondCoPilotRadioSlot.setPosition(1618,960);
         secondCoPilotRadioSlot.setSize(100,100);
         stage.addActor(secondCoPilotRadioSlot);
-
-
-        // Brakes slot creation
-        firstBrakesSlot = new Image(emptySlotTexture);
-        firstBrakesSlot.setPosition(110,525);
-        firstBrakesSlot.setSize(100,100);
-
-        firstBrakesSlot.addListener(new ClickListener() {
-            @Override
+        secondCoPilotRadioSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
-                placeDice(firstBrakesSlot);
+                if (gameController.getCurrentPlayer() instanceof CoPilot) {
+                    placeDice(secondCoPilotRadioSlot);
+                } else {
+                    showErrorMessage("Only the copilot can interact with this slot.");
+                }
             }
         });
-        stage.addActor(firstBrakesSlot);
+    }
 
-        secondBrakesSlot = new Image(emptySlotTexture);
-        secondBrakesSlot.setPosition(260,525);
-        secondBrakesSlot.setSize(100,100);
-        stage.addActor(secondBrakesSlot);
-
-        secondBrakesSlot.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) { // make slot clickable
-                placeDice(secondBrakesSlot);
-            }
-        });
-
-        thirdBrakesSlot = new Image(emptySlotTexture);
-        thirdBrakesSlot.setPosition(408,525);
-        thirdBrakesSlot.setSize(100,100);
-        stage.addActor(thirdBrakesSlot);
-
-        thirdBrakesSlot.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) { // make slot clickable
-                placeDice(thirdBrakesSlot);
-            }
-        });
-
-
-        //coffee slots
+    private void createCoffeeSlots() {
+        coffeeTexture = new Texture("coffeeIcon.jpg");
         firstCoffeeSlot = new Image(emptySlotTexture);
         firstCoffeeSlot.setPosition(1417,525);
         firstCoffeeSlot.setSize(100,100);
@@ -272,7 +395,7 @@ public class GamePlayScene implements Screen {
         firstCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(firstCoffeeSlot);
+                placeDice(firstCoffeeSlot);
 
             }
         });
@@ -284,7 +407,7 @@ public class GamePlayScene implements Screen {
         secondCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(secondCoffeeSlot);
+                placeDice(secondCoffeeSlot);
             }
         });
 
@@ -295,11 +418,55 @@ public class GamePlayScene implements Screen {
         thirdCoffeeSlot.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
 
-                placeDiceCoffee(thirdCoffeeSlot);
+                placeDice(thirdCoffeeSlot);
+            }
+        });
+    }
+
+    private void createBrakeSlots() {
+
+        noNumber2 = new Texture("noNumber2.jpg");
+        noNumber4 = new Texture("noNumber4.jpg");
+        noNumber6 = new Texture("noNumber6.jpg");
+
+        firstBrakesSlot = new Image(noNumber2);
+        firstBrakesSlot.setPosition(110,525);
+        firstBrakesSlot.setSize(100,100);
+
+        firstBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                placeDice(firstBrakesSlot);
+            }
+        });
+        stage.addActor(firstBrakesSlot);
+
+        secondBrakesSlot = new Image(noNumber4);
+        secondBrakesSlot.setPosition(260,525);
+        secondBrakesSlot.setSize(100,100);
+        stage.addActor(secondBrakesSlot);
+
+        secondBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                placeDice(secondBrakesSlot);
             }
         });
 
-        // Landing gear slot creation
+        thirdBrakesSlot = new Image(noNumber6);
+        thirdBrakesSlot.setPosition(408,525);
+        thirdBrakesSlot.setSize(100,100);
+        stage.addActor(thirdBrakesSlot);
+
+        thirdBrakesSlot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                placeDice(thirdBrakesSlot);
+            }
+        });
+    }
+
+    private void createLandGearSlots() {
         firstLandGearSlot = new Image(emptySlotTexture);
         firstLandGearSlot.setPosition(295,279);
         firstLandGearSlot.setSize(100,100);
@@ -344,12 +511,9 @@ public class GamePlayScene implements Screen {
                 }
             }
         });
+    }
 
-        lowMarkerImage = new Image(lowMarkerTexture);
-        lowMarkerImage.setPosition(890, 390);
-        stage.addActor(lowMarkerImage);
-
-        // Flaps slot creation
+    private void createFlapSlots() {
         firstFlapsSlot = new Image(emptySlotTexture);
         firstFlapsSlot.setPosition(1381,359);
         firstFlapsSlot.setSize(100,100);
@@ -409,12 +573,9 @@ public class GamePlayScene implements Screen {
                 }
             }
         });
+    }
 
-        highMarkerImage = new Image(highMarkerTexture);
-        highMarkerImage.setPosition(1005, 390);
-        stage.addActor(highMarkerImage);
-
-        //Engine slot creation
+    private void createEngineSlots() {
         pilotEngineSlot = new Image(emptySlotTexture);
         pilotEngineSlot.setPosition(622,390);
         pilotEngineSlot.setSize(100,100);
@@ -423,7 +584,6 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof Pilot) {
                     placeDice(pilotEngineSlot);
-//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the pilot can interact with this slot.");
                 }
@@ -438,14 +598,24 @@ public class GamePlayScene implements Screen {
             public void clicked(InputEvent event, float x, float y) { // make slot clickable
                 if (gameController.getCurrentPlayer() instanceof CoPilot) {
                     placeDice(copilotEngineSlot);
-//                    gameController.moveForwardApproachTrack();
                 } else {
                     showErrorMessage("Only the copilot can interact with this slot.");
                 }
             }
         });
 
-        // Axis slots creation
+        lowMarkerTexture = new Texture("lowMarkerIcon.png");
+        lowMarkerImage = new Image(lowMarkerTexture);
+        lowMarkerImage.setPosition(890, 390);
+        stage.addActor(lowMarkerImage);
+
+        highMarkerTexture = new Texture("highMarkerIcon.png");
+        highMarkerImage = new Image(highMarkerTexture);
+        highMarkerImage.setPosition(1005, 390);
+        stage.addActor(highMarkerImage);
+    }
+
+    private void createAxisSlots() {
         pilotAxisSlot = new Image(emptySlotTexture);
         pilotAxisSlot.setPosition(768,225);
         pilotAxisSlot.setSize(100,100);
@@ -474,21 +644,24 @@ public class GamePlayScene implements Screen {
             }
         });
 
+        axisPlaneTexture = new Texture("planeAxisIcon.png");
         axisPlaneImage = new Image(axisPlaneTexture);
         axisPlaneImage.setPosition(928,268);
         axisPlaneImage.setOrigin(axisPlaneTexture.getWidth() / 2, axisPlaneTexture.getHeight() / 2);
         stage.addActor(axisPlaneImage);
+    }
 
-        // Altitude track slots creation
+    private void createAltitudeSlots() {
         altitudeTextures = new Texture[7];
         for (int i = 0; i <= 6; i++) {
-            altitudeTextures[i] = new Texture("altitude" + i + ".jpg"); // generate altitude textures
+            altitudeTextures[i] = new Texture("altitude_" + i + ".jpg"); // generate altitude textures
         }
-        altitudeTrackSlot = new Image(altitudeTextures[6]);
+
+        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
+        altitudeTrackSlot = new Image(altitudeTextures[altitudeTrackTextureNum]);
         altitudeTrackSlot.setPosition(1100,875);
         stage.addActor(altitudeTrackSlot);
 
-        // Reroll slot creation
         rerollTexture = new Texture("rerollIcon.jpg");
         noRerollTexture = new Texture("noRerollIcon.jpg");
         rerollSlot = new Image(noRerollTexture);
@@ -496,33 +669,37 @@ public class GamePlayScene implements Screen {
         rerollSlot.setSize(50, 50);
         stage.addActor(rerollSlot);
 
-        // Approach track slots creation
+        updateRerollVisuals();
+    }
+
+    private void createApproachSlots() {
         approachTextures = new Texture[5]; // create textures
         for (int i = 0; i <= 4; i++) {
             approachTextures[i] = new Texture("approach" + i + ".jpg"); // generate approach textures
         }
 
-        approachTrackSlots = new Image[approachTrackAmount]; // create slots
-        for (int i = 0; i < approachTrackAmount; i++) {
-            approachTrackSlots[i] = new Image(approachTextures[0]);
-            approachTrackSlots[i].setPosition(860, 531 + i * 50);
-            stage.addActor(approachTrackSlots[i]);
+        approachTrackSlots = new ArrayList<>();
+        for (int i = 0; i <= approachTrackAmount; i++) {
+            Image slot = new Image(approachTextures[0]);
+            slot.setPosition(860, approachSlotBaseY + i * approachSlotSpacing);
+            stage.addActor(slot);
+            approachTrackSlots.add(slot);
         }
-
         updateApproachTrackVisuals();
 
-        // table creation
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
+    }
 
-
+    private void createBlurryScreen() {
         //Change turns System
         blurryScreen = new Image(new Texture("blurry.png")); //creates blurry background
         blurryScreen.setVisible(false);
         stage.addActor(blurryScreen);
 
-        readyButton = new TextButton("Ready", skin); //creates button to exit blurry background
+        readyButton = new TextButton("Ready", skin);
+        readyButton.setPosition(860, backgroundTexture.getHeight() / 8f);
+        readyButton.setSize(200, 50);
+        readyButton.setVisible(false);
+        stage.addActor(readyButton);
         readyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -531,18 +708,17 @@ public class GamePlayScene implements Screen {
                 readyButton.toFront();
 
                 movementSound.play(1.0f);
-                gameController.switchTurn();
-                updateDiceImages();
+
+
             }
         });
-        readyButton.setSize(200, 50);
-        readyButton.setVisible(false);
-        stage.addActor(readyButton);
+    }
 
-        //Dice selection System
-        diceSelectImage = new Image(diceSelectTexture);
-        diceSelectImage.setVisible(false);
-        stage.addActor(diceSelectImage);
+    private void createConcentrationScreen() {
+        diceSelectTexture = new Texture("diceSelect.png");
+        concentrationDecisionImage = new Image(diceSelectTexture);
+        concentrationDecisionImage.setVisible(false);
+        stage.addActor(concentrationDecisionImage);
 
         valueMinusOneImage = new Image(emptySlotTexture);
         valueMinusOneImage.setPosition(312, 295);
@@ -550,6 +726,8 @@ public class GamePlayScene implements Screen {
         stage.addActor(valueMinusOneImage);
         valueMinusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                gameController.changeValueDown(selectedDiceValue, selectedDiceIndex);
+                selectedDiceValue = 0;
                 updateDiceImages();
             }
         });
@@ -560,24 +738,183 @@ public class GamePlayScene implements Screen {
         stage.addActor(valuePlusOneImage);
         valuePlusOneImage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                gameController.changeValueUp(selectedDiceValue, selectedDiceIndex);
+                selectedDiceValue = 0;
                 updateDiceImages();
+
             }
         });
 
+        backButton = new TextButton("back", skin);
+        backButton.setPosition(860, 100);
+        backButton.setSize(200, 50);
+        backButton.setVisible(false);
+        stage.addActor(backButton);
+        backButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                hideConcentrationImages();
+                selectedDiceValue = 0;
+            }
+        });
     }
 
-    // show concentration background
-    public void showDiceSelectImages(int diceValue) {
-        diceSelectImage.setVisible(true);
+    public void createRerollScreen() {
+        rerollSelectTexture = new Texture("rerollSelect.png");
+        rerollSelectImage = new Image(rerollSelectTexture);
+        rerollSelectImage.setVisible(true);
+        stage.addActor(rerollSelectImage);
 
-        int minusOneValue = Math.max(1, diceValue - 1);
-        int plusOneValue = Math.min(6, diceValue + 1);
+        diceReroll1 = new Image(diceImages[0].getDrawable());
+        diceReroll1.setPosition(353, 505);
+        diceReroll1.setSize(200, 200);
+        diceReroll1.setVisible(true);
+        stage.addActor(diceReroll1);
+        diceReroll1.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(0);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll1.removeListener(this);
+            }
+        });
 
-        valueMinusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[minusOneValue]));
-        valueMinusOneImage.setVisible(true);
+        diceReroll2 = new Image(diceImages[1].getDrawable());
+        diceReroll2.setPosition(693, 505);
+        diceReroll2.setSize(200, 200);
+        diceReroll2.setVisible(true);
+        stage.addActor(diceReroll2);
+        diceReroll2.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(1);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll2.removeListener(this);
+            }
+        });
 
-        valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
-        valuePlusOneImage.setVisible(true);
+        diceReroll3 = new Image(diceImages[2].getDrawable());
+        diceReroll3.setPosition(1031, 505);
+        diceReroll3.setSize(200, 200);
+        diceReroll3.setVisible(true);
+        stage.addActor(diceReroll3);
+        diceReroll3.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(2);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll3.removeListener(this);
+            }
+        });
+
+        diceReroll4 = new Image(diceImages[3].getDrawable());
+        diceReroll4.setPosition(1370, 505);
+        diceReroll4.setSize(200, 200);
+        diceReroll4.setVisible(true);
+        stage.addActor(diceReroll4);
+        diceReroll4.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.useRerollDice(3);
+                updateDiceImages();
+                updateRerollDiceImages();
+                diceReroll4.removeListener(this);
+            }
+        });
+
+        exitRerollButton = new TextButton("Exit", skin);
+        exitRerollButton.setPosition(860, 200);
+        exitRerollButton.setSize(200, 50);
+        exitRerollButton.setVisible(true);
+        stage.addActor(exitRerollButton);
+        exitRerollButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                removeRerollScreen();
+                if (gameController.getCurrentPlayer() instanceof Pilot) {
+                    gameController.setPilotRerollActive(false);
+                    updateRerollVisuals();
+                }
+                else {
+                    gameController.setCoPilotRerollActive(false);
+                    updateRerollVisuals();
+
+                }
+            }
+        });
+
+        if (blurryScreen != null) {
+            blurryScreen.toFront();
+        }
+        if (readyButton != null) {
+            readyButton.toFront();
+        }
+    }
+
+    // Update visuals
+
+    public void updateFlapImages() {
+        if (gameController.flapIsActivated(0)) {
+            firstFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(1)) {
+            secondFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(2)) {
+            thirdFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.flapIsActivated(3)) {
+            fourthFlapsSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+    }
+
+    public void updateLandGearImages() {
+        if (gameController.landGearIsActivated(0)) {
+            firstLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.landGearIsActivated(1)) {
+            secondLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+        if (gameController.landGearIsActivated(2)) {
+            thirdLandGearSlot.setDrawable(new Image(tickIcon).getDrawable());
+        }
+    }
+
+    private void updateRerollDiceImages() {
+        if (diceReroll1 != null && diceImages != null && diceImages.length > 0) {
+            diceReroll1.setDrawable(diceImages[0].getDrawable());
+        }
+        if (diceReroll2 != null && diceImages!= null && diceImages.length > 1) {
+            diceReroll2.setDrawable(diceImages[1].getDrawable());
+        }
+        if (diceReroll3 != null && diceImages!= null && diceImages.length > 2) {
+            diceReroll3.setDrawable(diceImages[2].getDrawable());
+        }
+        if (diceReroll4 != null && diceImages!= null && diceImages.length > 3) {
+            diceReroll4.setDrawable(diceImages[3].getDrawable());
+        }
+    }
+
+    public void removeRerollScreen() {
+        rerollSelectImage.remove();
+        diceReroll1.remove();
+        diceReroll2.remove();
+        diceReroll3.remove();
+        diceReroll4.remove();
+        exitRerollButton.remove();
+    }
+
+    public void showCover() {
+        coverImage.setVisible(true);
+    }
+
+    private void showBlurryScreen() {
+        Timer.schedule(new Timer.Task() {
+            public void run() {
+                blurryScreen.setVisible(true);
+                readyButton.setVisible(true);
+                blurryScreen.toFront();
+                readyButton.toFront();
+                movementSound.play(1.0f);
+            }
+        }, 1);
     }
 
     public void updateAxisPlaneVisuals(int currentPosition) {
@@ -592,14 +929,12 @@ public class GamePlayScene implements Screen {
         lowMarkerImage.addAction(Actions.moveBy(movement * (activatedGears), 0, duration));
     }
 
-
     public void updateHighMarkerVisuals (int activatedGears) {
         int duration = 1;
         int movement = 35;
         highMarkerImage.addAction(Actions.moveBy(movement * (activatedGears), 0, duration));
     }
 
-    // Place a tick icon when a brake is activated
     public void updateBrakeVisuals(int brakeSlot, boolean activated) {
         Image slotImage;
         switch (brakeSlot) {
@@ -618,15 +953,23 @@ public class GamePlayScene implements Screen {
 
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(tickIcon));
-            placedSound.play(1.0f);
-            selectedDiceValue = 0;
-            changeTurn();
+            if (!gameController.isRoundOver()) {
+                placedSound.play(1.0f);
+                updateDiceImages();
+                selectedDiceValue = 0;
+                showBlurryScreen();
+
+                switchTurn();
+            }
+            else {
+                gameController.checkUpAfterDicePlacement();
+            }
+
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
         }
     }
 
-    // place a coffee icon when a coffee is activated
     public void updateCoffeeVisuals(int coffeeSlot, boolean activated) {
         Image slotImage;
         switch (coffeeSlot) {
@@ -645,33 +988,156 @@ public class GamePlayScene implements Screen {
 
         if (activated) {
             slotImage.setDrawable(new TextureRegionDrawable(coffeeTexture));
-            placedSound.play(1.0f);
+            slotImage.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    useCoffee = true;
+                    System.out.println("Using coffee");
+                    if (slotImage == firstCoffeeSlot) {
+                        coffeeSlotIndex = 0;
+                    }
+                    else if (slotImage == secondCoffeeSlot) {
+                        coffeeSlotIndex = 1;
+                    }
+                    else if (slotImage == thirdCoffeeSlot) {
+                        coffeeSlotIndex = 2;
+                    }
+
+                    //slotImage.removeListener(this);
+                }
+            });
+
+            if (!gameController.isRoundOver()) {
+
+                placedSound.play(1.0f);
+                updateDiceImages();
+                selectedDiceValue = 0;
+                showBlurryScreen();
+
+                switchTurn();
+            }
+            else {
+                gameController.checkUpAfterDicePlacement();
+            }
+
         } else {
             slotImage.setDrawable(new TextureRegionDrawable(emptySlotTexture));
+            System.out.println("slot deactivated");
+            slotImage.clearListeners();
+            if (slotImage == firstCoffeeSlot) {
+                firstCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(firstCoffeeSlot);
+
+                    }
+                });
+            }
+            else if (slotImage == secondCoffeeSlot) {
+                secondCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(secondCoffeeSlot);
+
+                    }
+                });
+            }
+            else if (slotImage == thirdCoffeeSlot) {
+                thirdCoffeeSlot.addListener(new ClickListener() {
+                    public void clicked(InputEvent event, float x, float y) { // make slot clickable
+
+                        placeDice(thirdCoffeeSlot);
+
+                    }
+                });
+            }
+
         }
     }
 
+    public void updateRerollVisuals(){
+
+
+        System.out.println("update reroll visuals is being called" + gameController.isRerollAvailable());
+        if(gameController.isRerollAvailable()){
+            rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(rerollTexture)));
+            rerollSlot.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) { // make slot clickable
+                    gameController.useRerollSlot();
+                }
+            });
+        }
+
+        else if (gameController.getPilotRerollActive() || gameController.getCoPilotRerollActive()) {
+            System.out.println("update reroll visuals went to else if" + gameController.getPilotRerollActive());
+            rerollSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(noRerollTexture)));
+            rerollSlot.clearListeners();
+        }
+
+    }
+
+    public void updateApproachTrackVisuals() {
+        int[] planeTokens = gameController.getApproachTrackPlaneTokens();
+
+        for (int i = 0; i < approachTrackSlots.size(); i++) {
+            Image slot = approachTrackSlots.get(i);
+
+            if (i < planeTokens.length) {
+                int planeCount = planeTokens[i];
+
+                planeCount = Math.min(planeCount, approachTextures.length - 1);
+                planeCount = Math.max(planeCount, 0);
+
+                slot.setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
+
+                float yPosition = approachSlotBaseY + i * approachSlotSpacing;
+                slot.setPosition(860, yPosition);
+
+                slot.setVisible(true);
+            } else {
+                slot.setVisible(false);
+            }
+        }
+    }
+
+    public void showConcentrationImages(int diceValue) {
+        concentrationDecisionImage.setVisible(true);
+
+        int minusOneValue = Math.max(1, diceValue - 1);
+        int plusOneValue = Math.min(6, diceValue + 1);
+
+        valueMinusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[minusOneValue]));
+        valueMinusOneImage.setVisible(true);
+
+        valuePlusOneImage.setDrawable(new TextureRegionDrawable(diceTextures[plusOneValue]));
+        valuePlusOneImage.setVisible(true);
+
+        backButton.setVisible(true);
+    }
+
+    public void hideConcentrationImages() {
+        concentrationDecisionImage.setVisible(false);
+        valueMinusOneImage.setVisible(false);
+        valuePlusOneImage.setVisible(false);
+        backButton.setVisible(false);
+    }
+
+    // Dice placement related
+
     public void diceSelected(int diceIndex) {
-        if (diceValues[diceIndex] != 0) {
+        if (useCoffee) {
+            selectedDiceIndex = diceIndex;
+            useCoffee = false;
+            selectedDiceValue = diceValues[diceIndex];
+            showConcentrationImages(selectedDiceValue);
+        }
+        else if (diceValues[diceIndex] != 0) {
             selectedDiceValue = diceValues[diceIndex];
             selectedSound.play(1.0f);
         }
     }
 
-    // Update the dice array
-    private void updateDiceImages() {
-        List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
-        diceValues = new int[diceAmount];
+    public void rerollClicked(){
 
-        for (int i = 0; i < diceAmount; i++) {
-            if (i < currentPlayerDice.size()) {
-                diceValues[i] = currentPlayerDice.get(i);
-                diceImages[i].setDrawable(new Image(diceTextures[diceValues[i]]).getDrawable());
-            } else {
-                diceValues[i] = 0;
-                diceImages[i].setDrawable(new Image(diceTextures[0]).getDrawable());
-            }
-        }
     }
 
     private void placeDice(Image slot) {
@@ -680,12 +1146,14 @@ public class GamePlayScene implements Screen {
                 boolean placementSuccessful = false;
 
                 if (!(slot.getDrawable() instanceof TextureRegionDrawable) ||
-                    ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != emptySlotTexture) {
+                    (((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != emptySlotTexture &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber2 &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber4 &&
+                        ((TextureRegionDrawable)slot.getDrawable()).getRegion().getTexture() != noNumber6)) {
                     showErrorMessage("This slot is already occupied.");
                     return;
                 }
 
-                // Determine which component the dice is being placed on
                 // Engines
                 if (slot == pilotEngineSlot || slot == copilotEngineSlot) {
                     gameController.placeDiceOnEngines(selectedDiceValue);
@@ -697,13 +1165,6 @@ public class GamePlayScene implements Screen {
                 else if (slot == pilotAxisSlot || slot == copilotAxisSlot) {
                     gameController.placeDiceOnAxis(selectedDiceValue);
                     placementSuccessful = true;
-                }
-
-                // Radios
-                else if (slot == pilotRadioSlot){
-                    gameController.placeDiceOnPilotRadioSlot(selectedDiceValue);
-                    placementSuccessful = true;
-
                 }
 
                 // Land Gear
@@ -721,30 +1182,11 @@ public class GamePlayScene implements Screen {
 
                     placementSuccessful = gameController.placeDiceOnLandGear(selectedDiceValue, gearIndex);
                     if (placementSuccessful) {
-                       updateLowMarkerVisuals(1);
+                        updateLowMarkerVisuals(1);
                     }
                     else {
                         showErrorMessage("invalid dice value");
                     }
-
-
-                }
-
-                // Brakes
-                else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
-                    int brakeIndex;
-                    if (slot == firstBrakesSlot) {
-                        brakeIndex = 0;
-                    } else if (slot == secondBrakesSlot) {
-                        brakeIndex = 1;
-                    } else if (slot == thirdBrakesSlot) {
-                        brakeIndex = 2;
-                    } else {
-                        return;
-                    }
-
-                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
-
                 }
 
                 // Flaps
@@ -769,60 +1211,110 @@ public class GamePlayScene implements Screen {
                     else {
                         showErrorMessage("you can not do that");
                     }
-
                 }
 
+                // Radios
+                else if (slot == pilotRadioSlot || slot == firstCoPilotRadioSlot || slot == secondCoPilotRadioSlot) {
+                    gameController.placeDiceOnRadioSlot(selectedDiceValue);
+                    placementSuccessful = true;
+                }
+
+                // Brakes
+                else if (slot == firstBrakesSlot || slot == secondBrakesSlot || slot == thirdBrakesSlot) {
+                    int brakeIndex;
+                    if (slot == firstBrakesSlot) {
+                        brakeIndex = 0;
+                    } else if (slot == secondBrakesSlot) {
+                        brakeIndex = 1;
+                    } else if (slot == thirdBrakesSlot) {
+                        brakeIndex = 2;
+                    } else {
+                        return;
+                    }
+
+                    gameController.placeDiceOnBrakes(selectedDiceValue, brakeIndex);
+                }
+
+                // coffee
+                else if (slot == firstCoffeeSlot || slot == secondCoffeeSlot || slot == thirdCoffeeSlot) {
+                    if (selectedDiceValue != 0) {
+
+                        int slotIndex;
+                        if (slot == firstCoffeeSlot) {
+                            slotIndex = 0;
+                        } else if (slot == secondCoffeeSlot) {
+                            slotIndex = 1;
+                        } else if (slot == thirdCoffeeSlot) {
+                            slotIndex = 2;
+                        } else {
+                            return;
+                        }
+
+                        gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
+                    }
+                }
                 else {
                     throw new IllegalArgumentException("Invalid slot selected");
                 }
                 if (placementSuccessful) {
-                    slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
-                    placedSound.play(1.0f);
-                    updateDiceImages();
-                    selectedDiceValue = 0;
-                    changeTurn();
+                    if (!gameController.isRoundOver()) {
+                        slot.setDrawable(new Image(diceTextures[selectedDiceValue]).getDrawable());
+                        placedSound.play(1.0f);
+                        updateDiceImages();
+                        selectedDiceValue = 0;
+                        showBlurryScreen();
 
-
-                    if (gameController.isGameOver()) {
-                        showGameOverDialog();
+                        switchTurn();
                     }
+                    else {
+                        gameController.checkUpAfterDicePlacement();
+                    }
+
                 }
             } catch (Exception e) {
                 showErrorMessage("Invalid placement: " + e.getMessage());
             }
-
             updateDiceImages();
         }
     }
 
-    private void placeDiceCoffee(Image slot) {
-        if (selectedDiceValue != 0) {
+    // Update the dice array
+    public void updateDiceImages() {
+        List<Integer> currentPlayerDice = gameController.getCurrentPlayer().getDiceList();
+        diceValues = new int[diceAmount];
 
-            int slotIndex;
-            if (slot == firstCoffeeSlot) {
-                slotIndex = 0;
-            } else if (slot == secondCoffeeSlot) {
-                slotIndex = 1;
-            } else if (slot == thirdCoffeeSlot) {
-                slotIndex = 2;
+        for (int i = 0; i < diceAmount; i++) {
+            if (i < currentPlayerDice.size()) {
+                diceValues[i] = currentPlayerDice.get(i);
+                diceImages[i].setDrawable(new Image(diceTextures[diceValues[i]]).getDrawable());
             } else {
-                return;
+                diceValues[i] = 0;
+                diceImages[i].setDrawable(new Image(diceTextures[0]).getDrawable());
             }
-
-            gameController.placeDiceOnConcentration(selectedDiceValue, slotIndex);
-            updateDiceImages();
-            selectedDiceValue = 0;
-
         }
+
+        updateRerollDiceImages();
     }
 
-    private void changeTurn() {
+    // Some rules
+
+    private void switchTurn() {
         Timer.schedule(new Timer.Task() {
             public void run() {
-                blurryScreen.setVisible(true);
-                readyButton.setVisible(true);
-                readyButton.toFront();
-                movementSound.play(1.0f);
+                gameController.switchTurn();
+                updateDiceImages();
+                updatePlayerIndicators();
+
+                if (gameController.getPilotRerollActive() || gameController.getCoPilotRerollActive()) {
+                    createRerollScreen();
+                }
+
+                if (blurryScreen != null) {
+                    blurryScreen.toFront();
+                }
+                if (readyButton != null) {
+                    readyButton.toFront();
+                }
             }
         }, 1);
     }
@@ -834,87 +1326,73 @@ public class GamePlayScene implements Screen {
         dialog.show(stage);
     }
 
-    private void showGameOverDialog() {
+    public void resetNextRoundSlots(){
+        resetRadioSlots();
+        resetEnginesSlots();
+        resetAxisSlots();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        stage.getViewport().update(width, height, true);
-    }
+    public void startNewRound() {
+        updateRerollVisuals();
+        altitudeTrackTextureNum = gameController.getAltitudeTrackCurrentRound();
+        if((altitudeTrackTextureNum) <= 6) {
+            updateAltitudeTrackVisual();
+            resetNextRoundSlots();
+            updateApproachTrackVisuals();
 
+            selectedDiceValue = 0;
+            selectedDiceIndex = -1;
+            useCoffee = false;
 
-    @Override
-    public void pause() {
-        backgroundMusic.pause();
-    }
+            updateDiceImages();
 
-
-    @Override
-    public void resume() {
-        backgroundMusic.play();
-    }
-
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        batch.begin();
-
-        // Calculate the scaling factors
-        float scaleX = viewport.getWorldWidth() / backgroundTexture.getWidth();
-        float scaleY = viewport.getWorldHeight() / backgroundTexture.getHeight();
-        float scale = Math.max(scaleX, scaleY);
-
-        // Calculate the dimensions to maintain aspect ratio
-        float width = backgroundTexture.getWidth() * scale;
-        float height = backgroundTexture.getHeight() * scale;
-
-        // Calculate position to center the background
-        float x = (viewport.getWorldWidth() - width) / 2;
-        float y = (viewport.getWorldHeight() - height) / 2;
-
-        // Draw the background
-        batch.draw(backgroundTexture, x, y, width, height);
-
-        batch.end();
-
-        stage.getViewport().apply();
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-    }
-
-    @Override
-    public void hide() {
-        // This method is called when this screen is no longer the current screen for a Game.
-        dispose();
-    }
-
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        backgroundTexture.dispose();
-        backgroundMusic.dispose();
-        selectedSound.dispose();
-        stage.dispose();
-
-        for (Texture texture : diceTextures) {
-            texture.dispose();
+        }
+        else {
+            gameOverScreen();
         }
     }
 
-    public void updateApproachTrackVisuals() {
-        int[] planeTokens = gameController.getApproachTrackPlaneTokens();
-        for (int i = 0; i < approachTrackAmount; i++) {
-            int planeCount = planeTokens[i];
-            if (planeCount >= 0 && planeCount < approachTextures.length) {
-                approachTrackSlots[i].setDrawable(new TextureRegionDrawable(new TextureRegion(approachTextures[planeCount])));
-            }
+    private void updateAltitudeTrackVisual() {
+        if (altitudeTrackTextureNum >= 0 && altitudeTrackTextureNum < altitudeTextures.length) {
+            Texture newTexture = altitudeTextures[altitudeTrackTextureNum];
+            altitudeTrackSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+            System.out.println("Updated altitude track visual to: " + altitudeTrackTextureNum);
+        } else {
+            System.err.println("Invalid altitudeTrackTextureNum: " + altitudeTrackTextureNum);
         }
     }
+
+    public void resetRadioSlots() {
+        pilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        firstCoPilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        secondCoPilotRadioSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void resetEnginesSlots(){
+        pilotEngineSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        copilotEngineSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void resetAxisSlots(){
+        pilotAxisSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+        copilotAxisSlot.setDrawable(new TextureRegionDrawable(new TextureRegion(emptySlotTexture)));
+    }
+
+    public void gameOverScreen(){
+        game.setScreen(new CrashScene(game, gameController));
+    }
+
+    public void winScreen(){
+        game.setScreen(new LandScene(game, gameController));
+    }
+
+    public void lastRoundTest(){
+        selectedDiceValue = 2;
+        placeDice(firstBrakesSlot);
+        selectedDiceValue = 4;
+        placeDice(secondBrakesSlot);
+        selectedDiceValue = 6;
+        placeDice(thirdBrakesSlot);
+    }
+
 }

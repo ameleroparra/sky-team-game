@@ -8,10 +8,66 @@ public class Engines {
     private int approachTrackMove;
     private int pilotSlot;
     private int copilotSlot;
+    private int diceSum;
 
     private Flaps flaps;
     private LandGear landGear;
 
+    public double getPilotMarker() {
+        return pilotMarker;
+    }
+
+    public void setPilotMarker(double pilotMarker) {
+        this.pilotMarker = pilotMarker;
+    }
+
+    public double getCopilotMarker() {
+        return copilotMarker;
+    }
+
+    public void setCopilotMarker(double copilotMarker) {
+        this.copilotMarker = copilotMarker;
+    }
+
+    public double getFinalPilotMarker() {
+        return finalPilotMarker;
+    }
+
+    public void setFinalPilotMarker(double finalPilotMarker) {
+        this.finalPilotMarker = finalPilotMarker;
+    }
+
+    public double getFinalCopilotMarker() {
+        return finalCopilotMarker;
+    }
+
+    public void setFinalCopilotMarker(double finalCopilotMarker) {
+        this.finalCopilotMarker = finalCopilotMarker;
+    }
+
+    public int getPilotSlot() {
+        return pilotSlot;
+    }
+
+    public void setPilotSlot(int pilotSlot) {
+        this.pilotSlot = pilotSlot;
+    }
+
+    public int getCopilotSlot() {
+        return copilotSlot;
+    }
+
+    public void setCopilotSlot(int copilotSlot) {
+        this.copilotSlot = copilotSlot;
+    }
+
+    public int getDiceSum() {
+        return diceSum;
+    }
+
+    public void setDiceSum(int diceSum) {
+        this.diceSum = diceSum;
+    }
 
     public Engines(){
         this.pilotMarker = 4.5;
@@ -21,30 +77,7 @@ public class Engines {
         this.approachTrackMove = 0;
         this.pilotSlot = 0;
         this.copilotSlot = 0;
-    }
-
-    public double getPilotMarker() {
-        return pilotMarker;
-    }
-
-    public double getCopilotMarker() {
-        return copilotMarker;
-    }
-
-    public int getPilotSlot() {
-        return pilotSlot;
-    }
-
-    public int getCopilotSlot() {
-        return copilotSlot;
-    }
-
-    public void setPilotSlot(int pilotSlot) {
-        this.pilotSlot = pilotSlot;
-    }
-
-    public void setCopilotSlot(int copilotSlot) {
-        this.copilotSlot = copilotSlot;
+        this.diceSum = 0;
     }
 
     public void placeDice(Player player, int diceValue){
@@ -101,7 +134,7 @@ public class Engines {
     }
 
     public void countDiceSum(){
-        int diceSum = this.pilotSlot + this.copilotSlot;
+        diceSum = this.pilotSlot + this.copilotSlot;
         if(diceSum < pilotMarker){
             this.approachTrackMove = 0;
             System.out.println("Approach track moved 0");
@@ -116,6 +149,12 @@ public class Engines {
         }
         System.out.println("Dice sum: " + diceSum);
     }
+
+    public void resetEnginesSlots(){
+        this.pilotSlot = 0;
+        this.copilotSlot = 0;
+    }
+
 
     public void resetEngines(){
         this.pilotMarker = 4.5;

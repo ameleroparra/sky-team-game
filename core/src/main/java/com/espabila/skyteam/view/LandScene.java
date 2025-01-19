@@ -2,28 +2,53 @@ package com.espabila.skyteam.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.espabila.skyteam.SkyTeamGame;
+import com.espabila.skyteam.controller.GameController;
 
-public class crashScene implements Screen {
+import java.util.Random;
+
+public class LandScene implements Screen {
     private Stage stage;
     private Skin skin;
     private Texture background;
+    private Sound clapsSound;
+
     private SpriteBatch batch;
     private Table table;
+    private final SkyTeamGame game;
+    private GameController gameController;
+
+
+
+    public LandScene(SkyTeamGame game, GameController gameController) {
+        this.game = game;
+        this.gameController = new GameController();
+    }
 
     public void show() {
         stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        background = new Texture("crash.png");
+        background = new Texture("land.png");
         batch = new SpriteBatch();
+
+        clapsSound = Gdx.audio.newSound(Gdx.files.internal("claps.mp3"));
+        clapsSound.play();
+
+
 
         // Table creation
         table = new Table();
@@ -37,6 +62,21 @@ public class crashScene implements Screen {
 
         table.add(restartButton).width(100).height(50).pad(25);
         table.add(exitButton).center().width(100).height(50).pad(25);
+
+        restartButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameController.startNewGame();
+                game.setScreen(new GamePlayScene(game, gameController));
+                clapsSound.stop();
+            }
+        });
+
+        exitButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
 
     }
 

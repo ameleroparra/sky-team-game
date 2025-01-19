@@ -6,6 +6,38 @@ public class LandGear {
     private int[] secondRequired;
     private int[] thirdRequired;
 
+    public boolean[] getActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean[] activated) {
+        this.activated = activated;
+    }
+
+    public int[] getFirstRequired() {
+        return firstRequired;
+    }
+
+    public void setFirstRequired(int[] firstRequired) {
+        this.firstRequired = firstRequired;
+    }
+
+    public int[] getSecondRequired() {
+        return secondRequired;
+    }
+
+    public void setSecondRequired(int[] secondRequired) {
+        this.secondRequired = secondRequired;
+    }
+
+    public int[] getThirdRequired() {
+        return thirdRequired;
+    }
+
+    public void setThirdRequired(int[] thirdRequired) {
+        this.thirdRequired = thirdRequired;
+    }
+
     public LandGear(){
         this.activated = new boolean[3];
         this.firstRequired = new int[]{1, 2};

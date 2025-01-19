@@ -8,7 +8,55 @@ public class Axis {
      private int copilotSlot;
     private Boolean gameOver;
 
-     //initiate axis on position 0
+    public int getPosition() {
+        return position[currentIndexPosition];
+    }
+
+    public void setPosition(int[] position) {
+        this.position = position;
+    }
+
+    public int getCurrentIndexPosition() {
+        return currentIndexPosition;
+    }
+
+    public void setCurrentIndexPosition(int currentIndexPosition) {
+        this.currentIndexPosition = currentIndexPosition;
+    }
+
+    public int getAbsResult() {
+        return absResult;
+    }
+
+    public void setAbsResult(int absResult) {
+        this.absResult = absResult;
+    }
+
+    public int getPilotSlot() {
+        return pilotSlot;
+    }
+
+    public void setPilotSlot(int pilotSlot) {
+        this.pilotSlot = pilotSlot;
+    }
+
+    public int getCopilotSlot() {
+        return copilotSlot;
+    }
+
+    public void setCopilotSlot(int copilotSlot) {
+        this.copilotSlot = copilotSlot;
+    }
+
+    public Boolean getGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(Boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    //initiate axis on position 0
      public Axis() {
          this.position = new int[] {-2, -1, 0, 1, 2};
          this.currentIndexPosition = 2;
@@ -16,34 +64,6 @@ public class Axis {
          this.copilotSlot = 0;
          this.gameOver = false;
      }
-
-    public int getCurrentIndexPosition() {
-        return currentIndexPosition;
-    }
-
-    public int getPosition() {
-        return position[currentIndexPosition];
-    }
-
-    public int getAbsResult() {
-        return absResult;
-    }
-
-    public int getPilotSlot() {
-        return pilotSlot;
-    }
-
-    public int getCopilotSlot() {
-        return copilotSlot;
-    }
-
-    public Boolean getGameOver() {
-        return gameOver;
-    }
-
-    public void setCurrentIndexPosition(int currentIndexPosition) {
-        this.currentIndexPosition = currentIndexPosition;
-    }
 
     public void placeDice(Player player, int diceValue){
          if(player instanceof Pilot && pilotSlot == 0){
@@ -59,7 +79,7 @@ public class Axis {
          }
      }
 
-     public Boolean areDicesPlaced(){
+     public Boolean areDicePlaced(){
          if(pilotSlot > 0 && copilotSlot > 0){
              return true;
          }
@@ -78,7 +98,7 @@ public class Axis {
          // moves axis to the pilot side, left
          if (pilotSlot > copilotSlot) {
              if (leftMove < 0) {
-                 currentIndexPosition = leftMove;
+                 currentIndexPosition = 0;
                  gameOver = true;
              } else {
                  currentIndexPosition = leftMove;
@@ -87,7 +107,7 @@ public class Axis {
          //moves axis to the copilot side, right
          else if (pilotSlot < copilotSlot) {
              if (rightMove > 4) {
-                 currentIndexPosition = rightMove;
+                 currentIndexPosition = 4;
                  gameOver = true;
              } else {
                  currentIndexPosition = rightMove;
@@ -100,5 +120,7 @@ public class Axis {
          copilotSlot = 0;
      }
 
-
+    public boolean axisAreHorizontal(){
+        return getPosition() == 0;
+    }
 }

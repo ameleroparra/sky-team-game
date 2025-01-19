@@ -17,7 +17,7 @@ class BrakesTest {
     }
 
     @Test
-    void shouldReturnFalseWhenAttemptingToActivateSecondBrakeWithoutActivatingPreviousBrakes() {
+    void testReturnFalseWhenActivatingSecondBrakeWithoutActivatingPreviousBrakes() {
         int brakeSlot = 1;
         int diceValue = 2;
 
@@ -27,7 +27,7 @@ class BrakesTest {
     }
 
     @Test
-    void shouldReturnTrueWhenAttemptingToActivateFirstBrakeWithoutActivatingPreviousBrakes() {
+    void testReturnTrueWhenActivatingFirstBrakeWithoutActivatingPreviousBrakes() {
         int brakeSlot = 0;
         int diceValue = 2;
 
@@ -37,7 +37,7 @@ class BrakesTest {
     }
 
     @Test
-    void shouldReturnTrueWhenAttemptingToActivateSecondBrakeAfterActivatingPreviousBrakes() {
+    void testReturnTrueWhenActivatingSecondBrakeAfterActivatingPreviousBrakes() {
         brakes.activateBrakes(pilot, 0, 2);
         int brakeSlot = 1;
         int diceValue = 4;
@@ -48,12 +48,25 @@ class BrakesTest {
     }
 
     @Test
-    void shouldNotActivateBrakeWithWrongDiceValue() {
+    void testNotActivateBrakeWithWrongDiceValue() {
         int brakeSlot = 0;
         int diceValue = 4;
 
         boolean result = brakes.activateBrakes(pilot, brakeSlot, diceValue);
 
         assertFalse(result);
+    }
+
+    @Test
+    void testResetBrakesDeactivatesAllBrakeSlots() {
+        for (int i = 0; i < brakes.getActivated().length; i++) {
+            brakes.getActivated()[i] = true;
+        }
+
+        brakes.resetBrakes();
+
+        for (int i = 0; i < brakes.getActivated().length; i++) {
+            assertFalse(brakes.isBrakeActivated(i));
+        }
     }
 }

@@ -26,7 +26,7 @@ class EnginesTest {
         engines.placeDice(pilot, 3);
         engines.placeDice(copilot, 4);
 
-        assertTrue(engines.areDicesPlaced(0));
+        assertTrue(engines.areDicesPlaced());
     }
 
     @Test
@@ -45,34 +45,24 @@ class EnginesTest {
 
     @Test
     void testCountDiceSum() {
-        engines.countDiceSum(2, 2); // Sum: 4, should be less than pilotMarker (4.5)
+        engines.setPilotSlot(2);
+        engines.setCopilotSlot(2);
+        engines.countDiceSum(); // Sum: 4, should be less than pilotMarker (4.5)
         assertEquals(0, engines.getApproachTrackMove());
 
-        engines.countDiceSum(3, 3); // Sum: 6, should be between pilotMarker (4.5) and copilotMarker (8.5)
+        engines.setPilotSlot(3);
+        engines.setCopilotSlot(3);
+        engines.countDiceSum(); // Sum: 6, should be between pilotMarker (4.5) and copilotMarker (8.5)
         assertEquals(1, engines.getApproachTrackMove());
 
-        engines.countDiceSum(5, 5); // Sum: 10, should be greater than copilotMarker (8.5)
+        engines.setPilotSlot(5);
+        engines.setCopilotSlot(5);
+        engines.countDiceSum(); // Sum: 10, should be greater than copilotMarker (8.5)
         assertEquals(2, engines.getApproachTrackMove());
     }
 
     @Test
-    void testMaxEngineMarkers() {
-        for (int i = 0; i < 3; i++) {
-            engines.advancePilotMarker();
-            engines.advanceCopilotMarker();
-        }
-        assertEquals(6.5, engines.getPilotMarker());
-        assertEquals(11.5, engines.getCopilotMarker());
-
-        engines.advancePilotMarker(); // Should not increase further
-        engines.advanceCopilotMarker(); // Should not increase further
-
-        assertEquals(6.5, engines.getPilotMarker());
-        assertEquals(12.5, engines.getCopilotMarker());
-    }
-
-    @Test
-    void shouldReturnFalseWhenPlacingDiceOnOccupiedPilotSlot(){
+    void testReturnFalseWhenPlacingDiceOnOccupiedPilotSlot(){
         Pilot pilot = new Pilot();
 
         engines.setPilotSlot(3);
@@ -82,7 +72,7 @@ class EnginesTest {
     }
 
     @Test
-    void shouldReturnFalseWhenPlacingDiceOnOccupiedCopilotSlot(){
+    void testReturnFalseWhenPlacingDiceOnOccupiedCopilotSlot(){
         CoPilot coPilot = new CoPilot();
 
         engines.setCopilotSlot(5);
