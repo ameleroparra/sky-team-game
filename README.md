@@ -1,33 +1,15 @@
 # SkyTeam
+A couch cooperative game based in the tabletop game Sky Team, awarded game of the year in 2024. An attractive art direction and immersive sounds combines together to bring a pleasant gaming experience with friends.
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+![Introduction photo](https://github.com/user-attachments/assets/dda18a76-ab58-40a2-b2cf-d5430647ac32)
 
-Project template included launchers with [Autumn](https://github.com/crashinvaders/gdx-lml/tree/master/autumn) class scanners and a single [Autumn MVC](https://github.com/crashinvaders/gdx-lml/tree/master/mvc) view.
+## Goal
+Two players, Pilot and Co-pilot will take turns guiding a passenger plane safely to the airport. Each action, from adjusting altitude to deploying the landing gear is decided through click based dice rolls that mix strategy with a touch of luck.
 
-## Platforms
+![copilot](https://github.com/user-attachments/assets/b2ade3dd-0f47-4852-ae7b-81385d4ff4c1)
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+## Will you land the plane successfully or will you miserably fail in the process?
 
-## Gradle
+<img width="1920" height="1080" alt="land" src="https://github.com/user-attachments/assets/64393a5f-3ecc-4b00-bfea-0f8eaa2fb19c" />
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
-
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
-
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+<img width="1920" height="1080" alt="crash" src="https://github.com/user-attachments/assets/e2592c4a-5223-4934-baca-6798777e65ba" />
